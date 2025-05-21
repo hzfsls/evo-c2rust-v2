@@ -1,0 +1,11 @@
+{
+    "ALWAYS_INLINE": "inline",
+    "ALWAYS_NO_INLINE": "",
+    "STATIC": "static",
+    "HIDDEN": "",
+    "CMPTLZ_HIDDEN": "",
+    "TARGET_ATTRIBUTE_AUTO": "",
+    "RAPIDLZ_ALWAYS_INLINE": "inline",
+    "CSTL_STATIC": "static",
+    "DT_EXPORT": ""
+}

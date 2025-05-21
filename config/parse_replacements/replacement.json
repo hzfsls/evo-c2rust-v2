@@ -1,0 +1,8 @@
+{
+    "__asm": "asm",
+    "args...": "...",
+    "##args": "__VA_ARGS__",
+    "#if __cplusplus\nextern \"C\" {\n#endif": "extern \"C\" {\n",
+    "#if __cplusplus\n}\n#endif": "}\n",
+    "#if __cplusplus\n}\n\n#endif": "}\n"
+}
