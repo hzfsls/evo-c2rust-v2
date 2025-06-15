@@ -1,17 +1,6 @@
 from __future__ import annotations
-
 import os
-import sys
-import subprocess
-import shutil
-
-import time
-
-from pathlib import Path
-
-from entity.logger import setup_logger
-
-logger = setup_logger("rust_project_creation.py")
+import json
 
 class RustProjectMetadata:
     def __init__(self):
@@ -32,6 +21,7 @@ class RustProjectMetadata:
             all_files.extend(v.recursive_get_all(typ))
         return all_files
     
+
 class RustPath:
     def __init__(self, typ: str):
         self.type = typ # folder or file
@@ -139,64 +129,3 @@ class RustCode:
         code = RustCode(data["c_code"])
         code.rust_code = data["rust_code"]
         return code
-
-def create_under_current_dir(dir_path: str, rpath: RustPath):
-    if rpath.type == "folder":
-        os.makedirs(f"{dir_path}/{rpath.name}", exist_ok=True)
-        for k, v in rpath.children.items():
-            create_under_current_dir(f"{dir_path}/{rpath.name}", v)
-    elif rpath.type == "file":
-        try:
-            with open(f"{dir_path}/{rpath.name}", "w") as f:
-                f.write("\n".join(rpath.declarations) + "\n\n")
-                for k in rpath.definitions:
-                    f.write(k.rust_code + "\n\n")
-                for k in rpath.macros:
-                    f.write(k.rust_code + "\n\n")
-                for k in rpath.macro_functions:
-                    f.write(k.rust_code + "\n\n")
-                for k in rpath.functions:
-                    f.write(k.rust_code + "\n\n")
-        except FileNotFoundError as e:
-            logger.error(f"{dir_path}/{rpath.name} can not found.Please check whether the intermediate file has been deleted.\n:{e}")
-            sys.exit(1) 
-
-class RustProject:
-    def __init__(self, name: str, metadata: RustProjectMetadata, parent_dir="./created_project", template_project_dir="./template_project", no_timestamp=False):
-        if no_timestamp:
-            self.dir_path = Path(parent_dir, f"{name}")
-        else:
-            self.dir_path = Path(parent_dir, f"{name}_{int(time.time() * 1000)}")
-        self.template_project_dir = template_project_dir
-        self.metadata = metadata
-        self.create_project()    
-    
-    def create_project(self):
-        os.makedirs(self.dir_path, exist_ok=True)
-        shutil.copytree(self.template_project_dir, self.dir_path, dirs_exist_ok=True)
-        paths = self.metadata.paths
-        for k, v in paths.items():
-            create_under_current_dir(Path(self.dir_path, "src"), v)
-
-
-    def build_project(self):
-        if sys.platform.startswith('win'):
-            result = subprocess.run('set RUSTFLAGS=-Awarnings && cargo check', shell=True, cwd=self.dir_path, timeout=10, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        elif sys.platform.startswith('linux'):
-            result = subprocess.run(["RUSTFLAGS=-Awarnings cargo check"], shell=True, cwd=self.dir_path, timeout=10, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.returncode == 0:
-            return True, ""
-        else:
-            try:
-                error_msg = result.stderr.decode("utf-8")
-            except UnicodeDecodeError as utf8_error:
-                try:
-                    error_msg = result.stderr.decode("gbk")
-                except UnicodeDecodeError as gbk_error:
-                    raise Exception(
-                        f"Failed to decode result.stderr with both UTF-8 and GBK. "
-                        f"UTF-8 error: {utf8_error}, GBK error: {gbk_error}"
-                    ) from gbk_error
-            except Exception as e:
-                raise Exception(f"Unexpected error decoding result.stderr: {e}") from e
-            return False, error_msg

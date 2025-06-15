@@ -11,8 +11,7 @@ dependencies = [
     "pebble>=5.1.0",
     "httpx>=0.28.1",
     "tqdm>=4.67.1",
-    "requests==2.32.3",
-    "clang>=20.1.5",
+    "requests==2.32.3"
 ]
 requires-python = ">=3.9"
 license = {text = "MIT"}
