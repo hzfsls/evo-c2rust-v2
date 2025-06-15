@@ -1,0 +1,1073 @@
+{
+    "src/list.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include \"list.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_ListEntry": "struct _ListEntry\n{\n    ListValue data;\n    ListEntry *prev;\n    ListEntry *next;\n};"
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "list_free": "void list_free(ListEntry *list)\n{\n    ListEntry *entry;\n\n    entry = list;\n\n    while (entry != NULL)\n    {\n        ListEntry *next;\n\n        next = entry->next;\n\n        free(entry);\n\n        entry = next;\n    }\n}",
+            "list_prepend": "ListEntry *list_prepend(ListEntry **list, ListValue data)\n{\n    ListEntry *newentry;\n\n    if (list == NULL)\n    {\n\n        return NULL;\n    }\n\n    newentry = malloc(sizeof(ListEntry));\n\n    if (newentry == NULL)\n    {\n        return NULL;\n    }\n\n    newentry->data = data;\n\n    if (*list != NULL)\n    {\n        (*list)->prev = newentry;\n    }\n    newentry->prev = NULL;\n    newentry->next = *list;\n    *list = newentry;\n\n    return newentry;\n}",
+            "list_append": "ListEntry *list_append(ListEntry **list, ListValue data)\n{\n    ListEntry *rover;\n    ListEntry *newentry;\n\n    if (list == NULL)\n    {\n        return NULL;\n    }\n\n    newentry = malloc(sizeof(ListEntry));\n\n    if (newentry == NULL)\n    {\n        return NULL;\n    }\n\n    newentry->data = data;\n    newentry->next = NULL;\n\n    if (*list == NULL)\n    {\n\n        *list = newentry;\n        newentry->prev = NULL;\n    }\n    else\n    {\n\n        for (rover = *list; rover->next != NULL; rover = rover->next)\n            ;\n\n        newentry->prev = rover;\n        rover->next = newentry;\n    }\n\n    return newentry;\n}",
+            "list_data": "ListValue list_data(ListEntry *listentry)\n{\n    if (listentry == NULL)\n    {\n        return LIST_NULL;\n    }\n\n    return listentry->data;\n}",
+            "list_set_data": "void list_set_data(ListEntry *listentry, ListValue value)\n{\n    if (listentry != NULL)\n    {\n        listentry->data = value;\n    }\n}",
+            "list_prev": "ListEntry *list_prev(ListEntry *listentry)\n{\n    if (listentry == NULL)\n    {\n        return NULL;\n    }\n\n    return listentry->prev;\n}",
+            "list_next": "ListEntry *list_next(ListEntry *listentry)\n{\n    if (listentry == NULL)\n    {\n        return NULL;\n    }\n\n    return listentry->next;\n}",
+            "list_nth_entry": "ListEntry *list_nth_entry(ListEntry *list, unsigned int n)\n{\n    ListEntry *entry;\n    unsigned int i;\n\n    entry = list;\n\n    for (i = 0; i < n; ++i)\n    {\n\n        if (entry == NULL)\n        {\n            return NULL;\n        }\n        entry = entry->next;\n    }\n\n    return entry;\n}",
+            "list_nth_data": "ListValue list_nth_data(ListEntry *list, unsigned int n)\n{\n    ListEntry *entry;\n\n    entry = list_nth_entry(list, n);\n\n    if (entry == NULL)\n    {\n        return LIST_NULL;\n    }\n    else\n    {\n        return entry->data;\n    }\n}",
+            "list_length": "unsigned int list_length(ListEntry *list)\n{\n    ListEntry *entry;\n    unsigned int length;\n\n    length = 0;\n    entry = list;\n\n    while (entry != NULL)\n    {\n\n        ++length;\n\n        entry = entry->next;\n    }\n\n    return length;\n}",
+            "list_to_array": "ListValue *list_to_array(ListEntry *list)\n{\n    ListEntry *rover;\n    ListValue *array;\n    unsigned int length;\n    unsigned int i;\n\n    length = list_length(list);\n\n    array = malloc(sizeof(ListValue) * length);\n\n    if (array == NULL)\n    {\n        return NULL;\n    }\n\n    rover = list;\n\n    for (i = 0; i < length; ++i)\n    {\n\n        array[i] = rover->data;\n\n        rover = rover->next;\n    }\n\n    return array;\n}",
+            "list_remove_entry": "int list_remove_entry(ListEntry **list, ListEntry *entry)\n{\n\n    if (list == NULL || *list == NULL || entry == NULL)\n    {\n        return 0;\n    }\n\n    if (entry->prev == NULL)\n    {\n\n        *list = entry->next;\n\n        if (entry->next != NULL)\n        {\n            entry->next->prev = NULL;\n        }\n    }\n    else\n    {\n\n        entry->prev->next = entry->next;\n\n        if (entry->next != NULL)\n        {\n            entry->next->prev = entry->prev;\n        }\n    }\n\n    free(entry);\n\n    return 1;\n}",
+            "list_remove_data": "unsigned int list_remove_data(ListEntry **list, ListEqualFunc callback, ListValue data)\n{\n    unsigned int entries_removed;\n    ListEntry *rover;\n    ListEntry *next;\n\n    if (list == NULL || callback == NULL)\n    {\n        return 0;\n    }\n\n    entries_removed = 0;\n\n    rover = *list;\n\n    while (rover != NULL)\n    {\n\n        next = rover->next;\n\n        if (callback(rover->data, data))\n        {\n\n            if (rover->prev == NULL)\n            {\n\n                *list = rover->next;\n            }\n            else\n            {\n\n                rover->prev->next = rover->next;\n            }\n\n            if (rover->next != NULL)\n            {\n                rover->next->prev = rover->prev;\n            }\n\n            free(rover);\n\n            ++entries_removed;\n        }\n\n        rover = next;\n    }\n\n    return entries_removed;\n}",
+            "list_sort_internal": "static ListEntry *list_sort_internal(ListEntry **list, ListCompareFunc compare_func)\n{\n    ListEntry *pivot;\n    ListEntry *rover;\n    ListEntry *less_list, *more_list;\n    ListEntry *less_list_end, *more_list_end;\n\n    if (list == NULL || compare_func == NULL)\n    {\n        return NULL;\n    }\n\n    if (*list == NULL || (*list)->next == NULL)\n    {\n        return *list;\n    }\n\n    pivot = *list;\n\n    less_list = NULL;\n    more_list = NULL;\n    rover = (*list)->next;\n\n    while (rover != NULL)\n    {\n        ListEntry *next = rover->next;\n\n        if (compare_func(rover->data, pivot->data) < 0)\n        {\n\n            rover->prev = NULL;\n            rover->next = less_list;\n            if (less_list != NULL)\n            {\n                less_list->prev = rover;\n            }\n            less_list = rover;\n        }\n        else\n        {\n\n            rover->prev = NULL;\n            rover->next = more_list;\n            if (more_list != NULL)\n            {\n                more_list->prev = rover;\n            }\n            more_list = rover;\n        }\n\n        rover = next;\n    }\n\n    less_list_end = list_sort_internal(&less_list, compare_func);\n    more_list_end = list_sort_internal(&more_list, compare_func);\n\n    *list = less_list;\n\n    if (less_list == NULL)\n    {\n        pivot->prev = NULL;\n        *list = pivot;\n    }\n    else\n    {\n        pivot->prev = less_list_end;\n        less_list_end->next = pivot;\n    }\n\n    pivot->next = more_list;\n    if (more_list != NULL)\n    {\n        more_list->prev = pivot;\n    }\n\n    if (more_list == NULL)\n    {\n        return pivot;\n    }\n    else\n    {\n        return more_list_end;\n    }\n}",
+            "list_sort": "void list_sort(ListEntry **list, ListCompareFunc compare_func)\n{\n    list_sort_internal(list, compare_func);\n}",
+            "list_find_data": "ListEntry *list_find_data(ListEntry *list, ListEqualFunc callback, ListValue data)\n{\n    ListEntry *rover;\n\n    for (rover = list; rover != NULL; rover = rover->next)\n    {\n        if (callback(rover->data, data) != 0)\n        {\n            return rover;\n        }\n    }\n\n    return NULL;\n}",
+            "list_iterate": "void list_iterate(ListEntry **list, ListIterator *iter)\n{\n\n    iter->prev_next = list;\n\n    iter->current = NULL;\n}",
+            "list_iter_has_more": "int list_iter_has_more(ListIterator *iter)\n{\n    if (iter->current == NULL || iter->current != *iter->prev_next)\n    {\n\n        return *iter->prev_next != NULL;\n    }\n    else\n    {\n\n        return iter->current->next != NULL;\n    }\n}",
+            "list_iter_next": "ListValue list_iter_next(ListIterator *iter)\n{\n    if (iter->current == NULL || iter->current != *iter->prev_next)\n    {\n\n        iter->current = *iter->prev_next;\n    }\n    else\n    {\n\n        iter->prev_next = &iter->current->next;\n        iter->current = iter->current->next;\n    }\n\n    if (iter->current == NULL)\n    {\n        return LIST_NULL;\n    }\n    else\n    {\n        return iter->current->data;\n    }\n}",
+            "list_iter_remove": "void list_iter_remove(ListIterator *iter)\n{\n    if (iter->current == NULL || iter->current != *iter->prev_next)\n    {\n    }\n    else\n    {\n\n        *iter->prev_next = iter->current->next;\n\n        if (iter->current->next != NULL)\n        {\n            iter->current->next->prev = iter->current->prev;\n        }\n\n        free(iter->current);\n        iter->current = NULL;\n    }\n}"
+        }
+    },
+    "src/sortedarray.c": {
+        "includes": [
+            "#include <stdio.h>",
+            "#include <stdlib.h>",
+            "#include <string.h>",
+            "#include \"sortedarray.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_SortedArray": "struct _SortedArray\n{\n\n    SortedArrayValue *data;\n\n    unsigned int length;\n\n    unsigned int _alloced;\n\n    SortedArrayEqualFunc equ_func;\n\n    SortedArrayCompareFunc cmp_func;\n};"
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "sortedarray_first_index": "static unsigned int sortedarray_first_index(SortedArray *sortedarray, SortedArrayValue data, unsigned int left,\n                                            unsigned int right)\n{\n    unsigned int index = left;\n\n    while (left < right)\n    {\n        index = (left + right) / 2;\n\n        int order = sortedarray->cmp_func(data, sortedarray->data[index]);\n        if (order > 0)\n        {\n            left = index + 1;\n        }\n        else\n        {\n            right = index;\n        }\n    }\n\n    return index;\n}",
+            "sortedarray_last_index": "static unsigned int sortedarray_last_index(SortedArray *sortedarray, SortedArrayValue data, unsigned int left,\n                                           unsigned int right)\n{\n    unsigned int index = right;\n\n    while (left < right)\n    {\n        index = (left + right) / 2;\n\n        int order = sortedarray->cmp_func(data, sortedarray->data[index]);\n        if (order <= 0)\n        {\n            left = index + 1;\n        }\n        else\n        {\n            right = index;\n        }\n    }\n\n    return index;\n}",
+            "sortedarray_get": "SortedArrayValue *sortedarray_get(SortedArray *array, unsigned int i)\n{\n\n    if (array == NULL)\n    {\n        return NULL;\n    }\n\n    return array->data[i];\n}",
+            "sortedarray_length": "unsigned int sortedarray_length(SortedArray *array)\n{\n    return array->length;\n}",
+            "sortedarray_new": "SortedArray *sortedarray_new(unsigned int length, SortedArrayEqualFunc equ_func, SortedArrayCompareFunc cmp_func)\n{\n\n    if (equ_func == NULL || cmp_func == NULL)\n    {\n        return NULL;\n    }\n\n    if (length == 0)\n    {\n        length = 16;\n    }\n\n    SortedArrayValue *array = malloc(sizeof(SortedArrayValue) * length);\n\n    if (array == NULL)\n    {\n        return NULL;\n    }\n\n    SortedArray *sortedarray = malloc(sizeof(SortedArray));\n\n    if (sortedarray == NULL)\n    {\n        free(array);\n        return NULL;\n    }\n\n    sortedarray->data = array;\n    sortedarray->length = 0;\n    sortedarray->_alloced = length;\n    sortedarray->equ_func = equ_func;\n    sortedarray->cmp_func = cmp_func;\n    return sortedarray;\n}",
+            "sortedarray_free": "void sortedarray_free(SortedArray *sortedarray)\n{\n    if (sortedarray != NULL)\n    {\n        free(sortedarray->data);\n        free(sortedarray);\n    }\n}",
+            "sortedarray_remove": "void sortedarray_remove(SortedArray *sortedarray, unsigned int index)\n{\n\n    sortedarray_remove_range(sortedarray, index, 1);\n}",
+            "sortedarray_remove_range": "void sortedarray_remove_range(SortedArray *sortedarray, unsigned int index, unsigned int length)\n{\n\n    if (index > sortedarray->length || index + length > sortedarray->length)\n    {\n        return;\n    }\n\n    memmove(&sortedarray->data[index], &sortedarray->data[index + length],\n            (sortedarray->length - (index + length)) * sizeof(SortedArrayValue));\n\n    sortedarray->length -= length;\n}",
+            "sortedarray_insert": "int sortedarray_insert(SortedArray *sortedarray, SortedArrayValue data)\n{\n\n    unsigned int left = 0;\n    unsigned int right = sortedarray->length;\n    unsigned int index = 0;\n\n    right = (right > 1) ? right : 0;\n\n    while (left != right)\n    {\n        index = (left + right) / 2;\n\n        int order = sortedarray->cmp_func(data, sortedarray->data[index]);\n        if (order < 0)\n        {\n\n            right = index;\n        }\n        else if (order > 0)\n        {\n\n            left = index + 1;\n        }\n        else\n        {\n\n            break;\n        }\n    }\n\n    if (sortedarray->length > 0 && sortedarray->cmp_func(data, sortedarray->data[index]) > 0)\n    {\n        index++;\n    }\n\n    if (sortedarray->length + 1 > sortedarray->_alloced)\n    {\n\n        unsigned int newsize;\n        SortedArrayValue *data;\n\n        newsize = sortedarray->_alloced * 2;\n        data = realloc(sortedarray->data, sizeof(SortedArrayValue) * newsize);\n\n        if (data == NULL)\n        {\n            return 0;\n        }\n        else\n        {\n            sortedarray->data = data;\n            sortedarray->_alloced = newsize;\n        }\n    }\n\n    memmove(&sortedarray->data[index + 1], &sortedarray->data[index],\n            (sortedarray->length - index) * sizeof(SortedArrayValue));\n\n    sortedarray->data[index] = data;\n    ++(sortedarray->length);\n\n    return 1;\n}",
+            "sortedarray_index_of": "int sortedarray_index_of(SortedArray *sortedarray, SortedArrayValue data)\n{\n    if (sortedarray == NULL)\n    {\n        return -1;\n    }\n\n    unsigned int left = 0;\n    unsigned int right = sortedarray->length;\n    unsigned int index = 0;\n\n    right = (right > 1) ? right : 0;\n\n    while (left != right)\n    {\n        index = (left + right) / 2;\n\n        int order = sortedarray->cmp_func(data, sortedarray->data[index]);\n        if (order < 0)\n        {\n\n            right = index;\n        }\n        else if (order > 0)\n        {\n\n            left = index + 1;\n        }\n        else\n        {\n\n            left = sortedarray_first_index(sortedarray, data, left, index);\n            right = sortedarray_last_index(sortedarray, data, index, right);\n\n            for (index = left; index <= right; index++)\n            {\n                if (sortedarray->equ_func(data, sortedarray->data[index]))\n                {\n                    return (int)index;\n                }\n            }\n\n            return -1;\n        }\n    }\n\n    return -1;\n}",
+            "sortedarray_clear": "void sortedarray_clear(SortedArray *sortedarray)\n{\n\n    sortedarray->length = 0;\n}"
+        }
+    },
+    "src/avl-tree.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include \"avl-tree.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_AVLTreeNode": "struct _AVLTreeNode\n{\n    AVLTreeNode *children[2];\n    AVLTreeNode *parent;\n    AVLTreeKey key;\n    AVLTreeValue value;\n    int height;\n};",
+            "_AVLTree": "struct _AVLTree\n{\n    AVLTreeNode *root_node;\n    AVLTreeCompareFunc compare_func;\n    unsigned int num_nodes;\n};"
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "avl_tree_new": "AVLTree *avl_tree_new(AVLTreeCompareFunc compare_func)\n{\n    AVLTree *new_tree;\n\n    new_tree = (AVLTree *)malloc(sizeof(AVLTree));\n\n    if (new_tree == NULL)\n    {\n        return NULL;\n    }\n\n    new_tree->root_node = NULL;\n    new_tree->compare_func = compare_func;\n    new_tree->num_nodes = 0;\n\n    return new_tree;\n}",
+            "avl_tree_free_subtree": "static void avl_tree_free_subtree(AVLTree *tree, AVLTreeNode *node)\n{\n    if (node == NULL)\n    {\n        return;\n    }\n\n    avl_tree_free_subtree(tree, node->children[AVL_TREE_NODE_LEFT]);\n    avl_tree_free_subtree(tree, node->children[AVL_TREE_NODE_RIGHT]);\n\n    free(node);\n}",
+            "avl_tree_free": "void avl_tree_free(AVLTree *tree)\n{\n\n    avl_tree_free_subtree(tree, tree->root_node);\n\n    free(tree);\n}",
+            "avl_tree_subtree_height": "int avl_tree_subtree_height(AVLTreeNode *node)\n{\n    if (node == NULL)\n    {\n        return 0;\n    }\n    else\n    {\n        return node->height;\n    }\n}",
+            "avl_tree_update_height": "static void avl_tree_update_height(AVLTreeNode *node)\n{\n    AVLTreeNode *left_subtree;\n    AVLTreeNode *right_subtree;\n    int left_height, right_height;\n\n    left_subtree = node->children[AVL_TREE_NODE_LEFT];\n    right_subtree = node->children[AVL_TREE_NODE_RIGHT];\n    left_height = avl_tree_subtree_height(left_subtree);\n    right_height = avl_tree_subtree_height(right_subtree);\n\n    if (left_height > right_height)\n    {\n        node->height = left_height + 1;\n    }\n    else\n    {\n        node->height = right_height + 1;\n    }\n}",
+            "avl_tree_node_parent_side": "static AVLTreeNodeSide avl_tree_node_parent_side(AVLTreeNode *node)\n{\n    if (node->parent->children[AVL_TREE_NODE_LEFT] == node)\n    {\n        return AVL_TREE_NODE_LEFT;\n    }\n    else\n    {\n        return AVL_TREE_NODE_RIGHT;\n    }\n}",
+            "avl_tree_node_replace": "static void avl_tree_node_replace(AVLTree *tree, AVLTreeNode *node1, AVLTreeNode *node2)\n{\n    int side;\n\n    if (node2 != NULL)\n    {\n        node2->parent = node1->parent;\n    }\n\n    if (node1->parent == NULL)\n    {\n        tree->root_node = node2;\n    }\n    else\n    {\n        side = avl_tree_node_parent_side(node1);\n        node1->parent->children[side] = node2;\n\n        avl_tree_update_height(node1->parent);\n    }\n}",
+            "avl_tree_rotate": "static AVLTreeNode *avl_tree_rotate(AVLTree *tree, AVLTreeNode *node, AVLTreeNodeSide direction)\n{\n    AVLTreeNode *new_root;\n\n    new_root = node->children[1 - direction];\n\n    avl_tree_node_replace(tree, node, new_root);\n\n    node->children[1 - direction] = new_root->children[direction];\n    new_root->children[direction] = node;\n\n    node->parent = new_root;\n\n    if (node->children[1 - direction] != NULL)\n    {\n        node->children[1 - direction]->parent = node;\n    }\n\n    avl_tree_update_height(new_root);\n    avl_tree_update_height(node);\n\n    return new_root;\n}",
+            "avl_tree_node_balance": "static AVLTreeNode *avl_tree_node_balance(AVLTree *tree, AVLTreeNode *node)\n{\n    AVLTreeNode *left_subtree;\n    AVLTreeNode *right_subtree;\n    AVLTreeNode *child;\n    int diff;\n\n    left_subtree = node->children[AVL_TREE_NODE_LEFT];\n    right_subtree = node->children[AVL_TREE_NODE_RIGHT];\n\n    diff = avl_tree_subtree_height(right_subtree) - avl_tree_subtree_height(left_subtree);\n\n    if (diff >= 2)\n    {\n\n        child = right_subtree;\n\n        if (avl_tree_subtree_height(child->children[AVL_TREE_NODE_RIGHT]) <\n            avl_tree_subtree_height(child->children[AVL_TREE_NODE_LEFT]))\n        {\n\n            avl_tree_rotate(tree, right_subtree, AVL_TREE_NODE_RIGHT);\n        }\n\n        node = avl_tree_rotate(tree, node, AVL_TREE_NODE_LEFT);\n    }\n    else if (diff <= -2)\n    {\n\n        child = node->children[AVL_TREE_NODE_LEFT];\n\n        if (avl_tree_subtree_height(child->children[AVL_TREE_NODE_LEFT]) <\n            avl_tree_subtree_height(child->children[AVL_TREE_NODE_RIGHT]))\n        {\n\n            avl_tree_rotate(tree, left_subtree, AVL_TREE_NODE_LEFT);\n        }\n\n        node = avl_tree_rotate(tree, node, AVL_TREE_NODE_RIGHT);\n    }\n\n    avl_tree_update_height(node);\n\n    return node;\n}",
+            "avl_tree_balance_to_root": "static void avl_tree_balance_to_root(AVLTree *tree, AVLTreeNode *node)\n{\n    AVLTreeNode *rover;\n\n    rover = node;\n\n    while (rover != NULL)\n    {\n\n        rover = avl_tree_node_balance(tree, rover);\n\n        rover = rover->parent;\n    }\n}",
+            "avl_tree_insert": "AVLTreeNode *avl_tree_insert(AVLTree *tree, AVLTreeKey key, AVLTreeValue value)\n{\n    AVLTreeNode **rover;\n    AVLTreeNode *new_node;\n    AVLTreeNode *previous_node;\n\n    rover = &tree->root_node;\n    previous_node = NULL;\n\n    while (*rover != NULL)\n    {\n        previous_node = *rover;\n        if (tree->compare_func(key, (*rover)->key) < 0)\n        {\n            rover = &((*rover)->children[AVL_TREE_NODE_LEFT]);\n        }\n        else\n        {\n            rover = &((*rover)->children[AVL_TREE_NODE_RIGHT]);\n        }\n    }\n\n    new_node = (AVLTreeNode *)malloc(sizeof(AVLTreeNode));\n\n    if (new_node == NULL)\n    {\n        return NULL;\n    }\n\n    new_node->children[AVL_TREE_NODE_LEFT] = NULL;\n    new_node->children[AVL_TREE_NODE_RIGHT] = NULL;\n    new_node->parent = previous_node;\n    new_node->key = key;\n    new_node->value = value;\n    new_node->height = 1;\n\n    *rover = new_node;\n\n    avl_tree_balance_to_root(tree, previous_node);\n\n    ++tree->num_nodes;\n\n    return new_node;\n}",
+            "avl_tree_node_get_replacement": "static AVLTreeNode *avl_tree_node_get_replacement(AVLTree *tree, AVLTreeNode *node)\n{\n    AVLTreeNode *left_subtree;\n    AVLTreeNode *right_subtree;\n    AVLTreeNode *result;\n    AVLTreeNode *child;\n    int left_height, right_height;\n    int side;\n\n    left_subtree = node->children[AVL_TREE_NODE_LEFT];\n    right_subtree = node->children[AVL_TREE_NODE_RIGHT];\n\n    if (left_subtree == NULL && right_subtree == NULL)\n    {\n        return NULL;\n    }\n\n    left_height = avl_tree_subtree_height(left_subtree);\n    right_height = avl_tree_subtree_height(right_subtree);\n\n    if (left_height < right_height)\n    {\n        side = AVL_TREE_NODE_RIGHT;\n    }\n    else\n    {\n        side = AVL_TREE_NODE_LEFT;\n    }\n\n    result = node->children[side];\n\n    while (result->children[1 - side] != NULL)\n    {\n        result = result->children[1 - side];\n    }\n\n    child = result->children[side];\n    avl_tree_node_replace(tree, result, child);\n\n    avl_tree_update_height(result->parent);\n\n    return result;\n}",
+            "avl_tree_remove_node": "void avl_tree_remove_node(AVLTree *tree, AVLTreeNode *node)\n{\n    AVLTreeNode *swap_node;\n    AVLTreeNode *balance_startpoint;\n    int i;\n\n    swap_node = avl_tree_node_get_replacement(tree, node);\n\n    if (swap_node == NULL)\n    {\n\n        avl_tree_node_replace(tree, node, NULL);\n\n        balance_startpoint = node->parent;\n    }\n    else\n    {\n\n        if (swap_node->parent == node)\n        {\n            balance_startpoint = swap_node;\n        }\n        else\n        {\n            balance_startpoint = swap_node->parent;\n        }\n\n        for (i = 0; i < 2; ++i)\n        {\n            swap_node->children[i] = node->children[i];\n\n            if (swap_node->children[i] != NULL)\n            {\n                swap_node->children[i]->parent = swap_node;\n            }\n        }\n\n        swap_node->height = node->height;\n\n        avl_tree_node_replace(tree, node, swap_node);\n    }\n\n    free(node);\n\n    --tree->num_nodes;\n\n    avl_tree_balance_to_root(tree, balance_startpoint);\n}",
+            "avl_tree_remove": "int avl_tree_remove(AVLTree *tree, AVLTreeKey key)\n{\n    AVLTreeNode *node;\n\n    node = avl_tree_lookup_node(tree, key);\n\n    if (node == NULL)\n    {\n\n        return 0;\n    }\n\n    avl_tree_remove_node(tree, node);\n\n    return 1;\n}",
+            "avl_tree_lookup_node": "AVLTreeNode *avl_tree_lookup_node(AVLTree *tree, AVLTreeKey key)\n{\n    AVLTreeNode *node;\n    int diff;\n\n    node = tree->root_node;\n\n    while (node != NULL)\n    {\n\n        diff = tree->compare_func(key, node->key);\n\n        if (diff == 0)\n        {\n\n            return node;\n        }\n        else if (diff < 0)\n        {\n            node = node->children[AVL_TREE_NODE_LEFT];\n        }\n        else\n        {\n            node = node->children[AVL_TREE_NODE_RIGHT];\n        }\n    }\n\n    return NULL;\n}",
+            "avl_tree_lookup": "AVLTreeValue avl_tree_lookup(AVLTree *tree, AVLTreeKey key)\n{\n    AVLTreeNode *node;\n\n    node = avl_tree_lookup_node(tree, key);\n\n    if (node == NULL)\n    {\n        return AVL_TREE_NULL;\n    }\n    else\n    {\n        return node->value;\n    }\n}",
+            "avl_tree_root_node": "AVLTreeNode *avl_tree_root_node(AVLTree *tree)\n{\n    return tree->root_node;\n}",
+            "avl_tree_node_key": "AVLTreeKey avl_tree_node_key(AVLTreeNode *node)\n{\n    return node->key;\n}",
+            "avl_tree_node_value": "AVLTreeValue avl_tree_node_value(AVLTreeNode *node)\n{\n    return node->value;\n}",
+            "avl_tree_node_child": "AVLTreeNode *avl_tree_node_child(AVLTreeNode *node, AVLTreeNodeSide side)\n{\n    if (side == AVL_TREE_NODE_LEFT || side == AVL_TREE_NODE_RIGHT)\n    {\n        return node->children[side];\n    }\n    else\n    {\n        return NULL;\n    }\n}",
+            "avl_tree_node_parent": "AVLTreeNode *avl_tree_node_parent(AVLTreeNode *node)\n{\n    return node->parent;\n}",
+            "avl_tree_num_entries": "unsigned int avl_tree_num_entries(AVLTree *tree)\n{\n    return tree->num_nodes;\n}",
+            "avl_tree_to_array_add_subtree": "static void avl_tree_to_array_add_subtree(AVLTreeNode *subtree, AVLTreeValue *array, int *index)\n{\n    if (subtree == NULL)\n    {\n        return;\n    }\n\n    avl_tree_to_array_add_subtree(subtree->children[AVL_TREE_NODE_LEFT], array, index);\n\n    array[*index] = subtree->key;\n    ++*index;\n\n    avl_tree_to_array_add_subtree(subtree->children[AVL_TREE_NODE_RIGHT], array, index);\n}",
+            "avl_tree_to_array": "AVLTreeValue *avl_tree_to_array(AVLTree *tree)\n{\n    AVLTreeValue *array;\n    int index;\n\n    array = malloc(sizeof(AVLTreeValue) * tree->num_nodes);\n\n    if (array == NULL)\n    {\n        return NULL;\n    }\n\n    index = 0;\n\n    avl_tree_to_array_add_subtree(tree->root_node, array, &index);\n\n    return array;\n}"
+        }
+    },
+    "src/bloom-filter.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include <string.h>",
+            "#include \"bloom-filter.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_BloomFilter": "struct _BloomFilter\n{\n    BloomFilterHashFunc hash_func;\n    unsigned char *table;\n    unsigned int table_size;\n    unsigned int num_functions;\n};"
+        },
+        "global_variables": {
+            "salts": "static const unsigned int salts[] = {\n    0x1953c322, 0x588ccf17, 0x64bf600c, 0xa6be3f3d, 0x341a02ea, 0x15b03217, 0x3b062858, 0x5956fd06,\n    0x18b5624f, 0xe3be0b46, 0x20ffcd5c, 0xa35dfd2b, 0x1fc4a9bf, 0x57c45d5c, 0xa8661c4a, 0x4f1b74d2,\n    0x5a6dde13, 0x3b18dac6, 0x05a8afbf, 0xbbda2fe2, 0xa2520d78, 0xe7934849, 0xd541bc75, 0x09a55b57,\n    0x9b345ae2, 0xfc2d26af, 0x38679cef, 0x81bd1e0d, 0x654681ae, 0x4b3d87ad, 0xd5ff10fb, 0x23b32f67,\n    0xafc7e366, 0xdd955ead, 0xe7c34b1c, 0xfeace0a6, 0xeb16f09d, 0x3c57a72d, 0x2c8294c5, 0xba92662a,\n    0xcd5b2d14, 0x743936c8, 0x2489beff, 0xc6c56e00, 0x74a4f606, 0xb244a94a, 0x5edfc423, 0xf1901934,\n    0x24af7691, 0xf6c98b25, 0xea25af46, 0x76d5f2e6, 0x5e33cdf2, 0x445eb357, 0x88556bd2, 0x70d1da7a,\n    0x54449368, 0x381020bc, 0x1c0520bf, 0xf7e44942, 0xa27e2a58, 0x66866fc5, 0x12519ce7, 0x437a8456,\n};"
+        },
+        "declarations": [],
+        "functions": {
+            "bloom_filter_new": "BloomFilter *bloom_filter_new(unsigned int table_size, BloomFilterHashFunc hash_func, unsigned int num_functions)\n{\n    BloomFilter *filter;\n\n    if (num_functions > sizeof(salts) / sizeof(*salts))\n    {\n        return NULL;\n    }\n\n    filter = malloc(sizeof(BloomFilter));\n\n    if (filter == NULL)\n    {\n        return NULL;\n    }\n\n    filter->table = calloc((table_size + 7) / 8, 1);\n\n    if (filter->table == NULL)\n    {\n        free(filter);\n        return NULL;\n    }\n\n    filter->hash_func = hash_func;\n    filter->num_functions = num_functions;\n    filter->table_size = table_size;\n\n    return filter;\n}",
+            "bloom_filter_free": "void bloom_filter_free(BloomFilter *bloomfilter)\n{\n    free(bloomfilter->table);\n    free(bloomfilter);\n}",
+            "bloom_filter_insert": "void bloom_filter_insert(BloomFilter *bloomfilter, BloomFilterValue value)\n{\n    unsigned int hash;\n    unsigned int subhash;\n    unsigned int index;\n    unsigned int i;\n    unsigned char b;\n\n    hash = bloomfilter->hash_func(value);\n\n    for (i = 0; i < bloomfilter->num_functions; ++i)\n    {\n\n        subhash = hash ^ salts[i];\n\n        index = subhash % bloomfilter->table_size;\n\n        b = (unsigned char)(1 << (index % 8));\n        bloomfilter->table[index / 8] |= b;\n    }\n}",
+            "bloom_filter_query": "int bloom_filter_query(BloomFilter *bloomfilter, BloomFilterValue value)\n{\n    unsigned int hash;\n    unsigned int subhash;\n    unsigned int index;\n    unsigned int i;\n    unsigned char b;\n    int bit;\n\n    hash = bloomfilter->hash_func(value);\n\n    for (i = 0; i < bloomfilter->num_functions; ++i)\n    {\n\n        subhash = hash ^ salts[i];\n\n        index = subhash % bloomfilter->table_size;\n\n        b = bloomfilter->table[index / 8];\n        bit = 1 << (index % 8);\n\n        if ((b & bit) == 0)\n        {\n            return 0;\n        }\n    }\n\n    return 1;\n}",
+            "bloom_filter_read": "void bloom_filter_read(BloomFilter *bloomfilter, unsigned char *array)\n{\n    unsigned int array_size;\n\n    array_size = (bloomfilter->table_size + 7) / 8;\n\n    memcpy(array, bloomfilter->table, array_size);\n}",
+            "bloom_filter_load": "void bloom_filter_load(BloomFilter *bloomfilter, unsigned char *array)\n{\n    unsigned int array_size;\n\n    array_size = (bloomfilter->table_size + 7) / 8;\n\n    memcpy(bloomfilter->table, array, array_size);\n}",
+            "bloom_filter_union": "BloomFilter *bloom_filter_union(BloomFilter *filter1, BloomFilter *filter2)\n{\n    BloomFilter *result;\n    unsigned int i;\n    unsigned int array_size;\n\n    if (filter1->table_size != filter2->table_size || filter1->num_functions != filter2->num_functions ||\n        filter1->hash_func != filter2->hash_func)\n    {\n        return NULL;\n    }\n\n    result = bloom_filter_new(filter1->table_size, filter1->hash_func, filter1->num_functions);\n\n    if (result == NULL)\n    {\n        return NULL;\n    }\n\n    array_size = (filter1->table_size + 7) / 8;\n\n    for (i = 0; i < array_size; ++i)\n    {\n        result->table[i] = filter1->table[i] | filter2->table[i];\n    }\n\n    return result;\n}",
+            "bloom_filter_intersection": "BloomFilter *bloom_filter_intersection(BloomFilter *filter1, BloomFilter *filter2)\n{\n    BloomFilter *result;\n    unsigned int i;\n    unsigned int array_size;\n\n    if (filter1->table_size != filter2->table_size || filter1->num_functions != filter2->num_functions ||\n        filter1->hash_func != filter2->hash_func)\n    {\n        return NULL;\n    }\n\n    result = bloom_filter_new(filter1->table_size, filter1->hash_func, filter1->num_functions);\n\n    if (result == NULL)\n    {\n        return NULL;\n    }\n\n    array_size = (filter1->table_size + 7) / 8;\n\n    for (i = 0; i < array_size; ++i)\n    {\n        result->table[i] = filter1->table[i] & filter2->table[i];\n    }\n\n    return result;\n}"
+        }
+    },
+    "src/compare-string.c": {
+        "includes": [
+            "#include <ctype.h>",
+            "#include <stdlib.h>",
+            "#include <string.h>",
+            "#include \"compare-string.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "string_equal": "int string_equal(void *string1, void *string2)\n{\n    return strcmp((char *)string1, (char *)string2) == 0;\n}",
+            "string_compare": "int string_compare(void *string1, void *string2)\n{\n    int result;\n\n    result = strcmp((char *)string1, (char *)string2);\n\n    if (result < 0)\n    {\n        return -1;\n    }\n    else if (result > 0)\n    {\n        return 1;\n    }\n    else\n    {\n        return 0;\n    }\n}",
+            "string_nocase_equal": "int string_nocase_equal(void *string1, void *string2)\n{\n    return string_nocase_compare((char *)string1, (char *)string2) == 0;\n}",
+            "string_nocase_compare": "int string_nocase_compare(void *string1, void *string2)\n{\n    char *p1;\n    char *p2;\n    int c1, c2;\n\n    p1 = (char *)string1;\n    p2 = (char *)string2;\n\n    for (;;)\n    {\n\n        c1 = tolower(*p1);\n        c2 = tolower(*p2);\n\n        if (c1 != c2)\n        {\n\n            if (c1 < c2)\n            {\n                return -1;\n            }\n            else\n            {\n                return 1;\n            }\n        }\n\n        if (c1 == '\\0')\n            break;\n\n        ++p1;\n        ++p2;\n    }\n\n    return 0;\n}"
+        }
+    },
+    "src/hash-pointer.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_HASH_POINTER_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [
+            "pointer_hash"
+        ],
+        "functions": {}
+    },
+    "src/compare-pointer.c": {
+        "includes": [
+            "#include \"compare-pointer.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "pointer_equal": "int pointer_equal(void *location1, void *location2)\n{\n    return location1 == location2;\n}",
+            "pointer_compare": "int pointer_compare(void *location1, void *location2)\n{\n    if (location1 < location2)\n    {\n        return -1;\n    }\n    else if (location1 > location2)\n    {\n        return 1;\n    }\n    else\n    {\n        return 0;\n    }\n}"
+        }
+    },
+    "src/hash-table.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include <string.h>",
+            "#include \"hash-table.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_HashTableEntry": "struct _HashTableEntry\n{\n    HashTablePair pair;\n    HashTableEntry *next;\n};",
+            "_HashTable": "struct _HashTable\n{\n    HashTableEntry **table;\n    unsigned int table_size;\n    HashTableHashFunc hash_func;\n    HashTableEqualFunc equal_func;\n    HashTableKeyFreeFunc key_free_func;\n    HashTableValueFreeFunc value_free_func;\n    unsigned int entries;\n    unsigned int prime_index;\n};"
+        },
+        "global_variables": {
+            "hash_table_primes": "static const unsigned int hash_table_primes[] = {\n    193,      389,      769,      1543,      3079,      6151,      12289,     24593,\n    49157,    98317,    196613,   393241,    786433,    1572869,   3145739,   6291469,\n    12582917, 25165843, 50331653, 100663319, 201326611, 402653189, 805306457, 1610612741,\n};",
+            "hash_table_num_primes": "static const unsigned int hash_table_num_primes = sizeof(hash_table_primes) / sizeof(int);"
+        },
+        "declarations": [],
+        "functions": {
+            "hash_table_allocate_table": "static int hash_table_allocate_table(HashTable *hash_table)\n{\n    unsigned int new_table_size;\n\n    if (hash_table->prime_index < hash_table_num_primes)\n    {\n        new_table_size = hash_table_primes[hash_table->prime_index];\n    }\n    else\n    {\n        new_table_size = hash_table->entries * 10;\n    }\n\n    hash_table->table_size = new_table_size;\n\n    hash_table->table = calloc(hash_table->table_size, sizeof(HashTableEntry *));\n\n    return hash_table->table != NULL;\n}",
+            "hash_table_free_entry": "static void hash_table_free_entry(HashTable *hash_table, HashTableEntry *entry)\n{\n    HashTablePair *pair;\n\n    pair = &(entry->pair);\n\n    if (hash_table->key_free_func != NULL)\n    {\n        hash_table->key_free_func(pair->key);\n    }\n\n    if (hash_table->value_free_func != NULL)\n    {\n        hash_table->value_free_func(pair->value);\n    }\n\n    free(entry);\n}",
+            "hash_table_new": "HashTable *hash_table_new(HashTableHashFunc hash_func, HashTableEqualFunc equal_func)\n{\n    HashTable *hash_table;\n\n    hash_table = (HashTable *)malloc(sizeof(HashTable));\n\n    if (hash_table == NULL)\n    {\n        return NULL;\n    }\n\n    hash_table->hash_func = hash_func;\n    hash_table->equal_func = equal_func;\n    hash_table->key_free_func = NULL;\n    hash_table->value_free_func = NULL;\n    hash_table->entries = 0;\n    hash_table->prime_index = 0;\n\n    if (!hash_table_allocate_table(hash_table))\n    {\n        free(hash_table);\n\n        return NULL;\n    }\n\n    return hash_table;\n}",
+            "hash_table_free": "void hash_table_free(HashTable *hash_table)\n{\n    HashTableEntry *rover;\n    HashTableEntry *next;\n    unsigned int i;\n\n    for (i = 0; i < hash_table->table_size; ++i)\n    {\n        rover = hash_table->table[i];\n        while (rover != NULL)\n        {\n            next = rover->next;\n            hash_table_free_entry(hash_table, rover);\n            rover = next;\n        }\n    }\n\n    free(hash_table->table);\n\n    free(hash_table);\n}",
+            "hash_table_register_free_functions": "void hash_table_register_free_functions(HashTable *hash_table, HashTableKeyFreeFunc key_free_func,\n                                        HashTableValueFreeFunc value_free_func)\n{\n    hash_table->key_free_func = key_free_func;\n    hash_table->value_free_func = value_free_func;\n}",
+            "hash_table_enlarge": "static int hash_table_enlarge(HashTable *hash_table)\n{\n    HashTableEntry **old_table;\n    unsigned int old_table_size;\n    unsigned int old_prime_index;\n    HashTableEntry *rover;\n    HashTablePair *pair;\n    HashTableEntry *next;\n    unsigned int index;\n    unsigned int i;\n\n    old_table = hash_table->table;\n    old_table_size = hash_table->table_size;\n    old_prime_index = hash_table->prime_index;\n\n    ++hash_table->prime_index;\n\n    if (!hash_table_allocate_table(hash_table))\n    {\n\n        hash_table->table = old_table;\n        hash_table->table_size = old_table_size;\n        hash_table->prime_index = old_prime_index;\n\n        return 0;\n    }\n\n    for (i = 0; i < old_table_size; ++i)\n    {\n        rover = old_table[i];\n\n        while (rover != NULL)\n        {\n            next = rover->next;\n\n            pair = &(rover->pair);\n\n            index = hash_table->hash_func(pair->key) % hash_table->table_size;\n\n            rover->next = hash_table->table[index];\n            hash_table->table[index] = rover;\n\n            rover = next;\n        }\n    }\n\n    free(old_table);\n\n    return 1;\n}",
+            "hash_table_insert": "int hash_table_insert(HashTable *hash_table, HashTableKey key, HashTableValue value)\n{\n    HashTableEntry *rover;\n    HashTablePair *pair;\n    HashTableEntry *newentry;\n    unsigned int index;\n\n    if ((hash_table->entries * 3) / hash_table->table_size > 0)\n    {\n\n        if (!hash_table_enlarge(hash_table))\n        {\n\n            return 0;\n        }\n    }\n\n    index = hash_table->hash_func(key) % hash_table->table_size;\n\n    rover = hash_table->table[index];\n\n    while (rover != NULL)\n    {\n\n        pair = &(rover->pair);\n\n        if (hash_table->equal_func(pair->key, key) != 0)\n        {\n\n            if (hash_table->value_free_func != NULL)\n            {\n                hash_table->value_free_func(pair->value);\n            }\n\n            if (hash_table->key_free_func != NULL)\n            {\n                hash_table->key_free_func(pair->key);\n            }\n\n            pair->key = key;\n            pair->value = value;\n\n            return 1;\n        }\n\n        rover = rover->next;\n    }\n\n    newentry = (HashTableEntry *)malloc(sizeof(HashTableEntry));\n\n    if (newentry == NULL)\n    {\n        return 0;\n    }\n\n    newentry->pair.key = key;\n    newentry->pair.value = value;\n\n    newentry->next = hash_table->table[index];\n    hash_table->table[index] = newentry;\n\n    ++hash_table->entries;\n\n    return 1;\n}",
+            "hash_table_lookup": "HashTableValue hash_table_lookup(HashTable *hash_table, HashTableKey key)\n{\n    HashTableEntry *rover;\n    HashTablePair *pair;\n    unsigned int index;\n\n    index = hash_table->hash_func(key) % hash_table->table_size;\n\n    rover = hash_table->table[index];\n\n    while (rover != NULL)\n    {\n        pair = &(rover->pair);\n\n        if (hash_table->equal_func(key, pair->key) != 0)\n        {\n\n            return pair->value;\n        }\n\n        rover = rover->next;\n    }\n\n    return HASH_TABLE_NULL;\n}",
+            "hash_table_remove": "int hash_table_remove(HashTable *hash_table, HashTableKey key)\n{\n    HashTableEntry **rover;\n    HashTableEntry *entry;\n    HashTablePair *pair;\n    unsigned int index;\n    int result;\n\n    index = hash_table->hash_func(key) % hash_table->table_size;\n\n    result = 0;\n    rover = &hash_table->table[index];\n\n    while (*rover != NULL)\n    {\n\n        pair = &((*rover)->pair);\n\n        if (hash_table->equal_func(key, pair->key) != 0)\n        {\n\n            entry = *rover;\n\n            *rover = entry->next;\n\n            hash_table_free_entry(hash_table, entry);\n\n            --hash_table->entries;\n\n            result = 1;\n\n            break;\n        }\n\n        rover = &((*rover)->next);\n    }\n\n    return result;\n}",
+            "hash_table_num_entries": "unsigned int hash_table_num_entries(HashTable *hash_table)\n{\n    return hash_table->entries;\n}",
+            "hash_table_iterate": "void hash_table_iterate(HashTable *hash_table, HashTableIterator *iterator)\n{\n    unsigned int chain;\n\n    iterator->hash_table = hash_table;\n\n    iterator->next_entry = NULL;\n\n    for (chain = 0; chain < hash_table->table_size; ++chain)\n    {\n\n        if (hash_table->table[chain] != NULL)\n        {\n            iterator->next_entry = hash_table->table[chain];\n            iterator->next_chain = chain;\n            break;\n        }\n    }\n}",
+            "hash_table_iter_has_more": "int hash_table_iter_has_more(HashTableIterator *iterator)\n{\n    return iterator->next_entry != NULL;\n}",
+            "hash_table_iter_next": "HashTablePair hash_table_iter_next(HashTableIterator *iterator)\n{\n    HashTableEntry *current_entry;\n    HashTable *hash_table;\n    HashTablePair pair = {NULL, NULL};\n    unsigned int chain;\n\n    hash_table = iterator->hash_table;\n\n    if (iterator->next_entry == NULL)\n    {\n        return pair;\n    }\n\n    current_entry = iterator->next_entry;\n    pair = current_entry->pair;\n\n    if (current_entry->next != NULL)\n    {\n\n        iterator->next_entry = current_entry->next;\n    }\n    else\n    {\n\n        chain = iterator->next_chain + 1;\n\n        iterator->next_entry = NULL;\n\n        while (chain < hash_table->table_size)\n        {\n\n            if (hash_table->table[chain] != NULL)\n            {\n                iterator->next_entry = hash_table->table[chain];\n                break;\n            }\n\n            ++chain;\n        }\n\n        iterator->next_chain = chain;\n    }\n\n    return pair;\n}"
+        }
+    },
+    "src/compare-pointer.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_COMPARE_POINTER_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [
+            "pointer_equal",
+            "pointer_compare"
+        ],
+        "functions": {}
+    },
+    "src/set.c": {
+        "includes": [
+            "#include \"set.h\"",
+            "#include <stdlib.h>",
+            "#include <string.h>",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_SetEntry": "struct _SetEntry\n{\n    SetValue data;\n    SetEntry *next;\n};",
+            "_Set": "struct _Set\n{\n    SetEntry **table;\n    unsigned int entries;\n    unsigned int table_size;\n    unsigned int prime_index;\n    SetHashFunc hash_func;\n    SetEqualFunc equal_func;\n    SetFreeFunc free_func;\n};"
+        },
+        "global_variables": {
+            "set_primes": "static const unsigned int set_primes[] = {\n    193,      389,      769,      1543,      3079,      6151,      12289,     24593,\n    49157,    98317,    196613,   393241,    786433,    1572869,   3145739,   6291469,\n    12582917, 25165843, 50331653, 100663319, 201326611, 402653189, 805306457, 1610612741,\n};",
+            "set_num_primes": "static const unsigned int set_num_primes = sizeof(set_primes) / sizeof(int);"
+        },
+        "declarations": [],
+        "functions": {
+            "set_allocate_table": "static int set_allocate_table(Set *set)\n{\n\n    if (set->prime_index < set_num_primes)\n    {\n        set->table_size = set_primes[set->prime_index];\n    }\n    else\n    {\n        set->table_size = set->entries * 10;\n    }\n\n    set->table = calloc(set->table_size, sizeof(SetEntry *));\n\n    return set->table != NULL;\n}",
+            "set_free_entry": "static void set_free_entry(Set *set, SetEntry *entry)\n{\n\n    if (set->free_func != NULL)\n    {\n        set->free_func(entry->data);\n    }\n\n    free(entry);\n}",
+            "set_new": "Set *set_new(SetHashFunc hash_func, SetEqualFunc equal_func)\n{\n    Set *new_set;\n\n    new_set = (Set *)malloc(sizeof(Set));\n\n    if (new_set == NULL)\n    {\n        return NULL;\n    }\n\n    new_set->hash_func = hash_func;\n    new_set->equal_func = equal_func;\n    new_set->entries = 0;\n    new_set->prime_index = 0;\n    new_set->free_func = NULL;\n\n    if (!set_allocate_table(new_set))\n    {\n        free(new_set);\n        return NULL;\n    }\n\n    return new_set;\n}",
+            "set_free": "void set_free(Set *set)\n{\n    SetEntry *rover;\n    SetEntry *next;\n    unsigned int i;\n\n    for (i = 0; i < set->table_size; ++i)\n    {\n        rover = set->table[i];\n\n        while (rover != NULL)\n        {\n            next = rover->next;\n\n            set_free_entry(set, rover);\n\n            rover = next;\n        }\n    }\n\n    free(set->table);\n\n    free(set);\n}",
+            "set_register_free_function": "void set_register_free_function(Set *set, SetFreeFunc free_func)\n{\n    set->free_func = free_func;\n}",
+            "set_enlarge": "static int set_enlarge(Set *set)\n{\n    SetEntry *rover;\n    SetEntry *next;\n    SetEntry **old_table;\n    unsigned int old_table_size;\n    unsigned int old_prime_index;\n    unsigned int index;\n    unsigned int i;\n\n    old_table = set->table;\n    old_table_size = set->table_size;\n    old_prime_index = set->prime_index;\n\n    ++set->prime_index;\n\n    if (!set_allocate_table(set))\n    {\n        set->table = old_table;\n        set->table_size = old_table_size;\n        set->prime_index = old_prime_index;\n\n        return 0;\n    }\n\n    for (i = 0; i < old_table_size; ++i)\n    {\n\n        rover = old_table[i];\n\n        while (rover != NULL)\n        {\n\n            next = rover->next;\n\n            index = set->hash_func(rover->data) % set->table_size;\n            rover->next = set->table[index];\n            set->table[index] = rover;\n\n            rover = next;\n        }\n    }\n\n    free(old_table);\n\n    return 1;\n}",
+            "set_insert": "int set_insert(Set *set, SetValue data)\n{\n    SetEntry *newentry;\n    SetEntry *rover;\n    unsigned int index;\n\n    if ((set->entries * 3) / set->table_size > 0)\n    {\n\n        if (!set_enlarge(set))\n        {\n            return 0;\n        }\n    }\n\n    index = set->hash_func(data) % set->table_size;\n\n    rover = set->table[index];\n\n    while (rover != NULL)\n    {\n\n        if (set->equal_func(data, rover->data) != 0)\n        {\n\n            return 0;\n        }\n\n        rover = rover->next;\n    }\n\n    newentry = (SetEntry *)malloc(sizeof(SetEntry));\n\n    if (newentry == NULL)\n    {\n        return 0;\n    }\n\n    newentry->data = data;\n\n    newentry->next = set->table[index];\n    set->table[index] = newentry;\n\n    ++set->entries;\n\n    return 1;\n}",
+            "set_remove": "int set_remove(Set *set, SetValue data)\n{\n    SetEntry **rover;\n    SetEntry *entry;\n    unsigned int index;\n\n    index = set->hash_func(data) % set->table_size;\n\n    rover = &set->table[index];\n\n    while (*rover != NULL)\n    {\n        if (set->equal_func(data, (*rover)->data) != 0)\n        {\n\n            entry = *rover;\n\n            *rover = entry->next;\n\n            --set->entries;\n\n            set_free_entry(set, entry);\n\n            return 1;\n        }\n\n        rover = &((*rover)->next);\n    }\n\n    return 0;\n}",
+            "set_query": "int set_query(Set *set, SetValue data)\n{\n    SetEntry *rover;\n    unsigned int index;\n\n    index = set->hash_func(data) % set->table_size;\n\n    rover = set->table[index];\n\n    while (rover != NULL)\n    {\n        if (set->equal_func(data, rover->data) != 0)\n        {\n\n            return 1;\n        }\n\n        rover = rover->next;\n    }\n\n    return 0;\n}",
+            "set_num_entries": "unsigned int set_num_entries(Set *set)\n{\n    return set->entries;\n}",
+            "set_to_array": "SetValue *set_to_array(Set *set)\n{\n    SetValue *array;\n    int array_counter;\n    unsigned int i;\n    SetEntry *rover;\n\n    array = malloc(sizeof(SetValue) * set->entries);\n\n    if (array == NULL)\n    {\n        return NULL;\n    }\n\n    array_counter = 0;\n\n    for (i = 0; i < set->table_size; ++i)\n    {\n\n        rover = set->table[i];\n\n        while (rover != NULL)\n        {\n\n            array[array_counter] = rover->data;\n            ++array_counter;\n\n            rover = rover->next;\n        }\n    }\n\n    return array;\n}",
+            "set_union": "Set *set_union(Set *set1, Set *set2)\n{\n    SetIterator iterator;\n    Set *new_set;\n    SetValue value;\n\n    new_set = set_new(set1->hash_func, set1->equal_func);\n\n    if (new_set == NULL)\n    {\n        return NULL;\n    }\n\n    set_iterate(set1, &iterator);\n\n    while (set_iter_has_more(&iterator))\n    {\n\n        value = set_iter_next(&iterator);\n\n        if (!set_insert(new_set, value))\n        {\n\n            set_free(new_set);\n            return NULL;\n        }\n    }\n\n    set_iterate(set2, &iterator);\n\n    while (set_iter_has_more(&iterator))\n    {\n\n        value = set_iter_next(&iterator);\n\n        if (set_query(new_set, value) == 0)\n        {\n            if (!set_insert(new_set, value))\n            {\n\n                set_free(new_set);\n                return NULL;\n            }\n        }\n    }\n\n    return new_set;\n}",
+            "set_intersection": "Set *set_intersection(Set *set1, Set *set2)\n{\n    Set *new_set;\n    SetIterator iterator;\n    SetValue value;\n\n    new_set = set_new(set1->hash_func, set2->equal_func);\n\n    if (new_set == NULL)\n    {\n        return NULL;\n    }\n\n    set_iterate(set1, &iterator);\n\n    while (set_iter_has_more(&iterator))\n    {\n\n        value = set_iter_next(&iterator);\n\n        if (set_query(set2, value) != 0)\n        {\n\n            if (!set_insert(new_set, value))\n            {\n                set_free(new_set);\n\n                return NULL;\n            }\n        }\n    }\n\n    return new_set;\n}",
+            "set_iterate": "void set_iterate(Set *set, SetIterator *iter)\n{\n    unsigned int chain;\n\n    iter->set = set;\n    iter->next_entry = NULL;\n\n    for (chain = 0; chain < set->table_size; ++chain)\n    {\n\n        if (set->table[chain] != NULL)\n        {\n            iter->next_entry = set->table[chain];\n            break;\n        }\n    }\n\n    iter->next_chain = chain;\n}",
+            "set_iter_next": "SetValue set_iter_next(SetIterator *iterator)\n{\n    Set *set;\n    SetValue result;\n    SetEntry *current_entry;\n    unsigned int chain;\n\n    set = iterator->set;\n\n    if (iterator->next_entry == NULL)\n    {\n        return SET_NULL;\n    }\n\n    current_entry = iterator->next_entry;\n    result = current_entry->data;\n\n    if (current_entry->next != NULL)\n    {\n\n        iterator->next_entry = current_entry->next;\n    }\n    else\n    {\n\n        iterator->next_entry = NULL;\n\n        chain = iterator->next_chain + 1;\n\n        while (chain < set->table_size)\n        {\n\n            if (set->table[chain] != NULL)\n            {\n\n                iterator->next_entry = set->table[chain];\n\n                break;\n            }\n\n            ++chain;\n        }\n\n        iterator->next_chain = chain;\n    }\n\n    return result;\n}",
+            "set_iter_has_more": "int set_iter_has_more(SetIterator *iterator)\n{\n    return iterator->next_entry != NULL;\n}"
+        }
+    },
+    "src/hash-int.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_HASH_INT_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [
+            "int_hash"
+        ],
+        "functions": {}
+    },
+    "src/hash-string.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_HASH_STRING_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [
+            "string_hash",
+            "string_nocase_hash"
+        ],
+        "functions": {}
+    },
+    "src/hash-int.c": {
+        "includes": [
+            "#include \"hash-int.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "int_hash": "unsigned int int_hash(void *vlocation)\n{\n    int *location;\n\n    location = (int *)vlocation;\n\n    return (unsigned int)*location;\n}"
+        }
+    },
+    "src/bloom-filter.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_BLOOM_FILTER_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "BloomFilter": "typedef struct _BloomFilter BloomFilter;",
+            "BloomFilterValue": "typedef void *BloomFilterValue;",
+            "BloomFilterHashFunc": "typedef unsigned int (*BloomFilterHashFunc)(BloomFilterValue data);"
+        },
+        "global_variables": {},
+        "declarations": [
+            "_BloomFilter",
+            "bloom_filter_insert",
+            "bloom_filter_intersection",
+            "bloom_filter_new",
+            "bloom_filter_read",
+            "bloom_filter_load",
+            "bloom_filter_free",
+            "bloom_filter_union",
+            "bloom_filter_query"
+        ],
+        "functions": {}
+    },
+    "src/binary-heap.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_BINARY_HEAP_H",
+            "#define BINARY_HEAP_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "BinaryHeapType": "typedef enum\n    {\n\n        BINARY_HEAP_TYPE_MIN,\n\n        BINARY_HEAP_TYPE_MAX\n    } BinaryHeapType;",
+            "BinaryHeapValue": "typedef void *BinaryHeapValue;",
+            "BinaryHeapCompareFunc": "typedef int (*BinaryHeapCompareFunc)(BinaryHeapValue value1, BinaryHeapValue value2);",
+            "BinaryHeap": "typedef struct _BinaryHeap BinaryHeap;"
+        },
+        "global_variables": {},
+        "declarations": [
+            "_BinaryHeap",
+            "binary_heap_new",
+            "binary_heap_insert",
+            "binary_heap_num_entries",
+            "binary_heap_pop",
+            "binary_heap_free"
+        ],
+        "functions": {}
+    },
+    "src/trie.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_TRIE_H",
+            "#define TRIE_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "Trie": "typedef struct _Trie Trie;",
+            "TrieValue": "typedef void *TrieValue;"
+        },
+        "global_variables": {},
+        "declarations": [
+            "trie_lookup",
+            "trie_insert",
+            "trie_remove_binary",
+            "trie_insert_binary",
+            "trie_new",
+            "_Trie",
+            "trie_num_entries",
+            "trie_free",
+            "trie_lookup_binary",
+            "trie_remove"
+        ],
+        "functions": {}
+    },
+    "src/slist.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_SLIST_H",
+            "#define SLIST_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "SListEntry": "typedef struct _SListEntry SListEntry;",
+            "SListIterator": "typedef struct _SListIterator SListIterator;",
+            "SListValue": "typedef void *SListValue;",
+            "_SListIterator": "struct _SListIterator\n    {\n        SListEntry **prev_next;\n        SListEntry *current;\n    };",
+            "SListCompareFunc": "typedef int (*SListCompareFunc)(SListValue value1, SListValue value2);",
+            "SListEqualFunc": "typedef int (*SListEqualFunc)(SListValue value1, SListValue value2);"
+        },
+        "global_variables": {},
+        "declarations": [
+            "slist_iter_has_more",
+            "slist_append",
+            "slist_remove_data",
+            "slist_data",
+            "slist_iter_next",
+            "slist_find_data",
+            "slist_to_array",
+            "slist_set_data",
+            "slist_next",
+            "slist_iterate",
+            "_SListEntry",
+            "slist_sort",
+            "slist_nth_data",
+            "slist_free",
+            "slist_iter_remove",
+            "slist_remove_entry",
+            "slist_nth_entry",
+            "slist_length",
+            "slist_prepend",
+            "_SListIterator"
+        ],
+        "functions": {}
+    },
+    "src/avl-tree.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_AVLTREE_H",
+            "#define AVL_TREE_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "AVLTree": "typedef struct _AVLTree AVLTree;",
+            "AVLTreeKey": "typedef void *AVLTreeKey;",
+            "AVLTreeValue": "typedef void *AVLTreeValue;",
+            "AVLTreeNode": "typedef struct _AVLTreeNode AVLTreeNode;",
+            "AVLTreeNodeSide": "typedef enum\n    {\n        AVL_TREE_NODE_LEFT = 0,\n        AVL_TREE_NODE_RIGHT = 1\n    } AVLTreeNodeSide;",
+            "AVLTreeCompareFunc": "typedef int (*AVLTreeCompareFunc)(AVLTreeValue value1, AVLTreeValue value2);"
+        },
+        "global_variables": {},
+        "declarations": [
+            "avl_tree_remove",
+            "avl_tree_num_entries",
+            "avl_tree_root_node",
+            "avl_tree_subtree_height",
+            "avl_tree_free",
+            "avl_tree_lookup",
+            "avl_tree_insert",
+            "avl_tree_lookup_node",
+            "avl_tree_new",
+            "avl_tree_node_parent",
+            "_AVLTreeNode",
+            "avl_tree_to_array",
+            "_AVLTree",
+            "avl_tree_node_value",
+            "avl_tree_node_child",
+            "avl_tree_remove_node",
+            "avl_tree_node_key"
+        ],
+        "functions": {}
+    },
+    "src/queue.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include \"queue.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "QueueEntry": "typedef struct _QueueEntry QueueEntry;",
+            "_QueueEntry": "struct _QueueEntry\n{\n    QueueValue data;\n    QueueEntry *prev;\n    QueueEntry *next;\n};",
+            "_Queue": "struct _Queue\n{\n    QueueEntry *head;\n    QueueEntry *tail;\n};"
+        },
+        "global_variables": {},
+        "declarations": [
+            "_QueueEntry"
+        ],
+        "functions": {
+            "queue_new": "Queue *queue_new(void)\n{\n    Queue *queue;\n\n    queue = (Queue *)malloc(sizeof(Queue));\n\n    if (queue == NULL)\n    {\n        return NULL;\n    }\n\n    queue->head = NULL;\n    queue->tail = NULL;\n\n    return queue;\n}",
+            "queue_free": "void queue_free(Queue *queue)\n{\n\n    while (!queue_is_empty(queue))\n    {\n        queue_pop_head(queue);\n    }\n\n    free(queue);\n}",
+            "queue_push_head": "int queue_push_head(Queue *queue, QueueValue data)\n{\n    QueueEntry *new_entry;\n\n    new_entry = malloc(sizeof(QueueEntry));\n\n    if (new_entry == NULL)\n    {\n        return 0;\n    }\n\n    new_entry->data = data;\n    new_entry->prev = NULL;\n    new_entry->next = queue->head;\n\n    if (queue->head == NULL)\n    {\n\n        queue->head = new_entry;\n        queue->tail = new_entry;\n    }\n    else\n    {\n\n        queue->head->prev = new_entry;\n\n        queue->head = new_entry;\n    }\n\n    return 1;\n}",
+            "queue_pop_head": "QueueValue queue_pop_head(Queue *queue)\n{\n    QueueEntry *entry;\n    QueueValue result;\n\n    if (queue_is_empty(queue))\n    {\n        return QUEUE_NULL;\n    }\n\n    entry = queue->head;\n    queue->head = entry->next;\n    result = entry->data;\n\n    if (queue->head == NULL)\n    {\n\n        queue->tail = NULL;\n    }\n    else\n    {\n\n        queue->head->prev = NULL;\n    }\n\n    free(entry);\n\n    return result;\n}",
+            "queue_peek_head": "QueueValue queue_peek_head(Queue *queue)\n{\n    if (queue_is_empty(queue))\n    {\n        return QUEUE_NULL;\n    }\n    else\n    {\n        return queue->head->data;\n    }\n}",
+            "queue_push_tail": "int queue_push_tail(Queue *queue, QueueValue data)\n{\n    QueueEntry *new_entry;\n\n    new_entry = malloc(sizeof(QueueEntry));\n\n    if (new_entry == NULL)\n    {\n        return 0;\n    }\n\n    new_entry->data = data;\n    new_entry->prev = queue->tail;\n    new_entry->next = NULL;\n\n    if (queue->tail == NULL)\n    {\n\n        queue->head = new_entry;\n        queue->tail = new_entry;\n    }\n    else\n    {\n\n        queue->tail->next = new_entry;\n\n        queue->tail = new_entry;\n    }\n\n    return 1;\n}",
+            "queue_pop_tail": "QueueValue queue_pop_tail(Queue *queue)\n{\n    QueueEntry *entry;\n    QueueValue result;\n\n    if (queue_is_empty(queue))\n    {\n        return QUEUE_NULL;\n    }\n\n    entry = queue->tail;\n    queue->tail = entry->prev;\n    result = entry->data;\n\n    if (queue->tail == NULL)\n    {\n\n        queue->head = NULL;\n    }\n    else\n    {\n\n        queue->tail->next = NULL;\n    }\n\n    free(entry);\n\n    return result;\n}",
+            "queue_peek_tail": "QueueValue queue_peek_tail(Queue *queue)\n{\n    if (queue_is_empty(queue))\n    {\n        return QUEUE_NULL;\n    }\n    else\n    {\n        return queue->tail->data;\n    }\n}",
+            "queue_is_empty": "int queue_is_empty(Queue *queue)\n{\n    return queue->head == NULL;\n}"
+        }
+    },
+    "src/arraylist.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_ARRAYLIST_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "ArrayListValue": "typedef void *ArrayListValue;",
+            "ArrayList": "typedef struct _ArrayList ArrayList;",
+            "_ArrayList": "struct _ArrayList\n    {\n\n        ArrayListValue *data;\n\n        unsigned int length;\n\n        unsigned int _alloced;\n    };",
+            "ArrayListEqualFunc": "typedef int (*ArrayListEqualFunc)(ArrayListValue value1, ArrayListValue value2);",
+            "ArrayListCompareFunc": "typedef int (*ArrayListCompareFunc)(ArrayListValue value1, ArrayListValue value2);"
+        },
+        "global_variables": {},
+        "declarations": [
+            "arraylist_insert",
+            "arraylist_index_of",
+            "arraylist_remove",
+            "_ArrayList",
+            "arraylist_append",
+            "arraylist_prepend",
+            "arraylist_clear",
+            "arraylist_free",
+            "arraylist_remove_range",
+            "arraylist_new",
+            "arraylist_sort"
+        ],
+        "functions": {}
+    },
+    "src/compare-int.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_COMPARE_INT_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [
+            "int_equal",
+            "int_compare"
+        ],
+        "functions": {}
+    },
+    "src/hash-table.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_HASH_TABLE_H",
+            "#define HASH_TABLE_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "HashTable": "typedef struct _HashTable HashTable;",
+            "HashTableIterator": "typedef struct _HashTableIterator HashTableIterator;",
+            "HashTableEntry": "typedef struct _HashTableEntry HashTableEntry;",
+            "HashTableKey": "typedef void *HashTableKey;",
+            "HashTableValue": "typedef void *HashTableValue;",
+            "HashTablePair": "typedef struct _HashTablePair\n    {\n        HashTableKey key;\n        HashTableValue value;\n    } HashTablePair;",
+            "_HashTableIterator": "struct _HashTableIterator\n    {\n        HashTable *hash_table;\n        HashTableEntry *next_entry;\n        unsigned int next_chain;\n    };",
+            "HashTableHashFunc": "typedef unsigned int (*HashTableHashFunc)(HashTableKey value);",
+            "HashTableEqualFunc": "typedef int (*HashTableEqualFunc)(HashTableKey value1, HashTableKey value2);",
+            "HashTableKeyFreeFunc": "typedef void (*HashTableKeyFreeFunc)(HashTableKey value);",
+            "HashTableValueFreeFunc": "typedef void (*HashTableValueFreeFunc)(HashTableValue value);"
+        },
+        "global_variables": {},
+        "declarations": [
+            "_HashTableEntry",
+            "hash_table_lookup",
+            "hash_table_iterate",
+            "hash_table_register_free_functions",
+            "hash_table_remove",
+            "hash_table_iter_has_more",
+            "hash_table_num_entries",
+            "hash_table_insert",
+            "hash_table_new",
+            "_HashTablePair",
+            "hash_table_iter_next",
+            "hash_table_free",
+            "_HashTableIterator",
+            "_HashTable"
+        ],
+        "functions": {}
+    },
+    "src/list.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_LIST_H",
+            "#define LIST_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "ListEntry": "typedef struct _ListEntry ListEntry;",
+            "ListIterator": "typedef struct _ListIterator ListIterator;",
+            "ListValue": "typedef void *ListValue;",
+            "_ListIterator": "struct _ListIterator\n    {\n        ListEntry **prev_next;\n        ListEntry *current;\n    };",
+            "ListCompareFunc": "typedef int (*ListCompareFunc)(ListValue value1, ListValue value2);",
+            "ListEqualFunc": "typedef int (*ListEqualFunc)(ListValue value1, ListValue value2);"
+        },
+        "global_variables": {},
+        "declarations": [
+            "list_sort",
+            "list_nth_data",
+            "list_prepend",
+            "list_iterate",
+            "list_prev",
+            "list_next",
+            "list_iter_remove",
+            "list_set_data",
+            "list_remove_data",
+            "_ListEntry",
+            "list_length",
+            "list_iter_next",
+            "_ListIterator",
+            "list_data",
+            "list_find_data",
+            "list_to_array",
+            "list_free",
+            "list_iter_has_more",
+            "list_remove_entry",
+            "list_nth_entry",
+            "list_append"
+        ],
+        "functions": {}
+    },
+    "src/compare-int.c": {
+        "includes": [
+            "#include \"compare-int.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "int_equal": "int int_equal(void *vlocation1, void *vlocation2)\n{\n    int *location1;\n    int *location2;\n\n    location1 = (int *)vlocation1;\n    location2 = (int *)vlocation2;\n\n    return *location1 == *location2;\n}",
+            "int_compare": "int int_compare(void *vlocation1, void *vlocation2)\n{\n    int *location1;\n    int *location2;\n\n    location1 = (int *)vlocation1;\n    location2 = (int *)vlocation2;\n\n    if (*location1 < *location2)\n    {\n        return -1;\n    }\n    else if (*location1 > *location2)\n    {\n        return 1;\n    }\n    else\n    {\n        return 0;\n    }\n}"
+        }
+    },
+    "src/rb-tree.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_RB_TREE_H",
+            "#define RB_TREE_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "RBTree": "typedef struct _RBTree RBTree;",
+            "RBTreeKey": "typedef void *RBTreeKey;",
+            "RBTreeValue": "typedef void *RBTreeValue;",
+            "RBTreeNode": "typedef struct _RBTreeNode RBTreeNode;",
+            "RBTreeCompareFunc": "typedef int (*RBTreeCompareFunc)(RBTreeValue data1, RBTreeValue data2);",
+            "RBTreeNodeColor": "typedef enum\n    {\n        RB_TREE_NODE_RED,\n        RB_TREE_NODE_BLACK,\n    } RBTreeNodeColor;",
+            "RBTreeNodeSide": "typedef enum\n    {\n        RB_TREE_NODE_LEFT = 0,\n        RB_TREE_NODE_RIGHT = 1\n    } RBTreeNodeSide;"
+        },
+        "global_variables": {},
+        "declarations": [
+            "rb_tree_lookup",
+            "rb_tree_root_node",
+            "_RBTreeNode",
+            "rb_tree_insert",
+            "rb_tree_node_parent",
+            "rb_tree_subtree_height",
+            "rb_tree_num_entries",
+            "rb_tree_node_child",
+            "_RBTree",
+            "rb_tree_new",
+            "rb_tree_remove_node",
+            "rb_tree_lookup_node",
+            "rb_tree_node_value",
+            "rb_tree_to_array",
+            "rb_tree_remove",
+            "rb_tree_free",
+            "rb_tree_node_key"
+        ],
+        "functions": {}
+    },
+    "src/binary-heap.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include \"binary-heap.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_BinaryHeap": "struct _BinaryHeap\n{\n    BinaryHeapType heap_type;\n    BinaryHeapValue *values;\n    unsigned int num_values;\n    unsigned int alloced_size;\n    BinaryHeapCompareFunc compare_func;\n};"
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "binary_heap_cmp": "static int binary_heap_cmp(BinaryHeap *heap, BinaryHeapValue data1, BinaryHeapValue data2)\n{\n    if (heap->heap_type == BINARY_HEAP_TYPE_MIN)\n    {\n        return heap->compare_func(data1, data2);\n    }\n    else\n    {\n        return -heap->compare_func(data1, data2);\n    }\n}",
+            "binary_heap_new": "BinaryHeap *binary_heap_new(BinaryHeapType heap_type, BinaryHeapCompareFunc compare_func)\n{\n    BinaryHeap *heap;\n\n    heap = malloc(sizeof(BinaryHeap));\n\n    if (heap == NULL)\n    {\n        return NULL;\n    }\n\n    heap->heap_type = heap_type;\n    heap->num_values = 0;\n    heap->compare_func = compare_func;\n\n    heap->alloced_size = 16;\n    heap->values = malloc(sizeof(BinaryHeapValue) * heap->alloced_size);\n\n    if (heap->values == NULL)\n    {\n        free(heap);\n        return NULL;\n    }\n\n    return heap;\n}",
+            "binary_heap_free": "void binary_heap_free(BinaryHeap *heap)\n{\n    free(heap->values);\n    free(heap);\n}",
+            "binary_heap_insert": "int binary_heap_insert(BinaryHeap *heap, BinaryHeapValue value)\n{\n    BinaryHeapValue *new_values;\n    unsigned int index;\n    unsigned int new_size;\n    unsigned int parent;\n\n    if (heap->num_values >= heap->alloced_size)\n    {\n\n        new_size = heap->alloced_size * 2;\n        new_values = realloc(heap->values, sizeof(BinaryHeapValue) * new_size);\n\n        if (new_values == NULL)\n        {\n            return 0;\n        }\n\n        heap->alloced_size = new_size;\n        heap->values = new_values;\n    }\n\n    index = heap->num_values;\n    ++heap->num_values;\n\n    while (index > 0)\n    {\n\n        parent = (index - 1) / 2;\n\n        if (binary_heap_cmp(heap, heap->values[parent], value) < 0)\n        {\n\n            break;\n        }\n        else\n        {\n\n            heap->values[index] = heap->values[parent];\n\n            index = parent;\n        }\n    }\n\n    heap->values[index] = value;\n\n    return 1;\n}",
+            "binary_heap_pop": "BinaryHeapValue binary_heap_pop(BinaryHeap *heap)\n{\n    BinaryHeapValue result;\n    BinaryHeapValue new_value;\n    unsigned int index;\n    unsigned int next_index;\n    unsigned int child1, child2;\n\n    if (heap->num_values == 0)\n    {\n        return BINARY_HEAP_NULL;\n    }\n\n    result = heap->values[0];\n\n    new_value = heap->values[heap->num_values - 1];\n    --heap->num_values;\n\n    index = 0;\n\n    for (;;)\n    {\n\n        child1 = index * 2 + 1;\n        child2 = index * 2 + 2;\n\n        if (child1 < heap->num_values && binary_heap_cmp(heap, new_value, heap->values[child1]) > 0)\n        {\n\n            if (child2 < heap->num_values && binary_heap_cmp(heap, heap->values[child1], heap->values[child2]) > 0)\n            {\n                next_index = child2;\n            }\n            else\n            {\n                next_index = child1;\n            }\n        }\n        else if (child2 < heap->num_values && binary_heap_cmp(heap, new_value, heap->values[child2]) > 0)\n        {\n\n            next_index = child2;\n        }\n        else\n        {\n\n            heap->values[index] = new_value;\n            break;\n        }\n\n        heap->values[index] = heap->values[next_index];\n\n        index = next_index;\n    }\n\n    return result;\n}",
+            "binary_heap_num_entries": "unsigned int binary_heap_num_entries(BinaryHeap *heap)\n{\n    return heap->num_values;\n}"
+        }
+    },
+    "src/binomial-heap.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_BINOMIAL_HEAP_H",
+            "#define BINOMIAL_HEAP_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "BinomialHeapType": "typedef enum\n    {\n\n        BINOMIAL_HEAP_TYPE_MIN,\n\n        BINOMIAL_HEAP_TYPE_MAX\n    } BinomialHeapType;",
+            "BinomialHeapValue": "typedef void *BinomialHeapValue;",
+            "BinomialHeapCompareFunc": "typedef int (*BinomialHeapCompareFunc)(BinomialHeapValue value1, BinomialHeapValue value2);",
+            "BinomialHeap": "typedef struct _BinomialHeap BinomialHeap;"
+        },
+        "global_variables": {},
+        "declarations": [
+            "binomial_heap_insert",
+            "binomial_heap_num_entries",
+            "_BinomialHeap",
+            "binomial_heap_free",
+            "binomial_heap_pop",
+            "binomial_heap_new"
+        ],
+        "functions": {}
+    },
+    "src/sortedarray.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_SORTEDARRAY_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "SortedArrayValue": "typedef void *SortedArrayValue;",
+            "SortedArray": "typedef struct _SortedArray SortedArray;",
+            "SortedArrayEqualFunc": "typedef int (*SortedArrayEqualFunc)(SortedArrayValue value1, SortedArrayValue value2);",
+            "SortedArrayCompareFunc": "typedef int (*SortedArrayCompareFunc)(SortedArrayValue value1, SortedArrayValue value2);"
+        },
+        "global_variables": {},
+        "declarations": [
+            "sortedarray_remove_range",
+            "sortedarray_clear",
+            "sortedarray_remove",
+            "sortedarray_index_of",
+            "sortedarray_insert",
+            "sortedarray_length",
+            "_SortedArray",
+            "sortedarray_free",
+            "sortedarray_get",
+            "sortedarray_new"
+        ],
+        "functions": {}
+    },
+    "src/queue.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_QUEUE_H",
+            "#define QUEUE_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "Queue": "typedef struct _Queue Queue;",
+            "QueueValue": "typedef void *QueueValue;"
+        },
+        "global_variables": {},
+        "declarations": [
+            "_Queue",
+            "queue_peek_tail",
+            "queue_pop_tail",
+            "queue_push_head",
+            "queue_push_tail",
+            "queue_new",
+            "queue_pop_head",
+            "queue_is_empty",
+            "queue_free",
+            "queue_peek_head"
+        ],
+        "functions": {}
+    },
+    "src/hash-pointer.c": {
+        "includes": [
+            "#include <limits.h>",
+            "#include \"hash-pointer.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "pointer_hash": "unsigned int pointer_hash(void *location)\n{\n    return (unsigned int)(unsigned long)location;\n}"
+        }
+    },
+    "src/trie.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include <string.h>",
+            "#include \"trie.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "TrieNode": "typedef struct _TrieNode TrieNode;",
+            "_TrieNode": "struct _TrieNode\n{\n    TrieValue data;\n    unsigned int use_count;\n    TrieNode *next[256];\n};",
+            "_Trie": "struct _Trie\n{\n    TrieNode *root_node;\n};"
+        },
+        "global_variables": {},
+        "declarations": [
+            "_TrieNode"
+        ],
+        "functions": {
+            "trie_new": "Trie *trie_new(void)\n{\n    Trie *new_trie;\n\n    new_trie = (Trie *)malloc(sizeof(Trie));\n\n    if (new_trie == NULL)\n    {\n        return NULL;\n    }\n\n    new_trie->root_node = NULL;\n\n    return new_trie;\n}",
+            "trie_free_list_push": "static void trie_free_list_push(TrieNode **list, TrieNode *node)\n{\n    node->data = *list;\n    *list = node;\n}",
+            "trie_free_list_pop": "static TrieNode *trie_free_list_pop(TrieNode **list)\n{\n    TrieNode *result;\n\n    result = *list;\n    *list = result->data;\n\n    return result;\n}",
+            "trie_free": "void trie_free(Trie *trie)\n{\n    TrieNode *free_list;\n    TrieNode *node;\n    int i;\n\n    free_list = NULL;\n\n    if (trie->root_node != NULL)\n    {\n        trie_free_list_push(&free_list, trie->root_node);\n    }\n\n    while (free_list != NULL)\n    {\n        node = trie_free_list_pop(&free_list);\n\n        for (i = 0; i < 256; ++i)\n        {\n            if (node->next[i] != NULL)\n            {\n                trie_free_list_push(&free_list, node->next[i]);\n            }\n        }\n\n        free(node);\n    }\n\n    free(trie);\n}",
+            "trie_find_end": "static TrieNode *trie_find_end(Trie *trie, char *key)\n{\n    TrieNode *node;\n    char *p;\n\n    node = trie->root_node;\n\n    for (p = key; *p != '\\0'; ++p)\n    {\n\n        if (node == NULL)\n        {\n\n            return NULL;\n        }\n\n        node = node->next[(unsigned char)*p];\n    }\n\n    return node;\n}",
+            "trie_find_end_binary": "static TrieNode *trie_find_end_binary(Trie *trie, unsigned char *key, int key_length)\n{\n    TrieNode *node;\n    int j;\n    int c;\n\n    node = trie->root_node;\n\n    for (j = 0; j < key_length; j++)\n    {\n\n        if (node == NULL)\n        {\n\n            return NULL;\n        }\n\n        c = (unsigned char)key[j];\n\n        node = node->next[c];\n    }\n\n    return node;\n}",
+            "trie_insert_rollback": "static void trie_insert_rollback(Trie *trie, unsigned char *key)\n{\n    TrieNode *node;\n    TrieNode **prev_ptr;\n    TrieNode *next_node;\n    TrieNode **next_prev_ptr;\n    unsigned char *p;\n\n    node = trie->root_node;\n    prev_ptr = &trie->root_node;\n    p = key;\n\n    while (node != NULL)\n    {\n\n        next_prev_ptr = &node->next[(unsigned char)*p];\n        next_node = *next_prev_ptr;\n        ++p;\n\n        --node->use_count;\n\n        if (node->use_count == 0)\n        {\n            free(node);\n\n            if (prev_ptr != NULL)\n            {\n                *prev_ptr = NULL;\n            }\n\n            next_prev_ptr = NULL;\n        }\n\n        node = next_node;\n        prev_ptr = next_prev_ptr;\n    }\n}",
+            "trie_insert": "int trie_insert(Trie *trie, char *key, TrieValue value)\n{\n    TrieNode **rover;\n    TrieNode *node;\n    char *p;\n    int c;\n\n    if (value == TRIE_NULL)\n    {\n        return 0;\n    }\n\n    node = trie_find_end(trie, key);\n\n    if (node != NULL && node->data != TRIE_NULL)\n    {\n        node->data = value;\n        return 1;\n    }\n\n    rover = &trie->root_node;\n    p = key;\n\n    for (;;)\n    {\n\n        node = *rover;\n\n        if (node == NULL)\n        {\n\n            node = (TrieNode *)calloc(1, sizeof(TrieNode));\n\n            if (node == NULL)\n            {\n\n                trie_insert_rollback(trie, (unsigned char *)key);\n\n                return 0;\n            }\n\n            node->data = TRIE_NULL;\n\n            *rover = node;\n        }\n\n        ++node->use_count;\n\n        c = (unsigned char)*p;\n\n        if (c == '\\0')\n        {\n\n            node->data = value;\n\n            break;\n        }\n\n        rover = &node->next[c];\n        ++p;\n    }\n\n    return 1;\n}",
+            "trie_insert_binary": "int trie_insert_binary(Trie *trie, unsigned char *key, int key_length, TrieValue value)\n{\n    TrieNode **rover;\n    TrieNode *node;\n    int p, c;\n\n    if (value == TRIE_NULL)\n    {\n        return 0;\n    }\n\n    node = trie_find_end_binary(trie, key, key_length);\n\n    if (node != NULL && node->data != TRIE_NULL)\n    {\n        node->data = value;\n        return 1;\n    }\n\n    rover = &trie->root_node;\n    p = 0;\n\n    for (;;)\n    {\n\n        node = *rover;\n\n        if (node == NULL)\n        {\n\n            node = (TrieNode *)calloc(1, sizeof(TrieNode));\n\n            if (node == NULL)\n            {\n\n                trie_insert_rollback(trie, key);\n\n                return 0;\n            }\n\n            node->data = TRIE_NULL;\n\n            *rover = node;\n        }\n\n        ++node->use_count;\n\n        c = (unsigned char)key[p];\n\n        if (p == key_length)\n        {\n\n            node->data = value;\n\n            break;\n        }\n\n        rover = &node->next[c];\n        ++p;\n    }\n\n    return 1;\n}",
+            "trie_remove_binary": "int trie_remove_binary(Trie *trie, unsigned char *key, int key_length)\n{\n    TrieNode *node;\n    TrieNode *next;\n    TrieNode **last_next_ptr;\n    int p, c;\n\n    node = trie_find_end_binary(trie, key, key_length);\n\n    if (node != NULL && node->data != TRIE_NULL)\n    {\n        node->data = TRIE_NULL;\n    }\n    else\n    {\n        return 0;\n    }\n\n    node = trie->root_node;\n    last_next_ptr = &trie->root_node;\n    p = 0;\n\n    for (;;)\n    {\n\n        c = (unsigned char)key[p];\n        next = node->next[c];\n\n        --node->use_count;\n\n        if (node->use_count <= 0)\n        {\n            free(node);\n\n            if (last_next_ptr != NULL)\n            {\n                *last_next_ptr = NULL;\n                last_next_ptr = NULL;\n            }\n        }\n\n        if (p == key_length)\n        {\n            break;\n        }\n        else\n        {\n            ++p;\n        }\n\n        if (last_next_ptr != NULL)\n        {\n            last_next_ptr = &node->next[c];\n        }\n\n        node = next;\n    }\n\n    return 1;\n}",
+            "trie_remove": "int trie_remove(Trie *trie, char *key)\n{\n    TrieNode *node;\n    TrieNode *next;\n    TrieNode **last_next_ptr;\n    char *p;\n    int c;\n\n    node = trie_find_end(trie, key);\n\n    if (node != NULL && node->data != TRIE_NULL)\n    {\n        node->data = TRIE_NULL;\n    }\n    else\n    {\n        return 0;\n    }\n\n    node = trie->root_node;\n    last_next_ptr = &trie->root_node;\n    p = key;\n\n    for (;;)\n    {\n\n        c = (unsigned char)*p;\n        next = node->next[c];\n\n        --node->use_count;\n\n        if (node->use_count <= 0)\n        {\n            free(node);\n\n            if (last_next_ptr != NULL)\n            {\n                *last_next_ptr = NULL;\n                last_next_ptr = NULL;\n            }\n        }\n\n        if (c == '\\0')\n        {\n            break;\n        }\n        else\n        {\n            ++p;\n        }\n\n        if (last_next_ptr != NULL)\n        {\n            last_next_ptr = &node->next[c];\n        }\n\n        node = next;\n    }\n\n    return 1;\n}",
+            "trie_lookup": "TrieValue trie_lookup(Trie *trie, char *key)\n{\n    TrieNode *node;\n\n    node = trie_find_end(trie, key);\n\n    if (node != NULL)\n    {\n        return node->data;\n    }\n    else\n    {\n        return TRIE_NULL;\n    }\n}",
+            "trie_lookup_binary": "TrieValue trie_lookup_binary(Trie *trie, unsigned char *key, int key_length)\n{\n    TrieNode *node;\n\n    node = trie_find_end_binary(trie, key, key_length);\n\n    if (node != NULL)\n    {\n        return node->data;\n    }\n    else\n    {\n        return TRIE_NULL;\n    }\n}",
+            "trie_num_entries": "unsigned int trie_num_entries(Trie *trie)\n{\n\n    if (trie->root_node == NULL)\n    {\n        return 0;\n    }\n    else\n    {\n        return trie->root_node->use_count;\n    }\n}"
+        }
+    },
+    "src/arraylist.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include <string.h>",
+            "#include \"arraylist.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "arraylist_new": "ArrayList *arraylist_new(unsigned int length)\n{\n    ArrayList *new_arraylist;\n\n    if (length <= 0)\n    {\n        length = 16;\n    }\n\n    new_arraylist = (ArrayList *)malloc(sizeof(ArrayList));\n\n    if (new_arraylist == NULL)\n    {\n        return NULL;\n    }\n\n    new_arraylist->_alloced = length;\n    new_arraylist->length = 0;\n\n    new_arraylist->data = malloc(length * sizeof(ArrayListValue));\n\n    if (new_arraylist->data == NULL)\n    {\n        free(new_arraylist);\n        return NULL;\n    }\n\n    return new_arraylist;\n}",
+            "arraylist_free": "void arraylist_free(ArrayList *arraylist)\n{\n\n    if (arraylist != NULL)\n    {\n        free(arraylist->data);\n        free(arraylist);\n    }\n}",
+            "arraylist_enlarge": "static int arraylist_enlarge(ArrayList *arraylist)\n{\n    ArrayListValue *data;\n    unsigned int newsize;\n\n    newsize = arraylist->_alloced * 2;\n\n    data = realloc(arraylist->data, sizeof(ArrayListValue) * newsize);\n\n    if (data == NULL)\n    {\n        return 0;\n    }\n    else\n    {\n        arraylist->data = data;\n        arraylist->_alloced = newsize;\n\n        return 1;\n    }\n}",
+            "arraylist_insert": "int arraylist_insert(ArrayList *arraylist, unsigned int index, ArrayListValue data)\n{\n\n    if (index > arraylist->length)\n    {\n        return 0;\n    }\n\n    if (arraylist->length + 1 > arraylist->_alloced)\n    {\n        if (!arraylist_enlarge(arraylist))\n        {\n            return 0;\n        }\n    }\n\n    memmove(&arraylist->data[index + 1], &arraylist->data[index], (arraylist->length - index) * sizeof(ArrayListValue));\n\n    arraylist->data[index] = data;\n    ++arraylist->length;\n\n    return 1;\n}",
+            "arraylist_append": "int arraylist_append(ArrayList *arraylist, ArrayListValue data)\n{\n    return arraylist_insert(arraylist, arraylist->length, data);\n}",
+            "arraylist_prepend": "int arraylist_prepend(ArrayList *arraylist, ArrayListValue data)\n{\n    return arraylist_insert(arraylist, 0, data);\n}",
+            "arraylist_remove_range": "void arraylist_remove_range(ArrayList *arraylist, unsigned int index, unsigned int length)\n{\n\n    if (index > arraylist->length || index + length > arraylist->length)\n    {\n        return;\n    }\n\n    memmove(&arraylist->data[index], &arraylist->data[index + length],\n            (arraylist->length - (index + length)) * sizeof(ArrayListValue));\n\n    arraylist->length -= length;\n}",
+            "arraylist_remove": "void arraylist_remove(ArrayList *arraylist, unsigned int index)\n{\n    arraylist_remove_range(arraylist, index, 1);\n}",
+            "arraylist_index_of": "int arraylist_index_of(ArrayList *arraylist, ArrayListEqualFunc callback, ArrayListValue data)\n{\n    unsigned int i;\n\n    for (i = 0; i < arraylist->length; ++i)\n    {\n        if (callback(arraylist->data[i], data) != 0)\n            return (int)i;\n    }\n\n    return -1;\n}",
+            "arraylist_clear": "void arraylist_clear(ArrayList *arraylist)\n{\n\n    arraylist->length = 0;\n}",
+            "arraylist_sort_internal": "static void arraylist_sort_internal(ArrayListValue *list_data, unsigned int list_length,\n                                    ArrayListCompareFunc compare_func)\n{\n    ArrayListValue pivot;\n    ArrayListValue tmp;\n    unsigned int i;\n    unsigned int list1_length;\n    unsigned int list2_length;\n\n    if (list_length <= 1)\n    {\n        return;\n    }\n\n    pivot = list_data[list_length - 1];\n# 221 \".tmp/tmp_files/src/arraylist.c\"\n    list1_length = 0;\n\n    for (i = 0; i < list_length - 1; ++i)\n    {\n\n        if (compare_func(list_data[i], pivot) < 0)\n        {\n\n            tmp = list_data[i];\n            list_data[i] = list_data[list1_length];\n            list_data[list1_length] = tmp;\n\n            ++list1_length;\n        }\n        else\n        {\n        }\n    }\n\n    list2_length = list_length - list1_length - 1;\n# 255 \".tmp/tmp_files/src/arraylist.c\"\n    list_data[list_length - 1] = list_data[list1_length];\n    list_data[list1_length] = pivot;\n\n    arraylist_sort_internal(list_data, list1_length, compare_func);\n\n    arraylist_sort_internal(&list_data[list1_length + 1], list2_length, compare_func);\n}",
+            "arraylist_sort": "void arraylist_sort(ArrayList *arraylist, ArrayListCompareFunc compare_func)\n{\n\n    arraylist_sort_internal(arraylist->data, arraylist->length, compare_func);\n}"
+        }
+    },
+    "src/compare-string.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_COMPARE_STRING_H"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [
+            "string_equal",
+            "string_nocase_compare",
+            "string_nocase_equal",
+            "string_compare"
+        ],
+        "functions": {}
+    },
+    "src/set.h": {
+        "includes": [],
+        "macros": [
+            "#define ALGORITHM_SET_H",
+            "#define SET_NULL ((void *)0)"
+        ],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "Set": "typedef struct _Set Set;",
+            "SetIterator": "typedef struct _SetIterator SetIterator;",
+            "SetEntry": "typedef struct _SetEntry SetEntry;",
+            "SetValue": "typedef void *SetValue;",
+            "_SetIterator": "struct _SetIterator\n    {\n        Set *set;\n        SetEntry *next_entry;\n        unsigned int next_chain;\n    };",
+            "SetHashFunc": "typedef unsigned int (*SetHashFunc)(SetValue value);",
+            "SetEqualFunc": "typedef int (*SetEqualFunc)(SetValue value1, SetValue value2);",
+            "SetFreeFunc": "typedef void (*SetFreeFunc)(SetValue value);"
+        },
+        "global_variables": {},
+        "declarations": [
+            "set_remove",
+            "_SetIterator",
+            "set_intersection",
+            "set_free",
+            "set_insert",
+            "set_iter_next",
+            "set_to_array",
+            "set_new",
+            "set_iter_has_more",
+            "_SetEntry",
+            "set_union",
+            "set_iterate",
+            "set_register_free_function",
+            "set_num_entries",
+            "_Set",
+            "set_query"
+        ],
+        "functions": {}
+    },
+    "src/binomial-heap.c": {
+        "includes": [
+            "#include <limits.h>",
+            "#include <stdlib.h>",
+            "#include <string.h>",
+            "#include \"binomial-heap.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "BinomialTree": "typedef struct _BinomialTree BinomialTree;",
+            "_BinomialTree": "struct _BinomialTree\n{\n    BinomialHeapValue value;\n    unsigned short order;\n    unsigned short refcount;\n    BinomialTree **subtrees;\n};",
+            "_BinomialHeap": "struct _BinomialHeap\n{\n    BinomialHeapType heap_type;\n    BinomialHeapCompareFunc compare_func;\n    unsigned int num_values;\n    BinomialTree **roots;\n    unsigned int roots_length;\n};"
+        },
+        "global_variables": {},
+        "declarations": [
+            "_BinomialTree"
+        ],
+        "functions": {
+            "binomial_heap_cmp": "static int binomial_heap_cmp(BinomialHeap *heap, BinomialHeapValue data1, BinomialHeapValue data2)\n{\n    if (heap->heap_type == BINOMIAL_HEAP_TYPE_MIN)\n    {\n        return heap->compare_func(data1, data2);\n    }\n    else\n    {\n        return -(heap->compare_func(data1, data2));\n    }\n}",
+            "binomial_tree_ref": "static void binomial_tree_ref(BinomialTree *tree)\n{\n    if (tree != NULL)\n    {\n        ++tree->refcount;\n    }\n}",
+            "binomial_tree_unref": "static void binomial_tree_unref(BinomialTree *tree)\n{\n    int i;\n\n    if (tree == NULL)\n    {\n        return;\n    }\n\n    --tree->refcount;\n\n    if (tree->refcount == 0)\n    {\n\n        for (i = 0; i < tree->order; ++i)\n        {\n            binomial_tree_unref(tree->subtrees[i]);\n        }\n\n        free(tree->subtrees);\n        free(tree);\n    }\n}",
+            "binomial_tree_merge": "static BinomialTree *binomial_tree_merge(BinomialHeap *heap, BinomialTree *tree1, BinomialTree *tree2)\n{\n    BinomialTree *new_tree;\n    BinomialTree *tmp;\n    int i;\n\n    if (binomial_heap_cmp(heap, tree1->value, tree2->value) > 0)\n    {\n\n        tmp = tree1;\n        tree1 = tree2;\n        tree2 = tmp;\n    }\n\n    new_tree = malloc(sizeof(BinomialTree));\n\n    if (new_tree == NULL)\n    {\n        return NULL;\n    }\n\n    new_tree->refcount = 0;\n    new_tree->order = (unsigned short)(tree1->order + 1);\n\n    new_tree->value = tree1->value;\n\n    new_tree->subtrees = malloc(sizeof(BinomialTree *) * new_tree->order);\n\n    if (new_tree->subtrees == NULL)\n    {\n        free(new_tree);\n        return NULL;\n    }\n\n    memcpy(new_tree->subtrees, tree1->subtrees, sizeof(BinomialTree *) * tree1->order);\n    new_tree->subtrees[new_tree->order - 1] = tree2;\n\n    for (i = 0; i < new_tree->order; ++i)\n    {\n        binomial_tree_ref(new_tree->subtrees[i]);\n    }\n\n    return new_tree;\n}",
+            "binomial_heap_merge_undo": "static void binomial_heap_merge_undo(BinomialTree **new_roots, unsigned int count)\n{\n    unsigned int i;\n\n    for (i = 0; i <= count; ++i)\n    {\n        binomial_tree_unref(new_roots[i]);\n    }\n\n    free(new_roots);\n}",
+            "binomial_heap_merge": "static int binomial_heap_merge(BinomialHeap *heap, BinomialHeap *other)\n{\n    BinomialTree **new_roots;\n    unsigned int new_roots_length;\n    BinomialTree *vals[3];\n    int num_vals;\n    BinomialTree *carry;\n    BinomialTree *new_carry;\n    unsigned int max;\n    unsigned int i;\n\n    if (heap->roots_length > other->roots_length)\n    {\n        max = heap->roots_length + 1;\n    }\n    else\n    {\n        max = other->roots_length + 1;\n    }\n\n    new_roots = malloc(sizeof(BinomialTree *) * max);\n\n    if (new_roots == NULL)\n    {\n        return 0;\n    }\n\n    new_roots_length = 0;\n    carry = NULL;\n\n    for (i = 0; i < max; ++i)\n    {\n\n        num_vals = 0;\n\n        if (i < heap->roots_length && heap->roots[i] != NULL)\n        {\n            vals[num_vals] = heap->roots[i];\n            ++num_vals;\n        }\n\n        if (i < other->roots_length && other->roots[i] != NULL)\n        {\n            vals[num_vals] = other->roots[i];\n            ++num_vals;\n        }\n\n        if (carry != NULL)\n        {\n            vals[num_vals] = carry;\n            ++num_vals;\n        }\n\n        if ((num_vals & 1) != 0)\n        {\n\n            new_roots[i] = vals[num_vals - 1];\n            binomial_tree_ref(new_roots[i]);\n            new_roots_length = i + 1;\n        }\n        else\n        {\n\n            new_roots[i] = NULL;\n        }\n\n        if ((num_vals & 2) != 0)\n        {\n\n            new_carry = binomial_tree_merge(heap, vals[0], vals[1]);\n\n            if (new_carry == NULL)\n            {\n\n                binomial_heap_merge_undo(new_roots, i);\n\n                binomial_tree_unref(carry);\n\n                return 0;\n            }\n        }\n        else\n        {\n\n            new_carry = NULL;\n        }\n\n        binomial_tree_unref(carry);\n\n        carry = new_carry;\n\n        binomial_tree_ref(carry);\n    }\n\n    for (i = 0; i < heap->roots_length; ++i)\n    {\n        if (heap->roots[i] != NULL)\n        {\n            binomial_tree_unref(heap->roots[i]);\n        }\n    }\n\n    free(heap->roots);\n    heap->roots = new_roots;\n    heap->roots_length = new_roots_length;\n\n    return 1;\n}",
+            "binomial_heap_new": "BinomialHeap *binomial_heap_new(BinomialHeapType heap_type, BinomialHeapCompareFunc compare_func)\n{\n    BinomialHeap *new_heap;\n\n    new_heap = calloc(1, sizeof(BinomialHeap));\n\n    if (new_heap == NULL)\n    {\n        return NULL;\n    }\n\n    new_heap->heap_type = heap_type;\n    new_heap->compare_func = compare_func;\n\n    return new_heap;\n}",
+            "binomial_heap_free": "void binomial_heap_free(BinomialHeap *heap)\n{\n    unsigned int i;\n\n    for (i = 0; i < heap->roots_length; ++i)\n    {\n        binomial_tree_unref(heap->roots[i]);\n    }\n\n    free(heap->roots);\n    free(heap);\n}",
+            "binomial_heap_insert": "int binomial_heap_insert(BinomialHeap *heap, BinomialHeapValue value)\n{\n    BinomialHeap fake_heap;\n    BinomialTree *new_tree;\n    int result;\n\n    new_tree = malloc(sizeof(BinomialTree));\n\n    if (new_tree == NULL)\n    {\n        return 0;\n    }\n\n    new_tree->value = value;\n    new_tree->order = 0;\n    new_tree->refcount = 1;\n    new_tree->subtrees = NULL;\n\n    fake_heap.heap_type = heap->heap_type;\n    fake_heap.compare_func = heap->compare_func;\n    fake_heap.num_values = 1;\n    fake_heap.roots = &new_tree;\n    fake_heap.roots_length = 1;\n\n    result = binomial_heap_merge(heap, &fake_heap);\n\n    if (result != 0)\n    {\n        ++heap->num_values;\n    }\n\n    binomial_tree_unref(new_tree);\n\n    return result;\n}",
+            "binomial_heap_pop": "BinomialHeapValue binomial_heap_pop(BinomialHeap *heap)\n{\n    BinomialTree *least_tree;\n    BinomialHeap fake_heap;\n    BinomialHeapValue result;\n    unsigned int i;\n    unsigned int least_index;\n\n    if (heap->num_values == 0)\n    {\n        return BINOMIAL_HEAP_NULL;\n    }\n\n    least_index = UINT_MAX;\n\n    for (i = 0; i < heap->roots_length; ++i)\n    {\n\n        if (heap->roots[i] == NULL)\n        {\n            continue;\n        }\n\n        if (least_index == UINT_MAX ||\n            binomial_heap_cmp(heap, heap->roots[i]->value, heap->roots[least_index]->value) < 0)\n        {\n            least_index = i;\n        }\n    }\n\n    least_tree = heap->roots[least_index];\n    heap->roots[least_index] = NULL;\n\n    fake_heap.heap_type = heap->heap_type;\n    fake_heap.compare_func = heap->compare_func;\n    fake_heap.roots = least_tree->subtrees;\n    fake_heap.roots_length = least_tree->order;\n\n    if (binomial_heap_merge(heap, &fake_heap))\n    {\n\n        result = least_tree->value;\n        binomial_tree_unref(least_tree);\n\n        --heap->num_values;\n\n        return result;\n    }\n    else\n    {\n\n        heap->roots[least_index] = least_tree;\n\n        return BINOMIAL_HEAP_NULL;\n    }\n}",
+            "binomial_heap_num_entries": "unsigned int binomial_heap_num_entries(BinomialHeap *heap)\n{\n    return heap->num_values;\n}"
+        }
+    },
+    "src/slist.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include \"slist.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_SListEntry": "struct _SListEntry\n{\n    SListValue data;\n    SListEntry *next;\n};"
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "slist_free": "void slist_free(SListEntry *list)\n{\n    SListEntry *entry;\n\n    entry = list;\n\n    while (entry != NULL)\n    {\n        SListEntry *next;\n\n        next = entry->next;\n\n        free(entry);\n\n        entry = next;\n    }\n}",
+            "slist_prepend": "SListEntry *slist_prepend(SListEntry **list, SListValue data)\n{\n    SListEntry *newentry;\n\n    newentry = malloc(sizeof(SListEntry));\n\n    if (newentry == NULL)\n    {\n        return NULL;\n    }\n\n    newentry->data = data;\n\n    newentry->next = *list;\n    *list = newentry;\n\n    return newentry;\n}",
+            "slist_append": "SListEntry *slist_append(SListEntry **list, SListValue data)\n{\n    SListEntry *rover;\n    SListEntry *newentry;\n\n    newentry = malloc(sizeof(SListEntry));\n\n    if (newentry == NULL)\n    {\n        return NULL;\n    }\n\n    newentry->data = data;\n    newentry->next = NULL;\n\n    if (*list == NULL)\n    {\n\n        *list = newentry;\n    }\n    else\n    {\n\n        for (rover = *list; rover->next != NULL; rover = rover->next)\n            ;\n\n        rover->next = newentry;\n    }\n\n    return newentry;\n}",
+            "slist_data": "SListValue slist_data(SListEntry *listentry)\n{\n    return listentry->data;\n}",
+            "slist_set_data": "void slist_set_data(SListEntry *listentry, SListValue data)\n{\n    if (listentry != NULL)\n    {\n        listentry->data = data;\n    }\n}",
+            "slist_next": "SListEntry *slist_next(SListEntry *listentry)\n{\n    return listentry->next;\n}",
+            "slist_nth_entry": "SListEntry *slist_nth_entry(SListEntry *list, unsigned int n)\n{\n    SListEntry *entry;\n    unsigned int i;\n\n    entry = list;\n\n    for (i = 0; i < n; ++i)\n    {\n\n        if (entry == NULL)\n        {\n            return NULL;\n        }\n        entry = entry->next;\n    }\n\n    return entry;\n}",
+            "slist_nth_data": "SListValue slist_nth_data(SListEntry *list, unsigned int n)\n{\n    SListEntry *entry;\n\n    entry = slist_nth_entry(list, n);\n\n    if (entry == NULL)\n    {\n        return SLIST_NULL;\n    }\n    else\n    {\n        return entry->data;\n    }\n}",
+            "slist_length": "unsigned int slist_length(SListEntry *list)\n{\n    SListEntry *entry;\n    unsigned int length;\n\n    length = 0;\n    entry = list;\n\n    while (entry != NULL)\n    {\n\n        ++length;\n\n        entry = entry->next;\n    }\n\n    return length;\n}",
+            "slist_to_array": "SListValue *slist_to_array(SListEntry *list)\n{\n    SListEntry *rover;\n    SListValue *array;\n    unsigned int length;\n    unsigned int i;\n\n    length = slist_length(list);\n\n    array = malloc(sizeof(SListValue) * length);\n\n    if (array == NULL)\n    {\n        return NULL;\n    }\n\n    rover = list;\n\n    for (i = 0; i < length; ++i)\n    {\n\n        array[i] = rover->data;\n\n        rover = rover->next;\n    }\n\n    return array;\n}",
+            "slist_remove_entry": "int slist_remove_entry(SListEntry **list, SListEntry *entry)\n{\n    SListEntry *rover;\n\n    if (*list == NULL || entry == NULL)\n    {\n        return 0;\n    }\n\n    if (*list == entry)\n    {\n\n        *list = entry->next;\n    }\n    else\n    {\n\n        rover = *list;\n\n        while (rover != NULL && rover->next != entry)\n        {\n            rover = rover->next;\n        }\n\n        if (rover == NULL)\n        {\n\n            return 0;\n        }\n        else\n        {\n\n            rover->next = entry->next;\n        }\n    }\n\n    free(entry);\n\n    return 1;\n}",
+            "slist_remove_data": "unsigned int slist_remove_data(SListEntry **list, SListEqualFunc callback, SListValue data)\n{\n    SListEntry **rover;\n    SListEntry *next;\n    unsigned int entries_removed;\n\n    entries_removed = 0;\n\n    rover = list;\n\n    while (*rover != NULL)\n    {\n\n        if (callback((*rover)->data, data) != 0)\n        {\n\n            next = (*rover)->next;\n            free(*rover);\n            *rover = next;\n\n            ++entries_removed;\n        }\n        else\n        {\n\n            rover = &((*rover)->next);\n        }\n    }\n\n    return entries_removed;\n}",
+            "slist_sort_internal": "static SListEntry *slist_sort_internal(SListEntry **list, SListCompareFunc compare_func)\n{\n    SListEntry *pivot;\n    SListEntry *rover;\n    SListEntry *less_list, *more_list;\n    SListEntry *less_list_end, *more_list_end;\n\n    if (*list == NULL || (*list)->next == NULL)\n    {\n        return *list;\n    }\n\n    pivot = *list;\n\n    less_list = NULL;\n    more_list = NULL;\n    rover = (*list)->next;\n\n    while (rover != NULL)\n    {\n        SListEntry *next = rover->next;\n\n        if (compare_func(rover->data, pivot->data) < 0)\n        {\n\n            rover->next = less_list;\n            less_list = rover;\n        }\n        else\n        {\n\n            rover->next = more_list;\n            more_list = rover;\n        }\n\n        rover = next;\n    }\n\n    less_list_end = slist_sort_internal(&less_list, compare_func);\n    more_list_end = slist_sort_internal(&more_list, compare_func);\n\n    *list = less_list;\n\n    if (less_list == NULL)\n    {\n        *list = pivot;\n    }\n    else\n    {\n        less_list_end->next = pivot;\n    }\n\n    pivot->next = more_list;\n\n    if (more_list == NULL)\n    {\n        return pivot;\n    }\n    else\n    {\n        return more_list_end;\n    }\n}",
+            "slist_sort": "void slist_sort(SListEntry **list, SListCompareFunc compare_func)\n{\n    slist_sort_internal(list, compare_func);\n}",
+            "slist_find_data": "SListEntry *slist_find_data(SListEntry *list, SListEqualFunc callback, SListValue data)\n{\n    SListEntry *rover;\n\n    for (rover = list; rover != NULL; rover = rover->next)\n    {\n        if (callback(rover->data, data) != 0)\n        {\n            return rover;\n        }\n    }\n\n    return NULL;\n}",
+            "slist_iterate": "void slist_iterate(SListEntry **list, SListIterator *iter)\n{\n\n    iter->prev_next = list;\n\n    iter->current = NULL;\n}",
+            "slist_iter_has_more": "int slist_iter_has_more(SListIterator *iter)\n{\n    if (iter->current == NULL || iter->current != *iter->prev_next)\n    {\n\n        return *iter->prev_next != NULL;\n    }\n    else\n    {\n\n        return iter->current->next != NULL;\n    }\n}",
+            "slist_iter_next": "SListValue slist_iter_next(SListIterator *iter)\n{\n    if (iter->current == NULL || iter->current != *iter->prev_next)\n    {\n\n        iter->current = *iter->prev_next;\n    }\n    else\n    {\n\n        iter->prev_next = &iter->current->next;\n        iter->current = iter->current->next;\n    }\n\n    if (iter->current == NULL)\n    {\n        return SLIST_NULL;\n    }\n    else\n    {\n        return iter->current->data;\n    }\n}",
+            "slist_iter_remove": "void slist_iter_remove(SListIterator *iter)\n{\n    if (iter->current == NULL || iter->current != *iter->prev_next)\n    {\n    }\n    else\n    {\n\n        *iter->prev_next = iter->current->next;\n        free(iter->current);\n        iter->current = NULL;\n    }\n}"
+        }
+    },
+    "src/hash-string.c": {
+        "includes": [
+            "#include <ctype.h>",
+            "#include \"hash-string.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": []
+        },
+        "global_variables": {},
+        "declarations": [],
+        "functions": {
+            "string_hash": "unsigned int string_hash(void *string)\n{\n\n    unsigned int result = 5381;\n    unsigned char *p;\n\n    p = (unsigned char *)string;\n\n    while (*p != '\\0')\n    {\n        result = (result << 5) + result + *p;\n        ++p;\n    }\n\n    return result;\n}",
+            "string_nocase_hash": "unsigned int string_nocase_hash(void *string)\n{\n    unsigned int result = 5381;\n    unsigned char *p;\n\n    p = (unsigned char *)string;\n\n    while (*p != '\\0')\n    {\n        result = (result << 5) + result + (unsigned int)tolower(*p);\n        ++p;\n    }\n\n    return result;\n}"
+        }
+    },
+    "src/rb-tree.c": {
+        "includes": [
+            "#include <stdlib.h>",
+            "#include \"rb-tree.h\"",
+            "#include \"alloc-testing.h\""
+        ],
+        "macros": [],
+        "macro_functions": [],
+        "types": {
+            "": [],
+            "_RBTreeNode": "struct _RBTreeNode\n{\n    RBTreeNodeColor color;\n    RBTreeKey key;\n    RBTreeValue value;\n    RBTreeNode *parent;\n    RBTreeNode *children[2];\n};",
+            "_RBTree": "struct _RBTree\n{\n    RBTreeNode *root_node;\n    RBTreeCompareFunc compare_func;\n    int num_nodes;\n};"
+        },
+        "global_variables": {},
+        "declarations": [
+            "rb_tree_insert_case5",
+            "rb_tree_insert_case1",
+            "rb_tree_insert_case2",
+            "rb_tree_insert_case4",
+            "rb_tree_insert_case3"
+        ],
+        "functions": {
+            "rb_tree_node_side": "static RBTreeNodeSide rb_tree_node_side(RBTreeNode *node)\n{\n    if (node->parent->children[RB_TREE_NODE_LEFT] == node)\n    {\n        return RB_TREE_NODE_LEFT;\n    }\n    else\n    {\n        return RB_TREE_NODE_RIGHT;\n    }\n}",
+            "rb_tree_node_sibling": "static RBTreeNode *rb_tree_node_sibling(RBTreeNode *node)\n{\n    RBTreeNodeSide side;\n\n    side = rb_tree_node_side(node);\n\n    return node->parent->children[1 - side];\n}",
+            "rb_tree_node_uncle": "RBTreeNode *rb_tree_node_uncle(RBTreeNode *node)\n{\n    return rb_tree_node_sibling(node->parent);\n}",
+            "rb_tree_node_replace": "static void rb_tree_node_replace(RBTree *tree, RBTreeNode *node1, RBTreeNode *node2)\n{\n    int side;\n\n    if (node2 != NULL)\n    {\n        node2->parent = node1->parent;\n    }\n\n    if (node1->parent == NULL)\n    {\n        tree->root_node = node2;\n    }\n    else\n    {\n        side = rb_tree_node_side(node1);\n        node1->parent->children[side] = node2;\n    }\n}",
+            "rb_tree_rotate": "static RBTreeNode *rb_tree_rotate(RBTree *tree, RBTreeNode *node, RBTreeNodeSide direction)\n{\n    RBTreeNode *new_root;\n\n    new_root = node->children[1 - direction];\n\n    rb_tree_node_replace(tree, node, new_root);\n\n    node->children[1 - direction] = new_root->children[direction];\n    new_root->children[direction] = node;\n\n    node->parent = new_root;\n\n    if (node->children[1 - direction] != NULL)\n    {\n        node->children[1 - direction]->parent = node;\n    }\n\n    return new_root;\n}",
+            "rb_tree_new": "RBTree *rb_tree_new(RBTreeCompareFunc compare_func)\n{\n    RBTree *new_tree;\n\n    new_tree = malloc(sizeof(RBTree));\n\n    if (new_tree == NULL)\n    {\n        return NULL;\n    }\n\n    new_tree->root_node = NULL;\n    new_tree->num_nodes = 0;\n    new_tree->compare_func = compare_func;\n\n    return new_tree;\n}",
+            "rb_tree_free_subtree": "static void rb_tree_free_subtree(RBTreeNode *node)\n{\n    if (node != NULL)\n    {\n\n        rb_tree_free_subtree(node->children[RB_TREE_NODE_LEFT]);\n        rb_tree_free_subtree(node->children[RB_TREE_NODE_RIGHT]);\n\n        free(node);\n    }\n}",
+            "rb_tree_free": "void rb_tree_free(RBTree *tree)\n{\n\n    rb_tree_free_subtree(tree->root_node);\n\n    free(tree);\n}",
+            "rb_tree_insert_case1": "static void rb_tree_insert_case1(RBTree *tree, RBTreeNode *node)\n{\n    if (node->parent == NULL)\n    {\n\n        node->color = RB_TREE_NODE_BLACK;\n    }\n    else\n    {\n\n        rb_tree_insert_case2(tree, node);\n    }\n}",
+            "rb_tree_insert_case2": "static void rb_tree_insert_case2(RBTree *tree, RBTreeNode *node)\n{\n\n    if (node->parent->color != RB_TREE_NODE_BLACK)\n    {\n        rb_tree_insert_case3(tree, node);\n    }\n}",
+            "rb_tree_insert_case3": "static void rb_tree_insert_case3(RBTree *tree, RBTreeNode *node)\n{\n    RBTreeNode *grandparent;\n    RBTreeNode *uncle;\n\n    grandparent = node->parent->parent;\n    uncle = rb_tree_node_uncle(node);\n\n    if (uncle != NULL && uncle->color == RB_TREE_NODE_RED)\n    {\n\n        node->parent->color = RB_TREE_NODE_BLACK;\n        uncle->color = RB_TREE_NODE_BLACK;\n        grandparent->color = RB_TREE_NODE_RED;\n\n        rb_tree_insert_case1(tree, grandparent);\n    }\n    else\n    {\n        rb_tree_insert_case4(tree, node);\n    }\n}",
+            "rb_tree_insert_case4": "void rb_tree_insert_case4(RBTree *tree, RBTreeNode *node)\n{\n    RBTreeNode *next_node;\n    RBTreeNodeSide side;\n\n    side = rb_tree_node_side(node);\n\n    if (side != rb_tree_node_side(node->parent))\n    {\n\n        next_node = node->parent;\n\n        rb_tree_rotate(tree, node->parent, 1 - side);\n    }\n    else\n    {\n        next_node = node;\n    }\n\n    rb_tree_insert_case5(tree, next_node);\n}",
+            "rb_tree_insert_case5": "void rb_tree_insert_case5(RBTree *tree, RBTreeNode *node)\n{\n    RBTreeNode *parent;\n    RBTreeNode *grandparent;\n    RBTreeNodeSide side;\n\n    parent = node->parent;\n    grandparent = parent->parent;\n\n    side = rb_tree_node_side(node);\n\n    rb_tree_rotate(tree, grandparent, 1 - side);\n\n    parent->color = RB_TREE_NODE_BLACK;\n    grandparent->color = RB_TREE_NODE_RED;\n}",
+            "rb_tree_insert": "RBTreeNode *rb_tree_insert(RBTree *tree, RBTreeKey key, RBTreeValue value)\n{\n    RBTreeNode *node;\n    RBTreeNode **rover;\n    RBTreeNode *parent;\n    RBTreeNodeSide side;\n\n    node = malloc(sizeof(RBTreeNode));\n\n    if (node == NULL)\n    {\n        return NULL;\n    }\n\n    node->key = key;\n    node->value = value;\n    node->color = RB_TREE_NODE_RED;\n    node->children[RB_TREE_NODE_LEFT] = NULL;\n    node->children[RB_TREE_NODE_RIGHT] = NULL;\n\n    parent = NULL;\n    rover = &tree->root_node;\n\n    while (*rover != NULL)\n    {\n\n        parent = *rover;\n\n        if (tree->compare_func(value, (*rover)->value) < 0)\n        {\n            side = RB_TREE_NODE_LEFT;\n        }\n        else\n        {\n            side = RB_TREE_NODE_RIGHT;\n        }\n\n        rover = &(*rover)->children[side];\n    }\n\n    *rover = node;\n    node->parent = parent;\n\n    rb_tree_insert_case1(tree, node);\n\n    ++tree->num_nodes;\n\n    return node;\n}",
+            "rb_tree_lookup_node": "RBTreeNode *rb_tree_lookup_node(RBTree *tree, RBTreeKey key)\n{\n    RBTreeNode *node;\n    RBTreeNodeSide side;\n    int diff;\n\n    node = tree->root_node;\n\n    while (node != NULL)\n    {\n        diff = tree->compare_func(key, node->key);\n\n        if (diff == 0)\n        {\n            return node;\n        }\n        else if (diff < 0)\n        {\n            side = RB_TREE_NODE_LEFT;\n        }\n        else\n        {\n            side = RB_TREE_NODE_RIGHT;\n        }\n\n        node = node->children[side];\n    }\n\n    return NULL;\n}",
+            "rb_tree_lookup": "RBTreeValue rb_tree_lookup(RBTree *tree, RBTreeKey key)\n{\n    RBTreeNode *node;\n\n    node = rb_tree_lookup_node(tree, key);\n\n    if (node == NULL)\n    {\n        return RB_TREE_NULL;\n    }\n    else\n    {\n        return node->value;\n    }\n}",
+            "rb_tree_remove_node": "void rb_tree_remove_node(RBTree *tree, RBTreeNode *node)\n{\n}",
+            "rb_tree_remove": "int rb_tree_remove(RBTree *tree, RBTreeKey key)\n{\n    RBTreeNode *node;\n\n    node = rb_tree_lookup_node(tree, key);\n\n    if (node == NULL)\n    {\n        return 0;\n    }\n\n    rb_tree_remove_node(tree, node);\n\n    return 1;\n}",
+            "rb_tree_root_node": "RBTreeNode *rb_tree_root_node(RBTree *tree)\n{\n    return tree->root_node;\n}",
+            "rb_tree_node_key": "RBTreeKey rb_tree_node_key(RBTreeNode *node)\n{\n    return node->key;\n}",
+            "rb_tree_node_value": "RBTreeValue rb_tree_node_value(RBTreeNode *node)\n{\n    return node->value;\n}",
+            "rb_tree_node_child": "RBTreeNode *rb_tree_node_child(RBTreeNode *node, RBTreeNodeSide side)\n{\n    if (side == RB_TREE_NODE_LEFT || side == RB_TREE_NODE_RIGHT)\n    {\n        return node->children[side];\n    }\n    else\n    {\n        return NULL;\n    }\n}",
+            "rb_tree_node_parent": "RBTreeNode *rb_tree_node_parent(RBTreeNode *node)\n{\n    return node->parent;\n}",
+            "rb_tree_to_array": "RBTreeValue *rb_tree_to_array(RBTree *tree)\n{\n\n    return NULL;\n}",
+            "rb_tree_num_entries": "int rb_tree_num_entries(RBTree *tree)\n{\n    return tree->num_nodes;\n}"
+        }
+    }
+}

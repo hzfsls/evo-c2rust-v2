@@ -1,0 +1,40 @@
+{
+    "macro": {
+        "all_cnt": 29,
+        "passed_cnt": 29,
+        "pass_rate": 1.0,
+        "messages": []
+    },
+    "macro_function": {
+        "all_cnt": 0,
+        "passed_cnt": 0,
+        "pass_rate": 100.0,
+        "messages": []
+    },
+    "definition": {
+        "all_cnt": 95,
+        "passed_cnt": 95,
+        "pass_rate": 1.0,
+        "messages": []
+    },
+    "dummy_function": {
+        "all_cnt": 200,
+        "passed_cnt": 200,
+        "pass_rate": 1.0,
+        "messages": []
+    },
+    "function": {
+        "all_cnt": 200,
+        "passed_cnt": 199,
+        "pass_rate": 0.995,
+        "messages": [
+            {
+                "c_code": "BloomFilter *bloom_filter_new(unsigned int table_size, BloomFilterHashFunc hash_func, unsigned int num_functions)\n{\n    BloomFilter *filter;\n\n    if (num_functions > sizeof(salts) / sizeof(*salts))\n    {\n        return NULL;\n    }\n\n    filter = malloc(sizeof(BloomFilter));\n\n    if (filter == NULL)\n    {\n        return NULL;\n    }\n\n    filter->table = calloc((table_size + 7) / 8, 1);\n\n    if (filter->table == NULL)\n    {\n        free(filter);\n        return NULL;\n    }\n\n    filter->hash_func = hash_func;\n    filter->num_functions = num_functions;\n    filter->table_size = table_size;\n\n    return filter;\n}",
+                "original_rust_code": "pub fn bloom_filter_new(mut table_size: u32, mut hash_func: BloomFilterHashFunc, mut num_functions: u32) -> Ptr<BloomFilter> {\n    let mut filter: Ptr<BloomFilter>;\n\n    if (num_functions > (c_sizeofval!(salts) / c_sizeofval!(*salts))) {\n        return NULL!();\n    }\n\n    filter = c_malloc!(c_sizeof!(BloomFilter));\n\n    if (filter == NULL!()) {\n        return NULL!();\n    }\n\n    filter.table = c_calloc!((table_size + 7) / 8, 1);\n\n    if (filter.table == NULL!()) {\n        c_free!(filter);\n        return NULL!();\n    }\n\n    filter.hash_func = hash_func;\n    filter.num_functions = num_functions;\n    filter.table_size = table_size;\n\n    return filter;\n}\n",
+                "optimized_rust_code": "pub fn bloom_filter_new(mut table_size: u32, mut hash_func: BloomFilterHashFunc, mut num_functions: u32) -> Ptr<BloomFilter> {\n    let mut filter: Ptr<BloomFilter>;\n\n    if (num_functions > (c_sizeofval!(salts) / c_sizeofval!(salts[0]))) {\n        return NULL!();\n    }\n\n    filter = c_malloc!(c_sizeof!(BloomFilter));\n\n    if (filter == NULL!()) {\n        return NULL!();\n    }\n\n    filter.table = c_calloc!((table_size + 7) / 8, 1);\n\n    if (filter.table == NULL!()) {\n        c_free!(filter);\n        return NULL!();\n    }\n\n    filter.hash_func = hash_func;\n    filter.num_functions = num_functions;\n    filter.table_size = table_size;\n\n    return filter;\n}\n",
+                "original_error_msg": "    Checking my_proj v0.1.0 (/home/ytr/evo-c2rust-v2/.tmp/created_project/c-algorithms_1750004023725)\nerror[E0614]: type `types::array::Array<u32, 64>` cannot be dereferenced\n  --> src/src/bloom_filter_c.rs:29:61\n   |\n29 |     if (num_functions > (c_sizeofval!(salts) / c_sizeofval!(*salts))) {\n   |                                                             ^^^^^^ can't be dereferenced\n\nerror[E0308]: mismatched types\n  --> src/src/bloom_filter_c.rs:29:25\n   |\n29 |     if (num_functions > (c_sizeofval!(salts) / c_sizeofval!(*salts))) {\n   |         -------------   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `u32`, found `Num`\n   |         |\n   |         expected because this is `u32`\n\nSome errors have detailed explanations: E0308, E0614.\nFor more information about an error, try `rustc --explain E0308`.\nerror: could not compile `my_proj` (lib) due to 2 previous errors\n",
+                "optimized_error_msg": "    Checking my_proj v0.1.0 (/home/ytr/evo-c2rust-v2/.tmp/created_project/c-algorithms_1750004046995)\nerror[E0308]: mismatched types\n  --> src/src/bloom_filter_c.rs:29:25\n   |\n29 |     if (num_functions > (c_sizeofval!(salts) / c_sizeofval!(salts[0]))) {\n   |         -------------   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `u32`, found `Num`\n   |         |\n   |         expected because this is `u32`\n\nFor more information about this error, try `rustc --explain E0308`.\nerror: could not compile `my_proj` (lib) due to 1 previous error\n"
+            }
+        ]
+    }
+}
