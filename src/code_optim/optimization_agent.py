@@ -1,25 +1,25 @@
 import os
 import sys
 
-from rust_metadata.rust_project_creation import (
+from metadata_extraction.rust_project_creation import (
     RustProject,
     RustCode,
     RustProjectMetadata,
 )
-from rust_metadata.classes import RustFile
+from entity.metadata import RustFile
 
 from tqdm import tqdm
 
 import sys
 
 class OptimizationAgent:
-    def __init__(self, config, proj_name, metadata, optimize_func, override=False):
+    def __init__(self, proj_name, metadata, optimize_func, override=False, created_project_dir="./created_project", template_project_dir="./project_template"):
         self.name = proj_name
         self.metadata = metadata
         self.optimize_func = optimize_func
         self.override = override
-        self.created_project_dir = config.created_project_dir
-        self.template_project_dir = config.template_project_dir
+        self.created_project_dir = created_project_dir
+        self.template_project_dir = template_project_dir
 
     def try_build(self):
         proj = RustProject(self.name, self.metadata, self.created_project_dir, self.template_project_dir)
@@ -67,9 +67,9 @@ class OptimizationAgent:
         return curr_code, status, error_msg
 
 class OptimizationAgentWithCompilerFeedback(OptimizationAgent):
-    def __init__(self, config, proj_name, metadata, optimize_func, max_trial=5, override=False):
+    def __init__(self, proj_name, metadata, optimize_func, max_trial=5, override=False, created_project_dir="./created_project", template_project_dir="./project_template"):
         self.max_trial = max_trial
-        super().__init__(config, proj_name, metadata, optimize_func, override)
+        super().__init__(proj_name, metadata, optimize_func, override, created_project_dir, template_project_dir)
 
     def try_optimize(self, code):
         original_code = code.rust_code
@@ -95,8 +95,11 @@ class OptimizationAgentWithCompilerFeedback(OptimizationAgent):
             if curr_score > last_score or (curr_score == last_score and self.override and flag):
                 last_score = curr_score
                 curr_code = c
+                if curr_score == 0:
+                    print("Build successful!")
+                    break
             else:
-                break
+                continue
         code.rust_code = curr_code
         status, error_msg = self.try_build()
         return curr_code, status, error_msg

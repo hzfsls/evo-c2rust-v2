@@ -1,6 +1,8 @@
 import configparser
 import os
 
+from prompt_config import definition_prompt, macro_prompt, macro_function_prompt, dummy_function_prompt, function_prompt, delim_repair_prompt, repair_prompt
+
 # def read_config():
 #     config = configparser.ConfigParser()
 #     config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
@@ -35,3 +37,16 @@ class GlobalConfig:
         }
         self.rust_metadata_dir = "./rust_metadata"
         self.template_project_dir = "./project_template"
+
+        self.definition_prompt = definition_prompt
+        self.macro_prompt = macro_prompt
+        self.macro_function_prompt = macro_function_prompt
+        self.dummy_function_prompt = dummy_function_prompt
+        self.function_prompt = function_prompt
+        self.delim_repair_prompt = delim_repair_prompt
+        self.repair_prompt = repair_prompt
+
+        self.api_key = "sk-76da526dbd8b48c3954df9336a8a6592"
+        self.base_url = "https://api.deepseek.com/beta"
+
+        self.cache_dir = "./cache"

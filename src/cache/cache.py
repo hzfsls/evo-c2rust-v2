@@ -1,7 +1,8 @@
 import os
 import json
+from pathlib import Path
 
-class LLMGenerationCache:
+class Cache:
     def __init__(self, cache_dir, name):
         self.path = os.path.join(cache_dir, name)
         self.cache_index = {}
@@ -29,3 +30,29 @@ class LLMGenerationCache:
             f.write(value)
         with open(os.path.join(self.path, f"index.json"), "w") as f:
             json.dump(self.cache_index, f)
+
+class ProjectCache:
+    def __init__(self, config, cache_dir = None):
+        self.config = config
+        self.project_name = config.project_name
+        if cache_dir is None:
+            cache_dir = config.cache_dir
+        self.caches = {
+            "macro": Cache(Path(config.cache_dir, config.project_name), "macro"),
+            "macro_function": Cache(Path(config.cache_dir, config.project_name), "macro_function"),
+            "definition": Cache(Path(config.cache_dir, config.project_name), "definition"),
+            "dummy_function": Cache(Path(config.cache_dir, config.project_name), "dummy_function"),
+            "function": Cache(Path(config.cache_dir, config.project_name), "function"),
+        }
+
+    def get(self, type, key):
+        if type in self.caches:
+            return self.caches[type].cache.get(key, None)
+        else:
+            raise ValueError(f"Cache type '{type}' not recognized.")
+
+    def update(self, type, key, value):
+        if type in self.caches:
+            self.caches[type].update(key, value)
+        else:
+            raise ValueError(f"Cache type '{type}' not recognized.")
