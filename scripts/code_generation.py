@@ -3,12 +3,9 @@ from metadata_extraction.c_metadata import extract_c_metadata_from_project
 from metadata_extraction.rust_metadata import c_metadata_to_rust_metadata
 from llm.client import GenerationClient
 from cache.cache import ProjectCache
-from code_optim.code_gen import code_generation, code_verification
-from code_optim.code_optim import code_optimization
-from code_optim.predefined_agents import get_implicit_casting_removal_agent, get_as_bool_removal_agent, get_struct_index_advancement_agent, get_fix_mismatched_delim_agent, get_llm_repair_agent, get_definition_replace_agent
+from code_optim.code_gen import code_generation
 
 import argparse
-import json
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run code verification on a project.")
