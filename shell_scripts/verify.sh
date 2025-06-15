@@ -1,0 +1,1 @@
+pdm run scripts/code_verification.py --project_name bzp

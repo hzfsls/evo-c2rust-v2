@@ -1,7 +1,7 @@
 import configparser
 import os
 
-from prompt_config import definition_prompt, macro_prompt, macro_function_prompt, dummy_function_prompt, function_prompt, delim_repair_prompt, repair_prompt
+from config.prompt_config import definition_prompt, macro_prompt, macro_function_prompt, dummy_function_prompt, function_prompt, delim_repair_prompt, repair_prompt
 
 # def read_config():
 #     config = configparser.ConfigParser()

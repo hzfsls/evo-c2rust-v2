@@ -1,5 +1,6 @@
 from tqdm import tqdm
 from entity.metadata import RustCode
+from entity.exceptions import CallLLMTimeoutError
 from llm.client import GenerationClient
 from cache.cache import ProjectCache
 
@@ -43,7 +44,15 @@ def get_llm_gen_result(client, code, prompt):
     response = client.get_response(text)
     return response
 
-def update_codes(client, typ, codes: list[RustCode], cache: ProjectCache):
+def get_llm_gen_result_with_cache(client, c_code, prompt, cache, typ):
+    if cache.find(typ, c_code):
+        return cache.get(typ, c_code)
+    else:
+        rust_code = get_llm_gen_result(client, c_code, prompt)
+        return rust_code
+
+def update_codes(client, typ, codes: list[RustCode], cache: ProjectCache,
+multi_process=False, threads_num=10):
     prompts = {
         "definition": client.config.definition_prompt,
         "macro": client.config.macro_prompt,
@@ -52,10 +61,28 @@ def update_codes(client, typ, codes: list[RustCode], cache: ProjectCache):
         "function": client.config.function_prompt,
     }
     prompt = prompts[typ]
-    for c in tqdm(codes):
-        if c.c_code in cache:
-            c.rust_code = cache.get(typ, c.c_code)
-            continue
-        c.rust_code = get_llm_gen_result(client, c.c_code, prompt)
-        if cache is not None:
-            cache.update(typ, c.c_code, c.rust_code)
+    if not multi_process:
+        for c in tqdm(codes):
+            if cache.find(typ, c.c_code):
+                c.rust_code = cache.get(typ, c.c_code)
+                continue
+            c.rust_code = get_llm_gen_result(client, c.c_code, prompt)
+            if cache is not None:
+                cache.update(typ, c.c_code, c.rust_code)
+        return
+    else:
+        from pebble import ProcessPool
+        with ProcessPool(max_workers=threads_num) as pool:
+            futures = []
+            for c in codes:
+                future = pool.schedule(
+                    get_llm_gen_result_with_cache, args=[client, c.c_code, prompt, cache, typ], timeout=300
+                )
+                futures.append((c, future))
+            for c, future in tqdm(futures):
+                try:
+                    rust_code = future.result()
+                    c.rust_code = rust_code
+                    cache.update(typ, c.c_code, c.rust_code)
+                except Exception as e:
+                    raise CallLLMTimeoutError(e)

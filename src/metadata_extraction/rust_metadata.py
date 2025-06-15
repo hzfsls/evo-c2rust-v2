@@ -3,6 +3,7 @@ import os
 import json
 
 from entity.metadata import *
+from entity.project import *
 
 def c_filename_to_rust_filename(name: str) -> str:
     return name.replace("-", "_").replace(".", "_") + ".rs"
@@ -151,13 +152,36 @@ def resolve_metadata(files: dict[str, str], declarations: dict[str, str]) -> dic
             target_path.functions.append(code)
     return metadata
 
-if __name__ == "__main__":
-    proj_name = "bzp"
-    with open(f"metadata/{proj_name}/files.json", "r") as f:
+def c_metadata_to_rust_metadata(global_config):
+    proj_name = global_config.project_name
+    c_metadata_dir = global_config.c_metadata_dir
+    rust_metadata_dir = global_config.rust_metadata_dir
+    created_project_dir = global_config.created_project_dir
+    template_project_dir = global_config.template_project_dir    
+    with open(os.path.join(c_metadata_dir, proj_name, "files.json"), "r") as f:
         files_data = json.load(f)
-    with open(f"metadata/{proj_name}/functions.json", "r") as f:
-        functions_data = json.load(f)
-    metadata = resolve_metadata(files_data, functions_data)
-    os.makedirs(f"rust_metadata/{proj_name}", exist_ok=True)
-    with open(f"rust_metadata/{proj_name}/metadata.json", "w") as f:
+    with open(
+        os.path.join(c_metadata_dir, proj_name, "declarations_location.json"),
+        "r",
+    ) as f:
+        declarations_data = json.load(f)
+    metadata = resolve_metadata(files_data, declarations_data)
+    os.makedirs(os.path.join(rust_metadata_dir, proj_name), exist_ok=True)
+    with open(os.path.join(rust_metadata_dir, proj_name, "metadata.json"), "w") as f:
         json.dump(metadata.__dict__(), f, indent=4)
+
+    with open(os.path.join(rust_metadata_dir, proj_name, "metadata.json"), "r") as f:
+        files_data = json.load(f)
+    metadata = RustProjectMetadata.from_dict(files_data)
+    print(
+        f"Rust project `{proj_name}` metadata stored at {os.path.join(c_metadata_dir, proj_name)}"
+    )
+    proj = RustProject(proj_name, metadata, created_project_dir, template_project_dir)
+    print(f"Create rust project `{proj_name}` at {proj.dir_path}")
+    success, error_msg = proj.build_project()
+    if success:
+        print(
+            f"Rust skeleton project {proj_name}(at {proj.dir_path}) build succeeded!")
+    else:
+        raise RustProjectCompilationFailedError(error_msg)
+    return metadata

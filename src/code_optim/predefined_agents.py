@@ -1,8 +1,8 @@
 from code_optim.optimization_agent import OptimizationAgent, OptimizationAgentWithCompilerFeedback
 
-from code_gen.generation import get_repair_candidates, get_delim_repair_candidates
+from llm.generation import get_repair_candidates, get_delim_repair_candidates
 
-def get_implicit_casting_removal_agent(config):
+def get_implicit_casting_removal_agent(config, metadata):
     def implicit_casting_removal(code):
         ret = []
         sub = ".cast()"
@@ -15,11 +15,13 @@ def get_implicit_casting_removal_agent(config):
             ret.append(new_code)
             start += len(sub)
         return ret
+    proj_name = config.project_name
     created_project_dir = config.created_project_dir
-    template_project_dir = config.project_template_dir
+    template_project_dir = config.template_project_dir
     agent = OptimizationAgent(proj_name, metadata, implicit_casting_removal, override=True, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
+    return agent
 
-def get_as_bool_removal_agent(config):
+def get_as_bool_removal_agent(config, metadata):
     def as_bool_removal(code):
         ret = []
         sub = ".as_bool()"
@@ -32,11 +34,13 @@ def get_as_bool_removal_agent(config):
             ret.append(new_code)
             start += len(sub)
         return ret
+    proj_name = config.project_name
     created_project_dir = config.created_project_dir
-    template_project_dir = config.project_template_dir
+    template_project_dir = config.template_project_dir
     agent = OptimizationAgent(proj_name, metadata, as_bool_removal, override=True, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
+    return agent
 
-def get_struct_index_advancement_agent(config):
+def get_struct_index_advancement_agent(config, metadata):
     def struct_index_advancement(code):
         import re
         code_lines = code.split("\n")
@@ -65,30 +69,36 @@ def get_struct_index_advancement_agent(config):
                             new_code_lines + code_lines[i1 + 1:])
                 )
         return ret
+    proj_name = config.project_name
     created_project_dir = config.created_project_dir
-    template_project_dir = config.project_template_dir
+    template_project_dir = config.template_project_dir
     agent = OptimizationAgent(proj_name, metadata, struct_index_advancement, override=False, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
+    return agent
 
-def get_fix_mismatched_delim_agent(config):
+def get_fix_mismatched_delim_agent(config, metadata, client):
     def fix_mismatched_delim(code, compiler_msg):
         if "unclosed delimiter" not in compiler_msg:
             return []
         else:
             return get_delim_repair_candidates(client, code, compiler_msg)
+    proj_name = config.project_name
     created_project_dir = config.created_project_dir
-    template_project_dir = config.project_template_dir
+    template_project_dir = config.template_project_dir
     agent = OptimizationAgentWithCompilerFeedback(proj_name, metadata, fix_mismatched_delim, override=False, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
+    return agent
 
-def get_llm_repair_agent(config):
+def get_llm_repair_agent(config, metadata, client):
     def llm_try_repair(code, compiler_msg):
         if compiler_msg == "":
             return []
         return get_repair_candidates(client, code, compiler_msg)
+    proj_name = config.project_name
     created_project_dir = config.created_project_dir
-    template_project_dir = config.project_template_dir
+    template_project_dir = config.template_project_dir
     agent = OptimizationAgentWithCompilerFeedback(proj_name, metadata, llm_try_repair, override=False, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
+    return agent
 
-def get_definition_replace_agent(config):
+def get_definition_replace_agent(config, metadata):
     def definition_replace(code):
         if "#[derive(Default, Clone, Copy)]" in code:
             return [
@@ -99,6 +109,8 @@ def get_definition_replace_agent(config):
             ]
         else:
             return []
+    proj_name = config.project_name
     created_project_dir = config.created_project_dir
-    template_project_dir = config.project_template_dir
+    template_project_dir = config.template_project_dir
     agent = OptimizationAgent(proj_name, metadata, definition_replace, override=True, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
+    return agent

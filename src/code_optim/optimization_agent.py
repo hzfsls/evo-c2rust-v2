@@ -1,12 +1,12 @@
 import os
 import sys
 
-from metadata_extraction.rust_project_creation import (
-    RustProject,
+from entity.metadata import (
+    RustFile,
     RustCode,
     RustProjectMetadata,
 )
-from entity.metadata import RustFile
+from entity.project import RustProject
 
 from tqdm import tqdm
 
@@ -67,7 +67,7 @@ class OptimizationAgent:
         return curr_code, status, error_msg
 
 class OptimizationAgentWithCompilerFeedback(OptimizationAgent):
-    def __init__(self, proj_name, metadata, optimize_func, max_trial=5, override=False, created_project_dir="./created_project", template_project_dir="./project_template"):
+    def __init__(self, proj_name, metadata, optimize_func, max_trial=2, override=False, created_project_dir="./created_project", template_project_dir="./project_template"):
         self.max_trial = max_trial
         super().__init__(proj_name, metadata, optimize_func, override, created_project_dir, template_project_dir)
 
@@ -85,18 +85,18 @@ class OptimizationAgentWithCompilerFeedback(OptimizationAgent):
             flag = False
             for c in candidates:
                 code.rust_code = c
-                new_score, _ = self.try_build_and_get_score()
+                new_score, new_error_msg = self.try_build_and_get_score()
                 print(f"Try round {self.max_trial - curr_trial} repairing, current score:", new_score)
                 if new_score > curr_score or (new_score == curr_score and self.override):
                     curr_score = new_score
                     curr_code = c
+                    error_msg = new_error_msg
                     flag = True
                     break
             if curr_score > last_score or (curr_score == last_score and self.override and flag):
                 last_score = curr_score
                 curr_code = c
                 if curr_score == 0:
-                    print("Build successful!")
                     break
             else:
                 continue

@@ -1,0 +1,1 @@
+pdm run scripts/code_generation.py --project_name bzp

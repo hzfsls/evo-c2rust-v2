@@ -38,11 +38,11 @@ class ProjectCache:
         if cache_dir is None:
             cache_dir = config.cache_dir
         self.caches = {
-            "macro": Cache(Path(config.cache_dir, config.project_name), "macro"),
-            "macro_function": Cache(Path(config.cache_dir, config.project_name), "macro_function"),
-            "definition": Cache(Path(config.cache_dir, config.project_name), "definition"),
-            "dummy_function": Cache(Path(config.cache_dir, config.project_name), "dummy_function"),
-            "function": Cache(Path(config.cache_dir, config.project_name), "function"),
+            "macro": Cache(Path(cache_dir, config.project_name), "macro"),
+            "macro_function": Cache(Path(cache_dir, config.project_name), "macro_function"),
+            "definition": Cache(Path(cache_dir, config.project_name), "definition"),
+            "dummy_function": Cache(Path(cache_dir, config.project_name), "dummy_function"),
+            "function": Cache(Path(cache_dir, config.project_name), "function"),
         }
 
     def get(self, type, key):
@@ -50,6 +50,12 @@ class ProjectCache:
             return self.caches[type].cache.get(key, None)
         else:
             raise ValueError(f"Cache type '{type}' not recognized.")
+
+    def find(self, type, key):
+        if type in self.caches:
+            return True if key in self.caches[type].cache else False
+        else:
+            raise ValueError(f"Cache type '{type}' not recognized.")    
 
     def update(self, type, key, value):
         if type in self.caches:

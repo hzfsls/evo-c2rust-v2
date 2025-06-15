@@ -4,11 +4,10 @@ from httpx import Client
 from entity.exceptions import CallLLMTimeoutError
 
 class GenerationClient:
-    def __init__(self, config):=
+    def __init__(self, config):
         self.config = config
         self.api_key = config.api_key
         self.base_url = config.base_url
-        self.proxy = proxy
     
     def get_response(self, text):
         openai_client = OpenAI(

@@ -1,0 +1,1 @@
+pdm run scripts/code_optimize_rule_based.py --project_name bzp
