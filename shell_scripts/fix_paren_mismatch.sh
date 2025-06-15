@@ -1,1 +1,1 @@
-pdm run scripts/code_optimize_fix_delim.py --project_name bzp
+pdm run scripts/code_optimize_fix_delim.py --project_name c-algorithms

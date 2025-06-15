@@ -1,1 +1,1 @@
-pdm run scripts/code_verification.py --project_name bzp
+pdm run scripts/code_verification.py --project_name c-algorithms

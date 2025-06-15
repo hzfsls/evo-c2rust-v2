@@ -21,4 +21,4 @@ if __name__ == "__main__":
     rust_metadata = c_metadata_to_rust_metadata(config)
     cache = ProjectCache(config, cache_dir="cache_0")
     client = GenerationClient(config)
-    code_generation(config, rust_metadata, cache, client)
+    code_generation(config, rust_metadata, cache, client, multi_process=True, threads_num=10)

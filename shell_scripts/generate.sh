@@ -1,1 +1,1 @@
-pdm run scripts/code_generation.py --project_name bzp
+pdm run scripts/code_generation.py --project_name c-algorithms

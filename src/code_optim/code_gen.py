@@ -13,13 +13,15 @@ def code_generation(
     metadata: RustProjectMetadata,
     cache: ProjectCache,
     client: GenerationClient,
+    multi_process: bool = False,
+    threads_num: int = 10,
 ):
     project_name = config.project_name
     for typ in ["macro", "macro_function", "definition", "dummy_function", "function"]:
         # single_type_code_generation(config, metadata, typ, cache=cache, client=client)
         print(f"Project {project_name}: Start {typ} code generation.")
         codes = metadata.get_all(typ) if typ != "dummy_function" else metadata.get_all("function")
-        update_codes(client, typ, codes, cache, multi_process=True, threads_num=10)
+        update_codes(client, typ, codes, cache, multi_process=multi_process, threads_num=threads_num)
 
 def code_verification(
     config: GlobalConfig,
