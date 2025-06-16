@@ -174,3 +174,13 @@ cython_debug/
 .pypirc
 
 .tmp/
+c_metadata/
+rust_metadata/
+data/
+.direnv/
+reports/
+cache/
+cache_0/
+cache_1/
+cache_2/
+cache_3/
