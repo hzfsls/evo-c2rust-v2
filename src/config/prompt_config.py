@@ -193,18 +193,18 @@ pub type MY_Com_Struct = _MyComplexStruct;
 
 Source:
 ```c
-typedef struct _MySimpleStruct {
+typedef struct {
     int arr[2];
     unsigned int length;
     MySimpleStruct* ss; 
-};
+} MySimpleStruct;
 ```
 
 Translation:
 ```rust
 #[repr(C)]
 #[derive(Default, Clone, Copy)]
-pub struct _MySimpleStruct {
+pub struct MySimpleStruct {
     pub arr: Array<i32, 2>,
     pub length: u32,
     pub ss: Ptr<MySimpleStruct>,

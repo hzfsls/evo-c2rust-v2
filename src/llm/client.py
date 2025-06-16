@@ -8,6 +8,7 @@ class GenerationClient:
         self.config = config
         self.api_key = config.api_key
         self.base_url = config.base_url
+        self.model_name = config.model_name
     
     def get_response(self, text):
         openai_client = OpenAI(
@@ -18,7 +19,7 @@ class GenerationClient:
         while max_trail > 0:
             try:
                 response = openai_client.chat.completions.create(
-                    model="deepseek-coder",
+                    model=self.model_name,
                     messages=[
                         {"role": "assistant", "content": text, "prefix": True},
                     ],

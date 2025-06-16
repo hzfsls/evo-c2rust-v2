@@ -48,5 +48,10 @@ class GlobalConfig:
 
         self.api_key = "sk-76da526dbd8b48c3954df9336a8a6592"
         self.base_url = "https://api.deepseek.com/beta"
+        self.model_name = "deepseek-coder"
+
+        # self.api_key = "sk-1234"
+        # self.base_url = "'http://api.openai.rnd.huawei.com/v1'"
+        # self.model_name = "qwen3-32b"
 
         self.cache_dir = "./cache"

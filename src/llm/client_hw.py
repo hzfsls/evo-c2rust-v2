@@ -13,8 +13,9 @@ os.environ['NO_PROXY'] = 'http://api.openai.rnd.huawei.com/v1'
 class GenerationClientHW:
     def __init__(self, config):
         self.config = config
-        self.api_key = 'sk-1234'
-        self.base_url = 'http://api.openai.rnd.huawei.com/v1'
+        self.api_key = config.api_key 'sk-1234'
+        self.base_url =  config.base_url 'http://api.openai.rnd.huawei.com/v1'
+        self.model_name = config.model_name
     
     def get_response(self, text):
         openai_client = OpenAI(
@@ -25,7 +26,7 @@ class GenerationClientHW:
         while max_trail > 0:
             try:
                 response = openai_client.chat.completions.create(
-                    model="qwen3-32b",
+                    model=self.model_name,
                     messages=[
                         {"role": "user", "content": text + '/no_think'},
                     ],
