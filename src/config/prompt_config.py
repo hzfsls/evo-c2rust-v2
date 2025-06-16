@@ -30,12 +30,12 @@ pub(crate) use MY_NULL;
 
 Source:
 ```c
-typedef struct _MyStruct MyStruct;
+typedef struct MyStruct Alias;
 ```
 
 Translation:
 ```rust
-pub type MyStruct = _MyStruct;
+pub type Alias = MyStruct;
 ```
 
 Source:
@@ -106,7 +106,6 @@ Source:
 static MyFunction g_MyCustomFunc = NULL;
 ```
 
-
 Source:
 ```c
 int[] g_MyCustomArray = {1, 2, 3, 4, 5};
@@ -143,6 +142,26 @@ pub const arr_counts: i32 = arr.len() as i32;
 
 Source:
 ```c
+typedef struct {
+    int arr[2];
+    unsigned int length;
+    MySimpleStruct* ss; 
+} MySimpleStruct;
+```
+
+Translation:
+```rust
+#[repr(C)]
+#[derive(Default, Clone, Copy)]
+pub struct MySimpleStruct {
+    pub arr: Array<i32, 2>,
+    pub length: u32,
+    pub ss: Ptr<MySimpleStruct>,
+}
+```
+
+Source:
+```c
 struct MySimpleStruct {
     int* arr;
     unsigned int length;
@@ -159,8 +178,6 @@ pub struct MySimpleStruct {
 }
 ```
 
-If a struct is defined with `typedef struct PreviousName { ... } PostName;`, add an additional type alias in Rust Translation: `// some declarations\npub struct PreviousName { ... }\n pub type PostName = PreviousName;`. If no `PreviousName` provided, like `typedef struct { ... } PostName;`, just translate with `// some declarations\npub struct PostName { ... }`.
-
 Source:
 ```c
 typedef struct _MyComplexStruct {
@@ -171,14 +188,14 @@ typedef struct _MyComplexStruct {
     FILE* file;
 	MyStructNode *children[CHINDREN_SIZE];
     MyStructNode more_children[CHINDREN_SIZE * 5 + 1];
-} MY_Com_Struct;
+} MY_Com_Struct_Alias1;
 ```
 
 Translation:
 ```rust
 #[repr(C)]
 #[derive(Default, Clone, Copy)]
-pub struct _MyComplexStruct {
+pub struct MY_Com_Struct_Alias1 {
     pub vEntries: Ptr<Ptr<MyStructEntry>>,
     pub vlength: Ptr<u8>,
     pub valueFunc: MyStructValueFunc,
@@ -186,28 +203,6 @@ pub struct _MyComplexStruct {
     pub file: FilePtr,
     pub children: Array<Ptr<MyStructNode>, { CHINDREN_SIZE!() }>,
     pub more_children: Array<MyStructNode, { CHINDREN_SIZE!() * 5 + 1 }>,
-}
-
-pub type MY_Com_Struct = _MyComplexStruct;
-```
-
-Source:
-```c
-typedef struct {
-    int arr[2];
-    unsigned int length;
-    MySimpleStruct* ss; 
-} MySimpleStruct;
-```
-
-Translation:
-```rust
-#[repr(C)]
-#[derive(Default, Clone, Copy)]
-pub struct MySimpleStruct {
-    pub arr: Array<i32, 2>,
-    pub length: u32,
-    pub ss: Ptr<MySimpleStruct>,
 }
 ```
 """

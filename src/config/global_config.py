@@ -55,3 +55,4 @@ class GlobalConfig:
         # self.model_name = "qwen3-32b"
 
         self.cache_dir = "./cache"
+        self.final_project_dir = "./final_project"
