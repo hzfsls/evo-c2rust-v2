@@ -1,0 +1,3 @@
+pub type BZP_ERROR_STREAM_NO = i32;
+macro_rules! BZP_ERROR_STREAM_COMPRESS_FAILUIRE { () => { 10 } }
+pub(crate) use BZP_ERROR_STREAM_COMPRESS_FAILUIRE;
