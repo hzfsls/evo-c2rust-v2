@@ -10,11 +10,11 @@ for p in proxies:
         del os.environ[p]
 os.environ['NO_PROXY'] = 'http://api.openai.rnd.huawei.com/v1'
 
-class GenerationClientHW:
+class GenerationClient:
     def __init__(self, config):
         self.config = config
-        self.api_key = config.api_key 'sk-1234'
-        self.base_url =  config.base_url 'http://api.openai.rnd.huawei.com/v1'
+        self.api_key = config.api_key
+        self.base_url =  config.base_url
         self.model_name = config.model_name
     
     def get_response(self, text):
