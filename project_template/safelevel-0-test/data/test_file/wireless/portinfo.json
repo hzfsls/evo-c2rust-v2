@@ -1,0 +1,76 @@
+{
+ "containerID": "a86bef71e6af",
+ "primary_port": "9ae6224025fb0876079f691582394f739ad2e3ad",
+ "ports_list": [
+  {
+   "port_name": "9ae6224025fb0876079f691582394f739ad2e3ad",
+   "ref_nic": [
+    "eth0"
+   ],
+   "mac": [
+    "02:55:ac:10:00:02"
+   ],
+   "mtu": [
+    1500
+   ],
+   "net_name": "paas-m",
+   "ip_cidr": [
+    "172.16.0.2/16"
+   ],
+   "carry_ip_cidr": [
+    "192.168.0.16/16"
+   ],
+   "port_map": [
+    {
+     "local_port": 33230,
+     "host_port": 35071,
+     "protocol": "TCP"
+    },
+    {
+     "local_port": 33231,
+     "host_port": 35072,
+     "protocol": "TCP"
+    },
+    {
+     "local_port": 2550,
+     "host_port": 32550,
+     "protocol": "TCP"
+    }
+   ]
+  },
+  {
+   "port_name": "ac87f03576cd6920a7c445760abcb3985f225026",
+   "ref_nic": [],
+   "mac": [],
+   "mtu": null,
+   "net_name": "idx-c",
+   "ip_cidr": [
+    "10.20.0.3/16"
+   ],
+   "vlan_id": 1,
+   "vlan_inside": true
+  },
+  {
+   "port_name": "c0adf48d57d6cab49cb29a516d758c6efa447a96",
+   "ref_nic": [],
+   "mac": [],
+   "mtu": null,
+   "net_name": "edx",
+   "ip_cidr": [
+    "10.30.0.5/16"
+   ],
+   "vlan_id": 2,
+   "vlan_inside": true,
+   "multicast_id": [
+    {
+     "group_id": "br_",
+     "group_ip": "239.0.0.2"
+    },
+    {
+     "group_id": "mu_",
+     "group_ip": "239.0.0.3"
+    }
+   ]
+  }
+ ]
+}

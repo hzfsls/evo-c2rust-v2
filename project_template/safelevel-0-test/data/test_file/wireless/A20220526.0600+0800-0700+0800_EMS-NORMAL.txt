@@ -1,0 +1,1792 @@
+File Format Version: 41
+Sender Name: "0"
+Sender Type: "SRAN"
+Vendor Name: "Huawei Technologies Co., Ltd."
+Start Collect Time: 2022-05-26 06:00:00
+MeasDataCount: 1
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Result Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ BEGIN:NameSpace_0 ＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[NameSpace_0] MeasDataLength: 9084
+[NameSpace_0] NE User Label: "0"
+[NameSpace_0] NE Distinguished Name: "0"
+[NameSpace_0] NE FunctionType: "0"
+[NameSpace_0] NE ObjId: "-1"
+[NameSpace_0] NE Software Version: "V500R013C00SPC000B38Fs"
+[NameSpace_0] Measurement info number: 1
+[NameSpace_0] End Collect Time : 2022-05-26 07:00:00
+[NameSpace_0] Measurement granularity period: 60
+[NameSpace_0] Measurement classes number: 12
+
+[NameSpace_0]
+MOC ID: 1526726662
+MT number: 6
+Moi number: 1
+===================================== MOC id: 1526726662 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1526727075		 UInt64			0
+1526727076		 UInt64			0
+1526727077		 UInt64			0
+1526727078		 UInt64			0
+1526727079		 UInt64			0
+1526727080		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455297
+MT number: 13
+Moi number: 4
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:0"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			62026
+1542455298		 UInt64			332
+1542455299		 UInt64			386524
+1542455300		 UInt64			3421
+1542455301		 UInt64			0
+1542455302		 UInt64			5048
+1542455303		 UInt64			0
+1542455304		 UInt64			137
+1542455305		 UInt64			9440
+1542455306		 UInt64			0
+1542455307		 UInt64			858
+1542460296		 UInt64			1000000
+1542460297		 UInt64			1000000
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:1"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:2"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:3"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455301
+MT number: 11
+Moi number: 1
+===================================== MOC id: 1542455301 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1542455326		 UInt64			0
+1542455327		 UInt64			0
+1542455328		 UInt64			0
+1542455329		 UInt64			0
+1542455330		 UInt64			0
+1542455331		 UInt64			0
+1542455332		 UInt64			0
+1542455333		 UInt64			0
+1542460727		 UInt64			0
+1542460728		 UInt64			0
+1542460729		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455303
+MT number: 41
+Moi number: 4
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:0:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			60538
+1542455367		 UInt64			332
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			5016
+1542455376		 UInt64			0
+1542455377		 UInt64			134
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:1:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:2:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:3:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455307
+MT number: 11
+Moi number: 1
+===================================== MOC id: 1542455307 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1542455796		 UInt64			0
+1542455797		 UInt64			0
+1542455798		 UInt64			0
+1542455799		 UInt64			0
+1542455800		 UInt64			0
+1542455801		 UInt64			0
+1542455802		 UInt64			0
+1542455803		 UInt64			0
+1542460730		 UInt64			0
+1542460731		 UInt64			0
+1542460732		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455309
+MT number: 20
+Moi number: 1
+===================================== MOC id: 1542455309 =====================================
+MOI id string: "0"
+CounterId	CounterResultType	CounterResult
+1542455826		 UInt64			420
+1542455827		 UInt64			120
+1542455828		 UInt64			0
+1542455829		 UInt64			0
+1542455833		 UInt64			0
+1542455834		 UInt64			0
+1542455835		 UInt64			0
+1542455836		 UInt64			0
+1542455837		 UInt64			0
+1542455838		 UInt64			300
+1542455839		 UInt64			0
+1542455840		 UInt64			0
+1542455841		 UInt64			326
+1542455842		 UInt64			0
+1542455843		 UInt64			0
+1542455844		 UInt64			0
+1542455845		 UInt64			0
+1542455846		 UInt64			300
+1542455847		 UInt64			0
+1542455848		 UInt64			26
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455314
+MT number: 2
+Moi number: 1
+===================================== MOC id: 1542455314 =====================================
+MOI id string: "0:0:6:0:3:0"
+CounterId	CounterResultType	CounterResult
+1542460338		 UInt64			0
+1542460339		 UInt64			154
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455315
+MT number: 17
+Moi number: 2
+===================================== MOC id: 1542455315 =====================================
+MOI id string: "0:0:3"
+CounterId	CounterResultType	CounterResult
+1542460340		 UInt64			0
+1542460341		 UInt64			0
+1542460342		 UInt64			0
+1542460343		 UInt64			0
+1542460496		 UInt64			0
+1542460497		 UInt64			0
+1542460498		 UInt64			0
+1542460499		 UInt64			0
+1542460500		 UInt64			0
+1542460501		 UInt64			0
+1542460502		 UInt64			0
+1542460503		 UInt64			0
+1542460504		 UInt64			0
+1542460505		 UInt64			0
+1542460506		 UInt64			0
+1542460507		 UInt64			0
+1542460510		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455315 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1542460340		 UInt64			0
+1542460341		 UInt64			0
+1542460342		 UInt64			0
+1542460343		 UInt64			0
+1542460496		 UInt64			0
+1542460497		 UInt64			0
+1542460498		 UInt64			0
+1542460499		 UInt64			0
+1542460500		 UInt64			0
+1542460501		 UInt64			0
+1542460502		 UInt64			0
+1542460503		 UInt64			0
+1542460504		 UInt64			0
+1542460505		 UInt64			0
+1542460506		 UInt64			0
+1542460507		 UInt64			0
+1542460510		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1593835521
+MT number: 28
+Moi number: 1
+===================================== MOC id: 1593835521 =====================================
+MOI id string: ""
+CounterId	CounterResultType	CounterResult
+1593835620		 InvalidType			InvalidValue
+1593835621		 UInt32			         0
+1593835622		 UInt32			         0
+1593835623		 UInt32			         0
+1593835624		 UInt32			         0
+1593835625		 UInt32			         0
+1593835626		 UInt32			         0
+1593835627		 UInt32			         0
+1593835628		 UInt32			         0
+1593835629		 UInt32			         0
+1593835637		 UInt32			         0
+1593835638		 UInt32			         0
+1593835639		 UInt32			         0
+1593835640		 UInt32			         0
+1593835650		 InvalidType			InvalidValue
+1593835651		 InvalidType			InvalidValue
+1593835647		 UInt32			     26658
+1593835648		 UInt32			     26658
+1593835649		 UInt32			     26658
+1593835769		 InvalidType			InvalidValue
+1593835770		 InvalidType			InvalidValue
+1593835801		 UInt32			         0
+1593835802		 UInt32			         0
+1593835804		 UInt32			         0
+1593835805		 UInt32			         0
+1593835926		 Float32			1.#QNAN0
+1593835927		 Float32			1.#QNAN0
+1593835928		 Float32			1.#QNAN0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1593835524
+MT number: 13
+Moi number: 4
+===================================== MOC id: 1593835524 =====================================
+MOI id string: "0:0:0"
+CounterId	CounterResultType	CounterResult
+1593835630		 InvalidType			InvalidValue
+1593835632		 InvalidType			InvalidValue
+1593835633		 InvalidType			InvalidValue
+1593835634		 InvalidType			InvalidValue
+1593835635		 InvalidType			InvalidValue
+1593835636		 InvalidType			InvalidValue
+1593835679		 InvalidType			InvalidValue
+1593835680		 InvalidType			InvalidValue
+1593835681		 InvalidType			InvalidValue
+1593835682		 InvalidType			InvalidValue
+1593835683		 InvalidType			InvalidValue
+1593835684		 InvalidType			InvalidValue
+1593835920		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835524 =====================================
+MOI id string: "0:0:1"
+CounterId	CounterResultType	CounterResult
+1593835630		 InvalidType			InvalidValue
+1593835632		 InvalidType			InvalidValue
+1593835633		 InvalidType			InvalidValue
+1593835634		 InvalidType			InvalidValue
+1593835635		 InvalidType			InvalidValue
+1593835636		 InvalidType			InvalidValue
+1593835679		 InvalidType			InvalidValue
+1593835680		 InvalidType			InvalidValue
+1593835681		 InvalidType			InvalidValue
+1593835682		 InvalidType			InvalidValue
+1593835683		 InvalidType			InvalidValue
+1593835684		 InvalidType			InvalidValue
+1593835920		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835524 =====================================
+MOI id string: "0:0:3"
+CounterId	CounterResultType	CounterResult
+1593835630		 UInt32			         0
+1593835632		 Float32			0.000000
+1593835633		 Float32			0.000000
+1593835634		 UInt32			         0
+1593835635		 UInt32			         0
+1593835636		 Float32			0.000000
+1593835679		 InvalidType			InvalidValue
+1593835680		 InvalidType			InvalidValue
+1593835681		 InvalidType			InvalidValue
+1593835682		 InvalidType			InvalidValue
+1593835683		 InvalidType			InvalidValue
+1593835684		 InvalidType			InvalidValue
+1593835920		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835524 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1593835630		 UInt32			         0
+1593835632		 Float32			0.000000
+1593835633		 Float32			0.000000
+1593835634		 UInt32			         0
+1593835635		 UInt32			         0
+1593835636		 Float32			0.000000
+1593835679		 InvalidType			InvalidValue
+1593835680		 InvalidType			InvalidValue
+1593835681		 InvalidType			InvalidValue
+1593835682		 InvalidType			InvalidValue
+1593835683		 InvalidType			InvalidValue
+1593835684		 InvalidType			InvalidValue
+1593835920		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1593835527
+MT number: 8
+Moi number: 10
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:5:6"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:0"
+CounterId	CounterResultType	CounterResult
+1593835672		 Float32			1093.300049
+1593835673		 Float32			959.299988
+1593835674		 Float32			46.000000
+1593835837		 Float32			46.000000
+1593835838		 Float32			1093.300049
+1593835839		 Float32			6300.000000
+1593835853		 UInt32			         0
+1593835854		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:1"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:2"
+CounterId	CounterResultType	CounterResult
+1593835672		 Float32			1042.900024
+1593835673		 Float32			913.299988
+1593835674		 Float32			50.000000
+1593835837		 Float32			50.000000
+1593835838		 Float32			1042.900024
+1593835839		 Float32			6400.000000
+1593835853		 UInt32			         0
+1593835854		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:3"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:4"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:5"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:6:3:8"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:6:16:1"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:6:16:3"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1593835532
+MT number: 1
+Moi number: 1
+===================================== MOC id: 1593835532 =====================================
+MOI id string: "0:0"
+CounterId	CounterResultType	CounterResult
+1593835835		 Float32			0.387887
+measurement value suspect flag :131080
+==============================================================================================
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ END:NameSpace_0 ＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Result End <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+End Time: 2022-05-26 07:00:06
+
+File Format Version: 41
+Sender Name: "0"
+Sender Type: "SRAN"
+Vendor Name: "Huawei Technologies Co., Ltd."
+Start Collect Time: 2022-05-26 07:00:00
+MeasDataCount: 1
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Result Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ BEGIN:NameSpace_0 ＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[NameSpace_0] MeasDataLength: 9084
+[NameSpace_0] NE User Label: "0"
+[NameSpace_0] NE Distinguished Name: "0"
+[NameSpace_0] NE FunctionType: "0"
+[NameSpace_0] NE ObjId: "-1"
+[NameSpace_0] NE Software Version: "V500R013C00SPC000B38Fs"
+[NameSpace_0] Measurement info number: 1
+[NameSpace_0] End Collect Time : 2022-05-26 08:00:00
+[NameSpace_0] Measurement granularity period: 60
+[NameSpace_0] Measurement classes number: 12
+
+[NameSpace_0]
+MOC ID: 1526726662
+MT number: 6
+Moi number: 1
+===================================== MOC id: 1526726662 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1526727075		 UInt64			0
+1526727076		 UInt64			0
+1526727077		 UInt64			0
+1526727078		 UInt64			0
+1526727079		 UInt64			0
+1526727080		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455297
+MT number: 13
+Moi number: 4
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:0"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			62163
+1542455298		 UInt64			343
+1542455299		 UInt64			388470
+1542455300		 UInt64			3426
+1542455301		 UInt64			0
+1542455302		 UInt64			4904
+1542455303		 UInt64			0
+1542455304		 UInt64			138
+1542455305		 UInt64			7256
+1542455306		 UInt64			0
+1542455307		 UInt64			863
+1542460296		 UInt64			1000000
+1542460297		 UInt64			1000000
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:1"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:2"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:3"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455301
+MT number: 11
+Moi number: 1
+===================================== MOC id: 1542455301 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1542455326		 UInt64			0
+1542455327		 UInt64			0
+1542455328		 UInt64			0
+1542455329		 UInt64			0
+1542455330		 UInt64			0
+1542455331		 UInt64			0
+1542455332		 UInt64			0
+1542455333		 UInt64			0
+1542460727		 UInt64			0
+1542460728		 UInt64			0
+1542460729		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455303
+MT number: 41
+Moi number: 4
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:0:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			60607
+1542455367		 UInt64			343
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			4808
+1542455376		 UInt64			0
+1542455377		 UInt64			134
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:1:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:2:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:3:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455307
+MT number: 11
+Moi number: 1
+===================================== MOC id: 1542455307 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1542455796		 UInt64			0
+1542455797		 UInt64			0
+1542455798		 UInt64			0
+1542455799		 UInt64			0
+1542455800		 UInt64			0
+1542455801		 UInt64			0
+1542455802		 UInt64			0
+1542455803		 UInt64			0
+1542460730		 UInt64			0
+1542460731		 UInt64			0
+1542460732		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455309
+MT number: 20
+Moi number: 1
+===================================== MOC id: 1542455309 =====================================
+MOI id string: "0"
+CounterId	CounterResultType	CounterResult
+1542455826		 UInt64			419
+1542455827		 UInt64			120
+1542455828		 UInt64			0
+1542455829		 UInt64			0
+1542455833		 UInt64			0
+1542455834		 UInt64			0
+1542455835		 UInt64			0
+1542455836		 UInt64			0
+1542455837		 UInt64			0
+1542455838		 UInt64			299
+1542455839		 UInt64			0
+1542455840		 UInt64			0
+1542455841		 UInt64			337
+1542455842		 UInt64			0
+1542455843		 UInt64			0
+1542455844		 UInt64			0
+1542455845		 UInt64			0
+1542455846		 UInt64			299
+1542455847		 UInt64			0
+1542455848		 UInt64			38
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455314
+MT number: 2
+Moi number: 1
+===================================== MOC id: 1542455314 =====================================
+MOI id string: "0:0:6:0:3:0"
+CounterId	CounterResultType	CounterResult
+1542460338		 UInt64			0
+1542460339		 UInt64			159
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455315
+MT number: 17
+Moi number: 2
+===================================== MOC id: 1542455315 =====================================
+MOI id string: "0:0:3"
+CounterId	CounterResultType	CounterResult
+1542460340		 UInt64			0
+1542460341		 UInt64			0
+1542460342		 UInt64			0
+1542460343		 UInt64			0
+1542460496		 UInt64			0
+1542460497		 UInt64			0
+1542460498		 UInt64			0
+1542460499		 UInt64			0
+1542460500		 UInt64			0
+1542460501		 UInt64			0
+1542460502		 UInt64			0
+1542460503		 UInt64			0
+1542460504		 UInt64			0
+1542460505		 UInt64			0
+1542460506		 UInt64			0
+1542460507		 UInt64			0
+1542460510		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455315 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1542460340		 UInt64			0
+1542460341		 UInt64			0
+1542460342		 UInt64			0
+1542460343		 UInt64			0
+1542460496		 UInt64			0
+1542460497		 UInt64			0
+1542460498		 UInt64			0
+1542460499		 UInt64			0
+1542460500		 UInt64			0
+1542460501		 UInt64			0
+1542460502		 UInt64			0
+1542460503		 UInt64			0
+1542460504		 UInt64			0
+1542460505		 UInt64			0
+1542460506		 UInt64			0
+1542460507		 UInt64			0
+1542460510		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1593835521
+MT number: 28
+Moi number: 1
+===================================== MOC id: 1593835521 =====================================
+MOI id string: ""
+CounterId	CounterResultType	CounterResult
+1593835620		 InvalidType			InvalidValue
+1593835621		 UInt32			         0
+1593835622		 UInt32			         0
+1593835623		 UInt32			         0
+1593835624		 UInt32			         0
+1593835625		 UInt32			         0
+1593835626		 UInt32			         0
+1593835627		 UInt32			         0
+1593835628		 UInt32			         0
+1593835629		 UInt32			         0
+1593835637		 UInt32			         0
+1593835638		 UInt32			         0
+1593835639		 UInt32			         0
+1593835640		 UInt32			         0
+1593835650		 InvalidType			InvalidValue
+1593835651		 InvalidType			InvalidValue
+1593835647		 UInt32			     26658
+1593835648		 UInt32			     26658
+1593835649		 UInt32			     26658
+1593835769		 InvalidType			InvalidValue
+1593835770		 InvalidType			InvalidValue
+1593835801		 UInt32			         0
+1593835802		 UInt32			         0
+1593835804		 UInt32			         0
+1593835805		 UInt32			         0
+1593835926		 Float32			1.#QNAN0
+1593835927		 Float32			1.#QNAN0
+1593835928		 Float32			1.#QNAN0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1593835524
+MT number: 13
+Moi number: 4
+===================================== MOC id: 1593835524 =====================================
+MOI id string: "0:0:0"
+CounterId	CounterResultType	CounterResult
+1593835630		 InvalidType			InvalidValue
+1593835632		 InvalidType			InvalidValue
+1593835633		 InvalidType			InvalidValue
+1593835634		 InvalidType			InvalidValue
+1593835635		 InvalidType			InvalidValue
+1593835636		 InvalidType			InvalidValue
+1593835679		 InvalidType			InvalidValue
+1593835680		 InvalidType			InvalidValue
+1593835681		 InvalidType			InvalidValue
+1593835682		 InvalidType			InvalidValue
+1593835683		 InvalidType			InvalidValue
+1593835684		 InvalidType			InvalidValue
+1593835920		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835524 =====================================
+MOI id string: "0:0:1"
+CounterId	CounterResultType	CounterResult
+1593835630		 InvalidType			InvalidValue
+1593835632		 InvalidType			InvalidValue
+1593835633		 InvalidType			InvalidValue
+1593835634		 InvalidType			InvalidValue
+1593835635		 InvalidType			InvalidValue
+1593835636		 InvalidType			InvalidValue
+1593835679		 InvalidType			InvalidValue
+1593835680		 InvalidType			InvalidValue
+1593835681		 InvalidType			InvalidValue
+1593835682		 InvalidType			InvalidValue
+1593835683		 InvalidType			InvalidValue
+1593835684		 InvalidType			InvalidValue
+1593835920		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835524 =====================================
+MOI id string: "0:0:3"
+CounterId	CounterResultType	CounterResult
+1593835630		 UInt32			         0
+1593835632		 Float32			0.000000
+1593835633		 Float32			0.000000
+1593835634		 UInt32			         0
+1593835635		 UInt32			         0
+1593835636		 Float32			0.000000
+1593835679		 InvalidType			InvalidValue
+1593835680		 InvalidType			InvalidValue
+1593835681		 InvalidType			InvalidValue
+1593835682		 InvalidType			InvalidValue
+1593835683		 InvalidType			InvalidValue
+1593835684		 InvalidType			InvalidValue
+1593835920		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835524 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1593835630		 UInt32			         0
+1593835632		 Float32			0.000000
+1593835633		 Float32			0.000000
+1593835634		 UInt32			         0
+1593835635		 UInt32			         0
+1593835636		 Float32			0.000000
+1593835679		 InvalidType			InvalidValue
+1593835680		 InvalidType			InvalidValue
+1593835681		 InvalidType			InvalidValue
+1593835682		 InvalidType			InvalidValue
+1593835683		 InvalidType			InvalidValue
+1593835684		 InvalidType			InvalidValue
+1593835920		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1593835527
+MT number: 8
+Moi number: 10
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:5:6"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:0"
+CounterId	CounterResultType	CounterResult
+1593835672		 Float32			1093.300049
+1593835673		 Float32			959.400024
+1593835674		 Float32			46.000000
+1593835837		 Float32			45.000000
+1593835838		 Float32			1102.099976
+1593835839		 Float32			6300.000000
+1593835853		 UInt32			         0
+1593835854		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:1"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:2"
+CounterId	CounterResultType	CounterResult
+1593835672		 Float32			1042.900024
+1593835673		 Float32			912.900024
+1593835674		 Float32			50.000000
+1593835837		 Float32			50.000000
+1593835838		 Float32			1043.699951
+1593835839		 Float32			6400.000000
+1593835853		 UInt32			         0
+1593835854		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:3"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:4"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:3:8:5"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:6:3:8"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:6:16:1"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835527 =====================================
+MOI id string: "0:0:6:16:3"
+CounterId	CounterResultType	CounterResult
+1593835672		 InvalidType			InvalidValue
+1593835673		 InvalidType			InvalidValue
+1593835674		 InvalidType			InvalidValue
+1593835837		 InvalidType			InvalidValue
+1593835838		 InvalidType			InvalidValue
+1593835839		 InvalidType			InvalidValue
+1593835853		 InvalidType			InvalidValue
+1593835854		 InvalidType			InvalidValue
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1593835532
+MT number: 1
+Moi number: 1
+===================================== MOC id: 1593835532 =====================================
+MOI id string: "0:0"
+CounterId	CounterResultType	CounterResult
+1593835835		 Float32			0.387842
+measurement value suspect flag :131080
+==============================================================================================
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ END:NameSpace_0 ＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Result End <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+End Time: 2022-05-26 08:00:06
+
+File Format Version: 41
+Sender Name: "0"
+Sender Type: "SRAN"
+Vendor Name: "Huawei Technologies Co., Ltd."
+Start Collect Time: 2022-05-26 08:00:00
+MeasDataCount: 1
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Result Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ BEGIN:NameSpace_0 ＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[NameSpace_0] MeasDataLength: 9084
+[NameSpace_0] NE User Label: "0"
+[NameSpace_0] NE Distinguished Name: "0"
+[NameSpace_0] NE FunctionType: "0"
+[NameSpace_0] NE ObjId: "-1"
+[NameSpace_0] NE Software Version: "V500R013C00SPC000B38Fs"
+[NameSpace_0] Measurement info number: 1
+[NameSpace_0] End Collect Time : 2022-05-26 09:00:00
+[NameSpace_0] Measurement granularity period: 60
+[NameSpace_0] Measurement classes number: 12
+
+[NameSpace_0]
+MOC ID: 1526726662
+MT number: 6
+Moi number: 1
+===================================== MOC id: 1526726662 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1526727075		 UInt64			0
+1526727076		 UInt64			0
+1526727077		 UInt64			0
+1526727078		 UInt64			0
+1526727079		 UInt64			0
+1526727080		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455297
+MT number: 13
+Moi number: 4
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:0"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			62227
+1542455298		 UInt64			344
+1542455299		 UInt64			385658
+1542455300		 UInt64			3418
+1542455301		 UInt64			0
+1542455302		 UInt64			4904
+1542455303		 UInt64			0
+1542455304		 UInt64			138
+1542455305		 UInt64			9952
+1542455306		 UInt64			0
+1542455307		 UInt64			856
+1542460296		 UInt64			1000000
+1542460297		 UInt64			1000000
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:1"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:2"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455297 =====================================
+MOI id string: "0:0:6:0:3"
+CounterId	CounterResultType	CounterResult
+1542455297		 UInt64			0
+1542455298		 UInt64			0
+1542455299		 UInt64			0
+1542455300		 UInt64			0
+1542455301		 UInt64			0
+1542455302		 UInt64			0
+1542455303		 UInt64			0
+1542455304		 UInt64			0
+1542455305		 UInt64			0
+1542455306		 UInt64			0
+1542455307		 UInt64			0
+1542460296		 UInt64			0
+1542460297		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455301
+MT number: 11
+Moi number: 1
+===================================== MOC id: 1542455301 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1542455326		 UInt64			0
+1542455327		 UInt64			0
+1542455328		 UInt64			0
+1542455329		 UInt64			0
+1542455330		 UInt64			0
+1542455331		 UInt64			0
+1542455332		 UInt64			0
+1542455333		 UInt64			0
+1542460727		 UInt64			0
+1542460728		 UInt64			0
+1542460729		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455303
+MT number: 41
+Moi number: 4
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:0:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			60665
+1542455367		 UInt64			344
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			5272
+1542455376		 UInt64			0
+1542455377		 UInt64			134
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:1:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:2:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1542455303 =====================================
+MOI id string: "0:0:6:1:0:9:3:127"
+CounterId	CounterResultType	CounterResult
+1542455365		 UInt64			0
+1542455367		 UInt64			0
+1542455369		 UInt64			0
+1542455371		 UInt64			0
+1542455375		 UInt64			0
+1542455376		 UInt64			0
+1542455377		 UInt64			0
+1542455378		 UInt64			0
+1542460308		 UInt32			         0
+1542460309		 UInt32			         0
+1542460310		 UInt32			         0
+1542460311		 UInt32			         0
+1542460312		 UInt32			         0
+1542460313		 UInt32			         0
+1542460314		 UInt64			0
+1542460315		 UInt64			0
+1542460316		 UInt64			0
+1542460317		 UInt64			0
+1542460318		 UInt64			0
+1542460319		 UInt64			0
+1542460320		 UInt64			0
+1542460321		 UInt64			0
+1542460322		 UInt64			0
+1542460323		 UInt64			0
+1542460324		 UInt64			0
+1542460325		 UInt32			         0
+1542460326		 UInt32			         0
+1542460327		 UInt32			         0
+1542460328		 UInt32			         0
+1542460329		 UInt32			         0
+1542460330		 UInt32			         0
+1542460331		 UInt32			         0
+1542460332		 UInt32			         0
+1542460390		 UInt32			         0
+1542460391		 UInt32			         0
+1542460392		 UInt32			         0
+1542460393		 UInt32			         0
+1542460394		 UInt32			         0
+1542460395		 UInt32			         0
+1542460396		 UInt32			         0
+1542460397		 UInt32			         0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455307
+MT number: 11
+Moi number: 1
+===================================== MOC id: 1542455307 =====================================
+MOI id string: "0:0:6"
+CounterId	CounterResultType	CounterResult
+1542455796		 UInt64			0
+1542455797		 UInt64			0
+1542455798		 UInt64			0
+1542455799		 UInt64			0
+1542455800		 UInt64			0
+1542455801		 UInt64			0
+1542455802		 UInt64			0
+1542455803		 UInt64			0
+1542460730		 UInt64			0
+1542460731		 UInt64			0
+1542460732		 UInt64			0
+measurement value suspect flag :131080
+==============================================================================================
+
+[NameSpace_0]
+MOC ID: 1542455309
+MT number: 20
+Moi number: 1
+===================================== MOC id: 1542455309 =====================================
+MOI id string: "0"
+CounterId	CounterResultType	CounterResult
+1542455826		 UInt64			419
+1542455827		 UInt64			120
+1542455828		 UInt64			0
+1542455829		 UInt64			0
+1542455833		 UInt64			0
+1542455834		 UInt64			0
+1542455835		 UInt64			0
+1542455836		 UInt64			0
+1542455837		 UInt64			0
+1542455838		 UInt64			299
+1542455839		 UInt64			0
+1542455840		 UInt64			0
+1542455841		 UInt64			338
+1542455842		 UInt64			0
+1542455843		 UInt64			0
+1542455844		 UInt64			0
+1542455845		 UInt64			0
+1542455846		 UInt64			299
+1542455847		 UInt64			0
+1542455848		 UInt64			39
+measurement value suspect flag :131080
+==============================================================================================
+===================================== MOC id: 1593835532 =====================================
+MOI id string: "0:0"
+CounterId	CounterResultType	CounterResult
+1593835835		 Float32			0.387893
+measurement value suspect flag :131080
+==============================================================================================
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ END:NameSpace_0 ＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Result End <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+End Time: 2022-05-26 09:00:05
