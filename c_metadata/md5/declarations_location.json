@@ -1,0 +1,11 @@
+{
+    "VOS_MD5CalcDigestOfBuff": "src/md5.c",
+    "VOS_MD5PadBuff": "src/md5.c",
+    "VOS_MD5Init": "src/md5.c",
+    "VOS_MD5Update": "src/md5.c",
+    "VOS_MD5FinalEx": "src/md5.c",
+    "VOS_MD5Final": "src/md5.c",
+    "VOS_MD5CalcEx": "src/md5.c",
+    "VOS_MD5Calc": "src/md5.c",
+    "MD5_CTX": "src/md5.c"
+}

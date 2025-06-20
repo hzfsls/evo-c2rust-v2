@@ -67,3 +67,114 @@ def code_verification(
         print(f"{typ} compilation verification completed. Passed: {typ_report['passed_cnt']}/{typ_report['all_cnt']} ({typ_report['pass_rate'] * 100:.2f}%)")
         report[typ] = typ_report
     return report
+
+def blankfill_compilation_verification(
+    config: GlobalConfig,
+    metadata: RustProjectMetadata,
+    gold_cache: ProjectCache,
+    cache: ProjectCache,
+    client: GenerationClient,
+):  
+    report = {}
+    for typ in ["macro", "macro_function", "definition", "function"]:
+        codes = metadata.get_all(typ)
+        # fill codes with gold cache
+        for c in tqdm(codes):
+            c.rust_code = gold_cache.get(typ, c.c_code)
+    # verify gold answer
+    proj = RustProject(config.project_name, metadata, config.created_project_dir, config.template_project_dir)
+    success, error_msg = proj.test_project()
+    if not success:
+        print(f"Gold answer test failed: {error_msg}")
+        return None
+    for typ in ["macro", "macro_function", "definition", "function"]:
+        typ_report = {
+            "all_cnt": 0,
+            "passed_cnt": 0,
+            "pass_rate": 0.0,
+            "messages": [],
+        }
+        print(f"Project {config.project_name}: Start {typ} fill testing.")
+        codes = metadata.get_all(typ)
+        all_cnt = len(codes)
+        failed_cnt = 0
+        for c in tqdm(codes):            
+            original_code = c.rust_code
+            c.rust_code = cache.get(typ, c.c_code)
+            curr_cache_path = os.path.join(cache.caches[typ].path, cache.caches[typ].cache_index[c.c_code], "result.rs")
+            proj = RustProject(config.project_name, metadata, config.created_project_dir, config.template_project_dir)
+            success, error_msg = proj.build_project()
+            if not success:
+                failed_cnt += 1
+                failed_message = {
+                    "c_code": c.c_code,
+                    "rust_code": c.rust_code,
+                    "error_msg": error_msg,
+                }
+                typ_report["messages"].append(failed_message)
+            c.rust_code = original_code
+        typ_report["all_cnt"] = all_cnt
+        typ_report["passed_cnt"] = all_cnt - failed_cnt
+        if all_cnt > 0:
+            typ_report["pass_rate"] = (all_cnt - failed_cnt) / all_cnt
+        else:
+            typ_report["pass_rate"] = 100.0
+        print(f"{typ} fill testing completed. Passed: {typ_report['passed_cnt']}/{typ_report['all_cnt']} ({typ_report['pass_rate'] * 100:.2f}%)")
+        report[typ] = typ_report
+    return report
+
+
+def blankfill_test(
+    config: GlobalConfig,
+    metadata: RustProjectMetadata,
+    gold_cache: ProjectCache,
+    cache: ProjectCache,
+    client: GenerationClient,
+):  
+    report = {}
+    for typ in ["macro", "macro_function", "definition", "function"]:
+        codes = metadata.get_all(typ)
+        # fill codes with gold cache
+        for c in tqdm(codes):
+            c.rust_code = gold_cache.get(typ, c.c_code)
+    # verify gold answer
+    proj = RustProject(config.project_name, metadata, config.created_project_dir, config.template_project_dir)
+    success, error_msg = proj.test_project()
+    if not success:
+        print(f"Gold answer verification failed: {error_msg}")
+        return None
+    for typ in ["macro", "macro_function", "definition", "function"]:
+        typ_report = {
+            "all_cnt": 0,
+            "passed_cnt": 0,
+            "pass_rate": 0.0,
+            "messages": [],
+        }
+        print(f"Project {config.project_name}: Start {typ} fill testing.")
+        codes = metadata.get_all(typ)
+        all_cnt = len(codes)
+        failed_cnt = 0
+        for c in tqdm(codes):            
+            original_code = c.rust_code
+            c.rust_code = cache.get(typ, c.c_code)
+            curr_cache_path = os.path.join(cache.caches[typ].path, cache.caches[typ].cache_index[c.c_code], "result.rs")
+            proj = RustProject(config.project_name, metadata, config.created_project_dir, config.template_project_dir)
+            success, error_msg = proj.test_project()
+            if not success:
+                failed_cnt += 1
+                failed_message = {
+                    "c_code": c.c_code,
+                    "rust_code": c.rust_code,
+                    "error_msg": error_msg,
+                }
+                typ_report["messages"].append(failed_message)
+            c.rust_code = original_code
+        typ_report["all_cnt"] = all_cnt
+        typ_report["passed_cnt"] = all_cnt - failed_cnt
+        if all_cnt > 0:
+            typ_report["pass_rate"] = (all_cnt - failed_cnt) / all_cnt
+        else:
+            typ_report["pass_rate"] = 100.0
+        print(f"{typ} fill testing completed. Passed: {typ_report['passed_cnt']}/{typ_report['all_cnt']} ({typ_report['pass_rate'] * 100:.2f}%)")
+        report[typ] = typ_report
+    return report

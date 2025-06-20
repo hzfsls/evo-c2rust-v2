@@ -84,7 +84,7 @@ def get_fix_mismatched_delim_agent(config, metadata, client):
     proj_name = config.project_name
     created_project_dir = config.created_project_dir
     template_project_dir = config.template_project_dir
-    agent = OptimizationAgentWithCompilerFeedback(proj_name, metadata, fix_mismatched_delim, override=False, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
+    agent = OptimizationAgentWithCompilerFeedback(proj_name, metadata, fix_mismatched_delim, max_trial=5, override=False, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
     return agent
 
 def get_llm_repair_agent(config, metadata, client):
@@ -95,7 +95,7 @@ def get_llm_repair_agent(config, metadata, client):
     proj_name = config.project_name
     created_project_dir = config.created_project_dir
     template_project_dir = config.template_project_dir
-    agent = OptimizationAgentWithCompilerFeedback(proj_name, metadata, llm_try_repair, override=False, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
+    agent = OptimizationAgentWithCompilerFeedback(proj_name, metadata, llm_try_repair, max_trial=3, override=False, created_project_dir=created_project_dir, template_project_dir=template_project_dir)
     return agent
 
 def get_definition_replace_agent(config, metadata):

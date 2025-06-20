@@ -20,7 +20,9 @@ class RustProjectMetadata:
         for k, v in self.paths.items():
             all_files.extend(v.recursive_get_all(typ))
         return all_files
-    
+
+    def set_mod_rs(self, mod_rs_content):
+        self.paths['src'].children['mod.rs'].declarations = [mod_rs_content]
 
 class RustPath:
     def __init__(self, typ: str):

@@ -36,7 +36,7 @@ class GlobalConfig:
             "#if __cplusplus\n}\n\n#endif": "}\n"
         }
         self.rust_metadata_dir = "./rust_metadata"
-        self.template_project_dir = "./project_template"
+        self.template_project_dir = "./project_template/safelevel-0"
 
         self.definition_prompt = definition_prompt
         self.macro_prompt = macro_prompt

@@ -11,5 +11,6 @@ if __name__ == "__main__":
     
     config = GlobalConfig()
     config.project_name = args.project_name
+    config.project_dir = "./data_sf"
     extract_c_metadata_from_project(config)
     rust_metadata = c_metadata_to_rust_metadata(config)

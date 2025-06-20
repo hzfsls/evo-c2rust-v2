@@ -1,0 +1,798 @@
+{
+    "src": {
+        "name": "src",
+        "type": "folder",
+        "children": {
+            "bzp_c.rs": {
+                "name": "bzp_c.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "enum BZP_ERROR_BASE_NO\n{\n    BZP_ERROR_MEMORY_OPER_FAILURE = 1,\n    BZP_ERROR_PARAM,\n    BZP_ERROR_IO,\n    BZP_ERROR_DATA,\n    BZP_ERROR_DATA_MAGIC,\n};",
+                        "rust_code": "pub type BZP_ERROR_BASE_NO = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    FILE *filePtr;\n    int32_t nBuf;\n    int32_t pos;\n    uint8_t buf[BZP_BUF_SIZE];\n} BzpStream;",
+                        "rust_code": "pub type BzpStream = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    BzpStream *input;\n    BzpStream *output;\n    int32_t lasChar;\n    int32_t num;\n    uint32_t buf;\n    int32_t nBuf;\n    int32_t blockSize;\n    uint32_t blockCRC;\n    int32_t list[BZP_ASCII_SIZE];\n} InDeComdata;",
+                        "rust_code": "pub type InDeComdata = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    BzpStream *input;\n    BzpStream *output;\n    int32_t state;\n    int32_t lasChar;\n    int32_t num;\n    int32_t pad;\n} BzpFile;",
+                        "rust_code": "pub type BzpFile = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    uint8_t *out;\n    int32_t num;\n    uint32_t buf;\n    int32_t nBuf;\n    int32_t blockSize;\n} BzpOutComdata;",
+                        "rust_code": "pub type BzpOutComdata = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    BzpBwtInfo *bwt;\n    BzpHuffmanGroups *huffman;\n    BzpMtfInfo *mtf;\n    BzpFile *compressFile;\n    BzpOutComdata *outData;\n} BzpAlgorithmInfo;",
+                        "rust_code": "pub type BzpAlgorithmInfo = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    int32_t *sortBlock;\n    int32_t *idx;\n    int32_t *isStartPos;\n    uint8_t *block;\n    uint32_t blockCRC;\n    uint32_t combinedCRC;\n    int32_t nBlockMax;\n    int32_t blockId;\n    int32_t nBlock;\n    int32_t oriPtr;\n    bool inUse[BZP_ASCII_SIZE];\n} BzpBwtInfo;",
+                        "rust_code": "pub type BzpBwtInfo = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    int32_t stackL[BZP_MAX_STACK_SIZE];\n    int32_t stackR[BZP_MAX_STACK_SIZE];\n    int32_t cnt;\n    int32_t tl, tr;\n} BzpQSortInfo;",
+                        "rust_code": "pub type BzpQSortInfo = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    uint8_t *block;\n    int32_t *map;\n    int32_t *mtfV;\n    bool *inUse;\n    int32_t mtfFreq[BZP_MAX_ALPHA_SIZE];\n    int32_t nBlock;\n    int32_t nMtf;\n    int32_t nUse;\n    int32_t pad;\n} BzpMtfInfo;",
+                        "rust_code": "pub type BzpMtfInfo = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    int32_t heap[BZP_MAX_ALPHA_SIZE + 1];\n    int32_t weight[BZP_MAX_ALPHA_SIZE * 2];\n    int32_t parent[BZP_MAX_ALPHA_SIZE * 2];\n    int32_t len[BZP_MAX_ALPHA_SIZE];\n    int32_t table[BZP_MAX_ALPHA_SIZE];\n    int32_t nHeap;\n    int32_t nWeight;\n    int32_t alphaSize;\n} BzpHuffmanInfo;",
+                        "rust_code": "pub type BzpHuffmanInfo = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    int32_t *block;\n    int32_t *mtfFreq;\n    int32_t *select;\n    int32_t *selectMTF;\n    BzpHuffmanInfo huffmanGroups[BZP_MAX_GROUPS_NUM];\n    int32_t cost[BZP_MAX_GROUPS_NUM];\n    int32_t nGroups;\n    int32_t nBlock;\n    int32_t nSelect;\n    int32_t alphaSize;\n} BzpHuffmanGroups;",
+                        "rust_code": "pub type BzpHuffmanGroups = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    int32_t *sorted;\n    uint8_t *block;\n    uint8_t *deCode;\n    int32_t nBlock;\n    int32_t oriPtr;\n} BzpBwtDecodeInfo;",
+                        "rust_code": "pub type BzpBwtDecodeInfo = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n{\n    int32_t *select;\n    int32_t len[BZP_MAX_GROUPS_NUM][BZP_MAX_ALPHA_SIZE];\n    int32_t perm[BZP_MAX_GROUPS_NUM][BZP_MAX_ALPHA_SIZE];\n    int32_t limit[BZP_MAX_GROUPS_NUM][BZP_MAX_ALPHA_SIZE];\n    int32_t base[BZP_MAX_GROUPS_NUM][BZP_MAX_ALPHA_SIZE];\n    int32_t minLens[BZP_MAX_GROUPS_NUM];\n    int32_t nGroups;\n    int32_t nSelect;\n    int32_t alphaSize;\n    int32_t deCodeNum;\n    int32_t selectCnt;\n    int32_t nBlock;\n} BzpHuffmanDecode;",
+                        "rust_code": "pub type BzpHuffmanDecode = i32;"
+                    },
+                    {
+                        "c_code": "int32_t g_bzpCRC32Table[256] = {\n    0x00000000L, 0x04c11db7L, 0x09823b6eL, 0x0d4326d9L, 0x130476dcL, 0x17c56b6bL, 0x1a864db2L, 0x1e475005L, 0x2608edb8L,\n    0x22c9f00fL, 0x2f8ad6d6L, 0x2b4bcb61L, 0x350c9b64L, 0x31cd86d3L, 0x3c8ea00aL, 0x384fbdbdL, 0x4c11db70L, 0x48d0c6c7L,\n    0x4593e01eL, 0x4152fda9L, 0x5f15adacL, 0x5bd4b01bL, 0x569796c2L, 0x52568b75L, 0x6a1936c8L, 0x6ed82b7fL, 0x639b0da6L,\n    0x675a1011L, 0x791d4014L, 0x7ddc5da3L, 0x709f7b7aL, 0x745e66cdL, 0x9823b6e0L, 0x9ce2ab57L, 0x91a18d8eL, 0x95609039L,\n    0x8b27c03cL, 0x8fe6dd8bL, 0x82a5fb52L, 0x8664e6e5L, 0xbe2b5b58L, 0xbaea46efL, 0xb7a96036L, 0xb3687d81L, 0xad2f2d84L,\n    0xa9ee3033L, 0xa4ad16eaL, 0xa06c0b5dL, 0xd4326d90L, 0xd0f37027L, 0xddb056feL, 0xd9714b49L, 0xc7361b4cL, 0xc3f706fbL,\n    0xceb42022L, 0xca753d95L, 0xf23a8028L, 0xf6fb9d9fL, 0xfbb8bb46L, 0xff79a6f1L, 0xe13ef6f4L, 0xe5ffeb43L, 0xe8bccd9aL,\n    0xec7dd02dL, 0x34867077L, 0x30476dc0L, 0x3d044b19L, 0x39c556aeL, 0x278206abL, 0x23431b1cL, 0x2e003dc5L, 0x2ac12072L,\n    0x128e9dcfL, 0x164f8078L, 0x1b0ca6a1L, 0x1fcdbb16L, 0x018aeb13L, 0x054bf6a4L, 0x0808d07dL, 0x0cc9cdcaL, 0x7897ab07L,\n    0x7c56b6b0L, 0x71159069L, 0x75d48ddeL, 0x6b93dddbL, 0x6f52c06cL, 0x6211e6b5L, 0x66d0fb02L, 0x5e9f46bfL, 0x5a5e5b08L,\n    0x571d7dd1L, 0x53dc6066L, 0x4d9b3063L, 0x495a2dd4L, 0x44190b0dL, 0x40d816baL, 0xaca5c697L, 0xa864db20L, 0xa527fdf9L,\n    0xa1e6e04eL, 0xbfa1b04bL, 0xbb60adfcL, 0xb6238b25L, 0xb2e29692L, 0x8aad2b2fL, 0x8e6c3698L, 0x832f1041L, 0x87ee0df6L,\n    0x99a95df3L, 0x9d684044L, 0x902b669dL, 0x94ea7b2aL, 0xe0b41de7L, 0xe4750050L, 0xe9362689L, 0xedf73b3eL, 0xf3b06b3bL,\n    0xf771768cL, 0xfa325055L, 0xfef34de2L, 0xc6bcf05fL, 0xc27dede8L, 0xcf3ecb31L, 0xcbffd686L, 0xd5b88683L, 0xd1799b34L,\n    0xdc3abdedL, 0xd8fba05aL, 0x690ce0eeL, 0x6dcdfd59L, 0x608edb80L, 0x644fc637L, 0x7a089632L, 0x7ec98b85L, 0x738aad5cL,\n    0x774bb0ebL, 0x4f040d56L, 0x4bc510e1L, 0x46863638L, 0x42472b8fL, 0x5c007b8aL, 0x58c1663dL, 0x558240e4L, 0x51435d53L,\n    0x251d3b9eL, 0x21dc2629L, 0x2c9f00f0L, 0x285e1d47L, 0x36194d42L, 0x32d850f5L, 0x3f9b762cL, 0x3b5a6b9bL, 0x0315d626L,\n    0x07d4cb91L, 0x0a97ed48L, 0x0e56f0ffL, 0x1011a0faL, 0x14d0bd4dL, 0x19939b94L, 0x1d528623L, 0xf12f560eL, 0xf5ee4bb9L,\n    0xf8ad6d60L, 0xfc6c70d7L, 0xe22b20d2L, 0xe6ea3d65L, 0xeba91bbcL, 0xef68060bL, 0xd727bbb6L, 0xd3e6a601L, 0xdea580d8L,\n    0xda649d6fL, 0xc423cd6aL, 0xc0e2d0ddL, 0xcda1f604L, 0xc960ebb3L, 0xbd3e8d7eL, 0xb9ff90c9L, 0xb4bcb610L, 0xb07daba7L,\n    0xae3afba2L, 0xaafbe615L, 0xa7b8c0ccL, 0xa379dd7bL, 0x9b3660c6L, 0x9ff77d71L, 0x92b45ba8L, 0x9675461fL, 0x8832161aL,\n    0x8cf30badL, 0x81b02d74L, 0x857130c3L, 0x5d8a9099L, 0x594b8d2eL, 0x5408abf7L, 0x50c9b640L, 0x4e8ee645L, 0x4a4ffbf2L,\n    0x470cdd2bL, 0x43cdc09cL, 0x7b827d21L, 0x7f436096L, 0x7200464fL, 0x76c15bf8L, 0x68860bfdL, 0x6c47164aL, 0x61043093L,\n    0x65c52d24L, 0x119b4be9L, 0x155a565eL, 0x18197087L, 0x1cd86d30L, 0x029f3d35L, 0x065e2082L, 0x0b1d065bL, 0x0fdc1becL,\n    0x3793a651L, 0x3352bbe6L, 0x3e119d3fL, 0x3ad08088L, 0x2497d08dL, 0x2056cd3aL, 0x2d15ebe3L, 0x29d4f654L, 0xc5a92679L,\n    0xc1683bceL, 0xcc2b1d17L, 0xc8ea00a0L, 0xd6ad50a5L, 0xd26c4d12L, 0xdf2f6bcbL, 0xdbee767cL, 0xe3a1cbc1L, 0xe760d676L,\n    0xea23f0afL, 0xeee2ed18L, 0xf0a5bd1dL, 0xf464a0aaL, 0xf9278673L, 0xfde69bc4L, 0x89b8fd09L, 0x8d79e0beL, 0x803ac667L,\n    0x84fbdbd0L, 0x9abc8bd5L, 0x9e7d9662L, 0x933eb0bbL, 0x97ffad0cL, 0xafb010b1L, 0xab710d06L, 0xa6322bdfL, 0xa2f33668L,\n    0xbcb4666dL, 0xb8757bdaL, 0xb5365d03L, 0xb1f740b4L};",
+                        "rust_code": "pub static g_bzpCRC32Table: i32 = 0;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define BZP_OK 0",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BASE_BLOCK_SIZE 100000",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_SIZE_LEVEL_UPPER_LIMIT 9",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_SIZE_LEVEL_LOWER_LIMIT 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_RESERVED_SPACE_SIZE 19",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_THRESHOLD_SHELL_SORT 10",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MAX_STACK_SIZE 100",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_ASCII_SIZE 256",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_SHELL_SORT_INCREMENT_NUMS 2",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_SHELL_SORT_INCREMENT0 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_SHELL_SORT_INCREMENT1 4",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MTF_ENCODE0 0",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MTF_ENCODE1 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MTF_ENCODE_BASE 2",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_INIT_BLOCK_CRC 0xffffffffL",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MAX_ALPHA_SIZE 258",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MAX_GROUPS_NUM 6",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MAX_ITER_NUM 4",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MAX_TREE_HEIGHT_ENCODE 17",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_BLOCK_NUM_LIMIT0 200",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_BLOCK_NUM_LIMIT1 600",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_BLOCK_NUM_LIMIT2 1200",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_BLOCK_NUM_LIMIT3 2400",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_NUM_0 2",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_NUM_1 3",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_NUM_2 4",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_NUM_3 5",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_NGROUPS_NUM_4 6",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_ELEMS_NUM_IN_ONE_GROUP 50",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HUFFMAN_HEIGHT_WEIGHT_BITS 8",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HUFFMAN_LEN_MAX_COST 15",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HUFFMAN_LEN_UPPER_LIMIT 20",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HUFFMAN_MAX_SIZE_SELECT                                                                                    \\\n    (BZP_BLOCK_SIZE_LEVEL_UPPER_LIMIT * BZP_BASE_BLOCK_SIZE / BZP_ELEMS_NUM_IN_ONE_GROUP)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HDR_B 0x42",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HDR_Z 0x5a",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HDR_H 0x68",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HDR_0 0x30",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_HEAD_0 0x31",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_HEAD_1 0x41",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_HEAD_2 0x59",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_HEAD_3 0x26",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_HEAD_4 0x53",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_HEAD_5 0x59",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_FILE_END_0 0x17",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_FILE_END_1 0x72",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_FILE_END_2 0x45",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_FILE_END_3 0x38",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_FILE_END_4 0x50",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_FILE_END_5 0x90",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BUF_SIZE 5000",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_EOF (-1)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BIT 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BITS2 2",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BITS3 3",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BITS5 5",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BITS8 8",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BITS15 15",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BITS16 16",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BITS24 24",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BITS32 32",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_RLC_NUM_1 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_RLC_NUM_2 2",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_RLC_NUM_3 3",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_RLC_NUM_4 4",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_RLC_NUM_LOWER_LIMIT 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_RLC_NUM_UPPER_LIMIT 255",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_GROUPS_ASCII 16",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_CHARS_PER_GROUP_ASCII 16",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_CRC_MOVE_RIGHT_VAL 31",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HUFFMAN_LEN_INCREASE 2",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_HUFFMAN_LEN_REDUCED 3",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_EXTRA_CHARS_NUM 2",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_INPUT_COMPRESS 0",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_OUTPUT_COMPRESS 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_RETUEN_COMPRESS 2",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define BZP_INVALID_BLOCK_SIZE(blockSize)                                                                              \\\n    ((blockSize) < BZP_BLOCK_SIZE_LEVEL_LOWER_LIMIT || (blockSize) > BZP_BLOCK_SIZE_LEVEL_UPPER_LIMIT)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_INVALID_ALPHA_SIZE(alphaSize) ((alphaSize) > BZP_MAX_ALPHA_SIZE || (alphaSize) < 1)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MAX_FUN(a, b) (((a) > (b)) ? (a) : (b))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_MIN_FUN(a, b) (((a) < (b)) ? (a) : (b))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BLOCK_FULL(bwt) (bwt->nBlock >= bwt->nBlockMax)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_BUFF_READ_EMPTY(bzpf) (bzpf->input->pos >= bzpf->input->nBuf)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define BZP_UPDATE_CRC(crcVar, cha)                                                                                    \\\n    {                                                                                                                  \\\n        (crcVar) = ((crcVar) << 8) ^ g_bzpCRC32Table[((crcVar) >> 24) ^ ((uint8_t)(cha))];                             \\\n    }",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": [
+                    {
+                        "c_code": "BzpStream *BzpStreamInit()\n{\n    BzpStream *stream = (BzpStream *)malloc(sizeof(BzpStream));\n    if (stream == NULL)\n    {\n        return NULL;\n    }\n    stream->filePtr = NULL;\n    stream->pos = 0;\n    stream->nBuf = 0;\n    return stream;\n}",
+                        "rust_code": "pub fn BzpStreamInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpStreamFinish(BzpStream *stream)\n{\n    if (stream != NULL)\n    {\n        free(stream);\n        stream = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpStreamFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "InDeComdata *BzpInDeComdataInit()\n{\n    InDeComdata *inData = (InDeComdata *)malloc(sizeof(InDeComdata));\n    if (inData == NULL)\n    {\n        return NULL;\n    }\n    inData->input = NULL;\n    inData->output = NULL;\n    inData->num = 0;\n    inData->lasChar = BZP_ASCII_SIZE;\n    inData->nBuf = 0;\n    inData->buf = 0;\n    inData->num = 0;\n    inData->blockCRC = BZP_INIT_BLOCK_CRC;\n    return inData;\n}",
+                        "rust_code": "pub fn BzpInDeComdataInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpInDeComdataFinish(InDeComdata *inData)\n{\n    if (inData != NULL)\n    {\n        free(inData);\n        inData = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpInDeComdataFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "uint32_t BzpReadBits(int32_t nBit, InDeComdata *inData)\n{\n    uint32_t res = 0;\n    while (inData->nBuf < nBit)\n    {\n        if (inData->input->nBuf == inData->input->pos)\n        {\n            inData->input->nBuf =\n                fread(inData->input->buf, sizeof(char), sizeof(inData->input->buf), inData->input->filePtr);\n            inData->input->pos = 0;\n        }\n        int32_t data = ((uint32_t)(inData->input->buf[inData->input->pos]));\n        inData->buf = (inData->buf << BZP_BITS8) | data;\n        inData->input->pos++;\n        inData->nBuf += BZP_BITS8;\n    }\n    res = inData->buf >> (inData->nBuf - nBit);\n    res = res & ((1 << nBit) - 1);\n    inData->nBuf -= nBit;\n    return res;\n}",
+                        "rust_code": "pub fn BzpReadBits() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpWriteChar(uint8_t ch, InDeComdata *inData)\n{\n    int32_t ret = BZP_OK;\n    if (inData->output->nBuf >= BZP_BUF_SIZE)\n    {\n        int32_t n2 =\n            fwrite((void *)(inData->output->buf), sizeof(uint8_t), inData->output->nBuf, inData->output->filePtr);\n        if (n2 != inData->output->nBuf)\n        {\n            ret = BZP_ERROR_IO;\n        }\n        inData->output->nBuf = 0;\n    }\n    inData->output->buf[inData->output->nBuf++] = ch;\n    return ret;\n}",
+                        "rust_code": "pub fn BzpWriteChar() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpHuffmanDecodeStep(BzpHuffmanDecode *huffman, InDeComdata *inData)\n{\n    if (huffman->deCodeNum == BZP_ELEMS_NUM_IN_ONE_GROUP)\n    {\n        huffman->deCodeNum = 0;\n        huffman->selectCnt++;\n    }\n    int32_t gid = huffman->select[huffman->selectCnt];\n    int32_t chlen = huffman->minLens[gid];\n    int32_t val = BzpReadBits(chlen, inData);\n    while (chlen < BZP_HUFFMAN_LEN_UPPER_LIMIT && val > huffman->limit[gid][chlen])\n    {\n        chlen++;\n        int32_t nxtbit = BzpReadBits(1, inData);\n        val = (val << 1) | nxtbit;\n    }\n    if (chlen > BZP_HUFFMAN_LEN_UPPER_LIMIT)\n    {\n        return -1;\n    }\n    val = val - huffman->base[gid][chlen];\n    val = huffman->perm[gid][val];\n    huffman->deCodeNum++;\n    return val;\n}",
+                        "rust_code": "pub fn BzpHuffmanDecodeStep() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpCheckFileHead(InDeComdata *inData)\n{\n    uint8_t ch;\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_BLOCK_HEAD_1)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_BLOCK_HEAD_2)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_BLOCK_HEAD_3)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_BLOCK_HEAD_4)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_BLOCK_HEAD_5)\n    {\n        return BZP_ERROR_DATA;\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpCheckFileHead() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "uint32_t BzpReadUInt24(InDeComdata *inData)\n{\n    uint8_t ch;\n    uint32_t val = 0;\n    ch = BzpReadBits(BZP_BITS8, inData);\n    val = (val << BZP_BITS8) | ((uint32_t)ch);\n    ch = BzpReadBits(BZP_BITS8, inData);\n    val = (val << BZP_BITS8) | ((uint32_t)ch);\n    ch = BzpReadBits(BZP_BITS8, inData);\n    val = (val << BZP_BITS8) | ((uint32_t)ch);\n    return val;\n}",
+                        "rust_code": "pub fn BzpReadUInt24() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "uint32_t BzpReadUInt32(InDeComdata *inData)\n{\n    uint8_t ch;\n    uint32_t val = 0;\n    ch = BzpReadBits(BZP_BITS8, inData);\n    val = (val << BZP_BITS8) | ((uint32_t)ch);\n    ch = BzpReadBits(BZP_BITS8, inData);\n    val = (val << BZP_BITS8) | ((uint32_t)ch);\n    ch = BzpReadBits(BZP_BITS8, inData);\n    val = (val << BZP_BITS8) | ((uint32_t)ch);\n    ch = BzpReadBits(BZP_BITS8, inData);\n    val = (val << BZP_BITS8) | ((uint32_t)ch);\n    return val;\n}",
+                        "rust_code": "pub fn BzpReadUInt32() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpDeHuffmanSelect(InDeComdata *inData, BzpHuffmanDecode *huffman)\n{\n    uint8_t ch;\n    int32_t selectmtf[BZP_HUFFMAN_MAX_SIZE_SELECT];\n    for (int32_t i = 0; i < huffman->nSelect; i++)\n    {\n        int32_t j = -1;\n        do\n        {\n            ch = BzpReadBits(BZP_BIT, inData);\n            j++;\n        } while (ch != 0);\n        if (j >= huffman->nGroups)\n        {\n            return BZP_ERROR_DATA;\n        }\n        selectmtf[i] = j;\n    }\n    int32_t listSelect[BZP_MAX_GROUPS_NUM];\n    for (int32_t i = 0; i < BZP_MAX_GROUPS_NUM; i++)\n    {\n        listSelect[i] = i;\n    }\n    for (int32_t i = 0; i < huffman->nSelect; i++)\n    {\n        int32_t pos = selectmtf[i];\n        int32_t tmpv = listSelect[pos];\n        for (int32_t j = pos; j > 0; j--)\n        {\n            listSelect[j] = listSelect[j - 1];\n        }\n        listSelect[0] = tmpv;\n        huffman->select[i] = tmpv;\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpDeHuffmanSelect() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpDeHuffmanLen(InDeComdata *inData, BzpHuffmanDecode *huffman)\n{\n    uint8_t ch;\n    for (int32_t i = 0; i < huffman->nGroups; i++)\n    {\n        int32_t val = BzpReadBits(BZP_BITS5, inData);\n        for (int32_t j = 0; j < huffman->alphaSize; j++)\n        {\n            ch = BzpReadBits(BZP_BIT, inData);\n            while (ch != 0)\n            {\n                ch = BzpReadBits(BZP_BIT, inData);\n                val += (ch == 0 ? 1 : -1);\n                ch = BzpReadBits(BZP_BIT, inData);\n            }\n            if (val < 1 || val > BZP_HUFFMAN_LEN_UPPER_LIMIT)\n            {\n                return BZP_ERROR_DATA;\n            }\n            huffman->len[i][j] = val;\n        }\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpDeHuffmanLen() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpMTFDeCode(InDeComdata *inData, BzpHuffmanDecode *huffman, BzpBwtDecodeInfo *debwt)\n{\n    debwt->nBlock = 0;\n    uint8_t ch;\n    int32_t ninUse = huffman->alphaSize - BZP_EXTRA_CHARS_NUM;\n    int32_t eob = ninUse + 1;\n    int32_t val = BzpHuffmanDecodeStep(huffman, inData);\n    while (val != eob && val != -1)\n    {\n        if (val == 0 || val == 1)\n        {\n            int32_t res = 0, basenum = 1;\n            while (val == 0 || val == 1)\n            {\n                res = res + (val + 1) * basenum;\n                basenum <<= 1;\n                val = BzpHuffmanDecodeStep(huffman, inData);\n            }\n            for (int32_t j = 0; j < res; j++)\n            {\n                debwt->block[debwt->nBlock++] = inData->list[0];\n            }\n        }\n        else\n        {\n            int32_t pos = val - 1;\n            ch = inData->list[pos];\n            debwt->block[debwt->nBlock++] = ch;\n            for (int32_t j = pos; j > 0; j--)\n            {\n                inData->list[j] = inData->list[j - 1];\n            }\n            inData->list[0] = ch;\n            val = BzpHuffmanDecodeStep(huffman, inData);\n        }\n    }\n    if (val == -1)\n    {\n        return BZP_ERROR_DATA;\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpMTFDeCode() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpDeCodeToStream(InDeComdata *inData, BzpBwtDecodeInfo *debwt)\n{\n    uint8_t ch;\n    int32_t ret = BZP_OK;\n    for (int32_t i = 0; i < debwt->nBlock; i++)\n    {\n        ch = debwt->deCode[i];\n        if (inData->num == BZP_RLC_NUM_4)\n        {\n            for (int32_t j = 0; j < ((int32_t)ch); j++)\n            {\n                BZP_UPDATE_CRC(inData->blockCRC, (uint8_t)inData->lasChar);\n                ret |= BzpWriteChar(inData->lasChar, inData);\n            }\n            inData->lasChar = BZP_ASCII_SIZE;\n            inData->num = 0;\n        }\n        else if (ch == inData->lasChar)\n        {\n            BZP_UPDATE_CRC(inData->blockCRC, ch);\n            ret = BzpWriteChar(ch, inData);\n            inData->num++;\n        }\n        else\n        {\n            BZP_UPDATE_CRC(inData->blockCRC, ch);\n            ret = BzpWriteChar(ch, inData);\n            inData->lasChar = ch;\n            inData->num = 1;\n        }\n        if (ret != BZP_OK)\n            break;\n    }\n    return ret;\n}",
+                        "rust_code": "pub fn BzpDeCodeToStream() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpGetDictionaryList(InDeComdata *inData)\n{\n    int32_t ninUse = 0;\n    bool use16[16] = {0};\n    bool inUse[BZP_ASCII_SIZE] = {0};\n    for (int32_t i = 0; i < BZP_GROUPS_ASCII; i++)\n    {\n        use16[i] = BzpReadBits(BZP_BIT, inData);\n    }\n    for (int32_t i = 0; i < BZP_GROUPS_ASCII; i++)\n    {\n        if (use16[i])\n        {\n            for (int32_t j = 0; j < BZP_CHARS_PER_GROUP_ASCII; j++)\n            {\n                inUse[i * BZP_GROUPS_ASCII + j] = BzpReadBits(BZP_BIT, inData);\n            }\n        }\n    }\n    for (int32_t i = 0; i < BZP_ASCII_SIZE; i++)\n    {\n        if (inUse[i])\n        {\n            inData->list[ninUse++] = i;\n        }\n    }\n    return ninUse;\n}",
+                        "rust_code": "pub fn BzpGetDictionaryList() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpDeCompressOneBlock(InDeComdata *inData, BzpHuffmanDecode *huffman, BzpBwtDecodeInfo *debwt)\n{\n    int32_t ret = BZP_OK;\n    BzpCheckFileHead(inData);\n    uint32_t blockCRC = BzpReadUInt32(inData);\n    (void)BzpReadBits(BZP_BIT, inData);\n    int32_t oriPtr = BzpReadUInt24(inData);\n    if (oriPtr < 0 || oriPtr > BZP_BASE_BLOCK_SIZE * inData->blockSize)\n    {\n        return BZP_ERROR_DATA;\n    }\n    int32_t ninUse = BzpGetDictionaryList(inData);\n    huffman->alphaSize = ninUse + BZP_EXTRA_CHARS_NUM;\n    huffman->nGroups = BzpReadBits(BZP_BITS3, inData);\n    if (huffman->nGroups < BZP_NGROUPS_NUM_0 || huffman->nGroups > BZP_NGROUPS_NUM_4)\n    {\n        return BZP_ERROR_DATA;\n    }\n    huffman->nSelect = BzpReadBits(BZP_BITS15, inData);\n    int32_t nSelectUpperLimit = (inData->blockSize * BZP_BASE_BLOCK_SIZE / BZP_ELEMS_NUM_IN_ONE_GROUP + 1);\n    if (huffman->nSelect < 1 || huffman->nSelect > nSelectUpperLimit)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ret |= BzpDeHuffmanSelect(inData, huffman);\n    ret |= BzpDeHuffmanLen(inData, huffman);\n    if (ret != BZP_OK)\n    {\n        return ret;\n    }\n    BzpGenerateDecodeTable(huffman);\n    debwt->oriPtr = oriPtr;\n    ret = BzpMTFDeCode(inData, huffman, debwt);\n    if (ret != BZP_OK || debwt->nBlock >= BZP_BASE_BLOCK_SIZE * inData->blockSize)\n    {\n        return BZP_ERROR_DATA;\n    }\n    BzpBwtDecode(debwt);\n    ret = BzpDeCodeToStream(inData, debwt);\n    if (ret != BZP_OK)\n    {\n        return ret;\n    }\n    inData->blockCRC = ~(inData->blockCRC);\n    if (blockCRC != inData->blockCRC)\n    {\n        ret = BZP_ERROR_DATA;\n    }\n    return ret;\n}",
+                        "rust_code": "pub fn BzpDeCompressOneBlock() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BZPReadFileEnd(InDeComdata *inData, uint32_t caltotalCRC)\n{\n    uint8_t ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_FILE_END_1)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_FILE_END_2)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_FILE_END_3)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_FILE_END_4)\n    {\n        return BZP_ERROR_DATA;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_FILE_END_5)\n    {\n        return BZP_ERROR_DATA;\n    }\n    uint32_t storedcombinedcrc = BzpReadUInt32(inData);\n    if (caltotalCRC != storedcombinedcrc)\n    {\n        return BZP_ERROR_DATA;\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BZPReadFileEnd() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpReadFileHead(InDeComdata *inData)\n{\n    uint8_t ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_HDR_B)\n    {\n        return BZP_ERROR_DATA_MAGIC;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_HDR_Z)\n    {\n        return BZP_ERROR_DATA_MAGIC;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    if (ch != BZP_HDR_H)\n    {\n        return BZP_ERROR_DATA_MAGIC;\n    }\n    ch = BzpReadBits(BZP_BITS8, inData);\n    int32_t blockSize = ch - BZP_HDR_0;\n    if (BZP_INVALID_BLOCK_SIZE(blockSize))\n    {\n        return BZP_ERROR_DATA_MAGIC;\n    }\n    inData->blockSize = blockSize;\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpReadFileHead() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BZPDeCompressData(InDeComdata *inData)\n{\n    int32_t ret = BZP_OK;\n    uint32_t caltotalCRC = 0;\n    uint8_t ch;\n    ret = BzpReadFileHead(inData);\n    if (ret != BZP_OK)\n    {\n        return ret;\n    }\n    BzpHuffmanDecode *huffman = BzpHuffmanDecodeInit(inData->blockSize);\n    BzpBwtDecodeInfo *debwt = BzpBwtDecodeInit(inData->blockSize);\n    while ((ch = BzpReadBits(BZP_BITS8, inData)) != BZP_FILE_END_0)\n    {\n        if (ch != BZP_BLOCK_HEAD_0)\n        {\n            ret = BZP_ERROR_DATA;\n            break;\n        }\n        BzpHuffmanDecodeReset(huffman);\n        inData->blockCRC = BZP_INIT_BLOCK_CRC;\n        ret = BzpDeCompressOneBlock(inData, huffman, debwt);\n        if (ret != BZP_OK)\n        {\n            break;\n        }\n        caltotalCRC = (caltotalCRC << 1) | (caltotalCRC >> BZP_CRC_MOVE_RIGHT_VAL);\n        caltotalCRC ^= inData->blockCRC;\n    }\n    if (ret == BZP_OK)\n    {\n        ret = BZPReadFileEnd(inData, caltotalCRC);\n    }\n    BzpHuffmanDecodeFinish(huffman);\n    BzpBwtDecodeFinish(debwt);\n    return ret;\n}",
+                        "rust_code": "pub fn BZPDeCompressData() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpDeComStreamFinish(InDeComdata *inData, BzpStream *inStream, BzpStream *outStream)\n{\n    if (inStream->filePtr != NULL)\n    {\n        fclose(inStream->filePtr);\n        inStream->filePtr = NULL;\n    }\n    if (outStream->filePtr != NULL)\n    {\n        fclose(outStream->filePtr);\n        outStream->filePtr = NULL;\n    }\n    BzpStreamFinish(inStream);\n    BzpStreamFinish(outStream);\n    BzpInDeComdataFinish(inData);\n}",
+                        "rust_code": "pub fn BzpDeComStreamFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpDeCompressStream(char *inName, char *outName)\n{\n    int32_t ret = BZP_OK;\n    if (inName == NULL || outName == NULL)\n    {\n        return BZP_ERROR_PARAM;\n    }\n    BzpStream *inStream = BzpStreamInit();\n    BzpStream *outStream = BzpStreamInit();\n    if (inStream == NULL || outStream == NULL)\n    {\n        BzpStreamFinish(inStream);\n        BzpStreamFinish(outStream);\n        return BZP_ERROR_MEMORY_OPER_FAILURE;\n    }\n    inStream->filePtr = fopen(inName, \"rb\");\n    outStream->filePtr = fopen(outName, \"wb\");\n    if ((inStream->filePtr == NULL || outStream->filePtr == NULL))\n    {\n        free(inStream);\n        inStream = NULL;\n        free(outStream);\n        outStream = NULL;\n        remove(outName);\n        return BZP_ERROR_IO;\n    }\n    InDeComdata *inData = BzpInDeComdataInit();\n    if (inData == NULL)\n    {\n        BzpDeComStreamFinish(inData, inStream, outStream);\n        remove(outName);\n        return BZP_ERROR_MEMORY_OPER_FAILURE;\n    }\n    inData->input = inStream;\n    inData->output = outStream;\n    ret = BZPDeCompressData(inData);\n    if (inData->output->nBuf > 0)\n    {\n        int32_t n2 =\n            fwrite((void *)(inData->output->buf), sizeof(uint8_t), inData->output->nBuf, inData->output->filePtr);\n        if (n2 != inData->output->nBuf)\n        {\n            ret = BZP_ERROR_IO;\n        }\n        inData->output->nBuf = 0;\n    }\n    BzpDeComStreamFinish(inData, inStream, outStream);\n    if (ret != BZP_OK)\n    {\n        remove(outName);\n    }\n    return ret;\n}",
+                        "rust_code": "pub fn BzpDeCompressStream() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "BzpAlgorithmInfo *BzpAlgorithmInfoInit(int32_t blockSize)\n{\n    BzpAlgorithmInfo *bzpInfo = (BzpAlgorithmInfo *)malloc(sizeof(BzpAlgorithmInfo));\n    if (bzpInfo == NULL)\n    {\n        return NULL;\n    }\n    bzpInfo->bwt = BzpBlockSortInit(blockSize);\n    bzpInfo->mtf = BzpMtfInit(blockSize);\n    bzpInfo->huffman = BzpHuffmanGroupsInit(blockSize);\n    bzpInfo->outData = BzpOutComDataInit(blockSize);\n    bzpInfo->compressFile = BzpFileInit();\n    if (bzpInfo->bwt == NULL || bzpInfo->outData == NULL || bzpInfo->compressFile == NULL || bzpInfo->mtf == NULL ||\n        bzpInfo->huffman == NULL)\n    {\n        BzpAlgorithmInfoFinish(bzpInfo);\n        return NULL;\n    }\n    return bzpInfo;\n}",
+                        "rust_code": "pub fn BzpAlgorithmInfoInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpOpenFile(BzpAlgorithmInfo *bzpInfo, char *inName, char *outName)\n{\n    if (bzpInfo == NULL)\n    {\n        return BZP_ERROR_PARAM;\n    }\n    bzpInfo->compressFile->input->filePtr = fopen(inName, \"rb\");\n    bzpInfo->compressFile->output->filePtr = fopen(outName, \"wb\");\n    if ((bzpInfo->compressFile->input->filePtr == NULL || bzpInfo->compressFile->output->filePtr == NULL))\n    {\n        BzpAlgorithmInfoFinish(bzpInfo);\n        remove(outName);\n        return BZP_ERROR_IO;\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpOpenFile() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpAlgorithmInfoFinish(BzpAlgorithmInfo *bzpInfo)\n{\n    if (bzpInfo != NULL)\n    {\n        BzpBwtFinish(bzpInfo->bwt);\n        BzpMtfFinish(bzpInfo->mtf);\n        BzpHuffmanGroupsFinish(bzpInfo->huffman);\n        BzpFileFinish(bzpInfo->compressFile);\n        BzpOutComDataFinish(bzpInfo->outData);\n        free(bzpInfo);\n    }\n}",
+                        "rust_code": "pub fn BzpAlgorithmInfoFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "BzpFile *BzpFileInit()\n{\n    BzpFile *compressFile = (BzpFile *)malloc(sizeof(BzpFile));\n    BzpStream *inStream = BzpStreamInit();\n    BzpStream *outStream = BzpStreamInit();\n    if (compressFile == NULL || inStream == NULL || outStream == NULL)\n    {\n        BzpStreamFinish(inStream);\n        BzpStreamFinish(outStream);\n        BzpFileFinish(compressFile);\n        return NULL;\n    }\n    compressFile->input = inStream;\n    compressFile->output = outStream;\n    compressFile->input->pos = 0;\n    compressFile->output->pos = 0;\n    compressFile->num = 0;\n    compressFile->lasChar = BZP_ASCII_SIZE;\n    compressFile->state = BZP_INPUT_COMPRESS;\n    return compressFile;\n}",
+                        "rust_code": "pub fn BzpFileInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpFileFinish(BzpFile *bzpF)\n{\n    if (bzpF != NULL)\n    {\n        BzpStreamFinish(bzpF->input);\n        BzpStreamFinish(bzpF->output);\n        free(bzpF);\n        bzpF = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpFileFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "BzpOutComdata *BzpOutComDataInit(int32_t blockSize)\n{\n    BzpOutComdata *outData = (BzpOutComdata *)malloc(sizeof(BzpOutComdata));\n    if (outData == NULL)\n    {\n        return NULL;\n    }\n    outData->out = NULL;\n    outData->out = (uint8_t *)malloc(blockSize * BZP_BASE_BLOCK_SIZE * sizeof(uint32_t));\n    if (outData->out == NULL)\n    {\n        free(outData);\n        return NULL;\n    }\n    outData->nBuf = 0;\n    outData->buf = 0;\n    outData->num = 0;\n    outData->blockSize = blockSize;\n    return outData;\n}",
+                        "rust_code": "pub fn BzpOutComDataInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpOutComDataFinish(BzpOutComdata *data)\n{\n    if (data != NULL)\n    {\n        if (data->out != NULL)\n        {\n            free(data->out);\n            data->out = NULL;\n        }\n        free(data);\n        data = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpOutComDataFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteToArray(int32_t val, int32_t n, BzpOutComdata *data)\n{\n    while (data->nBuf >= BZP_BITS8)\n    {\n        data->out[data->num++] = (uint8_t)(data->buf >> BZP_BITS24);\n        data->nBuf -= BZP_BITS8;\n        data->buf <<= BZP_BITS8;\n    }\n    data->buf |= (val << (BZP_BITS32 - n - data->nBuf));\n    data->nBuf += n;\n}",
+                        "rust_code": "pub fn BzpWriteToArray() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteInt32(int32_t val, BzpOutComdata *data)\n{\n    BzpWriteToArray((val >> BZP_BITS24) & 0xffL, BZP_BITS8, data);\n    BzpWriteToArray((val >> BZP_BITS16) & 0xffL, BZP_BITS8, data);\n    BzpWriteToArray((val >> BZP_BITS8) & 0xffL, BZP_BITS8, data);\n    BzpWriteToArray(val & 0xffL, BZP_BITS8, data);\n}",
+                        "rust_code": "pub fn BzpWriteInt32() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "bool BzpFileEOF(FILE *f)\n{\n    int32_t c = fgetc(f);\n    if (c == BZP_EOF)\n        return true;\n    (void)ungetc(c, f);\n    return false;\n}",
+                        "rust_code": "pub fn BzpFileEOF() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteFileHead(BzpOutComdata *outData, int32_t blockId)\n{\n    if (blockId == 0)\n    {\n        BzpWriteToArray(BZP_HDR_B, BZP_BITS8, outData);\n        BzpWriteToArray(BZP_HDR_Z, BZP_BITS8, outData);\n        BzpWriteToArray(BZP_HDR_H, BZP_BITS8, outData);\n        BzpWriteToArray((BZP_HDR_0 + outData->blockSize), BZP_BITS8, outData);\n    }\n}",
+                        "rust_code": "pub fn BzpWriteFileHead() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpCalculateCRC(BzpBwtInfo *bwt)\n{\n    bwt->blockCRC = ~(bwt->blockCRC);\n    bwt->combinedCRC = (bwt->combinedCRC << 1) | (bwt->combinedCRC >> BZP_CRC_MOVE_RIGHT_VAL);\n    bwt->combinedCRC ^= bwt->blockCRC;\n}",
+                        "rust_code": "pub fn BzpCalculateCRC() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteBlockHead(BzpOutComdata *outData, BzpBwtInfo *bwt)\n{\n    BzpWriteToArray(BZP_BLOCK_HEAD_0, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_BLOCK_HEAD_1, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_BLOCK_HEAD_2, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_BLOCK_HEAD_3, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_BLOCK_HEAD_4, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_BLOCK_HEAD_5, BZP_BITS8, outData);\n    BzpWriteInt32(bwt->blockCRC, outData);\n    BzpWriteToArray(0, BZP_BIT, outData);\n    BzpWriteToArray(bwt->oriPtr, BZP_BITS24, outData);\n}",
+                        "rust_code": "pub fn BzpWriteBlockHead() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteValidASCII(BzpOutComdata *outData, BzpBwtInfo *bwt)\n{\n    int32_t validGid[BZP_ASCII_SIZE], cnt = 0;\n    bool use16[BZP_ASCII_SIZE];\n    (void)memset_s(use16, sizeof(use16), 0, sizeof(use16));\n    for (int32_t i = 0; i < BZP_ASCII_SIZE; i++)\n    {\n        int32_t gid = i / BZP_CHARS_PER_GROUP_ASCII;\n        use16[gid] |= bwt->inUse[i];\n    }\n    for (int32_t i = 0; i < BZP_GROUPS_ASCII; i++)\n    {\n        BzpWriteToArray((int32_t)(use16[i]), BZP_BIT, outData);\n        if (use16[i])\n        {\n            validGid[cnt++] = i;\n        }\n    }\n    for (int32_t i = 0; i < cnt; i++)\n    {\n        for (int32_t j = 0; j < BZP_CHARS_PER_GROUP_ASCII; j++)\n        {\n            int32_t valid = validGid[i] * BZP_CHARS_PER_GROUP_ASCII + j;\n            BzpWriteToArray((int32_t)(bwt->inUse[valid]), BZP_BIT, outData);\n        }\n    }\n}",
+                        "rust_code": "pub fn BzpWriteValidASCII() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteSelect(BzpOutComdata *outData, BzpHuffmanGroups *huffman)\n{\n    BzpWriteToArray(huffman->nSelect, BZP_BITS15, outData);\n    for (int32_t i = 0; i < huffman->nSelect; i++)\n    {\n        for (int32_t j = 0; j < huffman->selectMTF[i]; j++)\n        {\n            BzpWriteToArray(1, BZP_BIT, outData);\n        }\n        BzpWriteToArray(0, BZP_BIT, outData);\n    }\n}",
+                        "rust_code": "pub fn BzpWriteSelect() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteLen(BzpOutComdata *outData, BzpHuffmanGroups *huffman)\n{\n    for (int32_t i = 0; i < huffman->nGroups; i++)\n    {\n        int32_t val = huffman->huffmanGroups[i].len[0];\n        BzpWriteToArray(val, BZP_BITS5, outData);\n        for (int32_t j = 0; j < huffman->alphaSize; j++)\n        {\n            int32_t tar = huffman->huffmanGroups[i].len[j];\n            int32_t deta = 0, saveVal = 0;\n            if (val < tar)\n            {\n                saveVal = BZP_HUFFMAN_LEN_INCREASE;\n                deta = 1;\n            }\n            else if (val > tar)\n            {\n                saveVal = BZP_HUFFMAN_LEN_REDUCED;\n                deta = -1;\n            }\n            while (val != tar)\n            {\n                BzpWriteToArray(saveVal, BZP_BITS2, outData);\n                val += deta;\n            }\n            BzpWriteToArray(0, BZP_BIT, outData);\n        }\n    }\n}",
+                        "rust_code": "pub fn BzpWriteLen() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteInputEncode(BzpOutComdata *outData, BzpMtfInfo *mtf, BzpHuffmanGroups *huffman)\n{\n    for (int32_t i = 0; i < mtf->nMtf; i++)\n    {\n        int32_t val = mtf->mtfV[i];\n        int32_t gid = huffman->select[i / BZP_ELEMS_NUM_IN_ONE_GROUP];\n        int32_t code = huffman->huffmanGroups[gid].table[val];\n        int32_t len = huffman->huffmanGroups[gid].len[val];\n        BzpWriteToArray(code, len, outData);\n    }\n}",
+                        "rust_code": "pub fn BzpWriteInputEncode() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpWriteFileEnd(BzpOutComdata *outData, int32_t combinedCRC)\n{\n    BzpWriteToArray(BZP_FILE_END_0, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_FILE_END_1, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_FILE_END_2, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_FILE_END_3, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_FILE_END_4, BZP_BITS8, outData);\n    BzpWriteToArray(BZP_FILE_END_5, BZP_BITS8, outData);\n    BzpWriteInt32(combinedCRC, outData);\n}",
+                        "rust_code": "pub fn BzpWriteFileEnd() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpFlushbuf(BzpOutComdata *outData)\n{\n    while (outData->nBuf > 0)\n    {\n        outData->out[outData->num++] = (uint8_t)(outData->buf >> BZP_BITS24);\n        outData->nBuf -= BZP_BITS8;\n        outData->buf <<= BZP_BITS8;\n    }\n}",
+                        "rust_code": "pub fn BzpFlushbuf() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpCompressOneBlock(BzpAlgorithmInfo *bzpInfo, BzpOutComdata *outData)\n{\n    BzpBwtInfo *bwt = bzpInfo->bwt;\n    BzpMtfInfo *mtf = bzpInfo->mtf;\n    BzpHuffmanGroups *huffman = bzpInfo->huffman;\n    int ret = BZP_OK;\n    if (bwt->nBlock == 0)\n    {\n        return BZP_OK;\n    }\n    BzpWriteFileHead(outData, bwt->blockId);\n    if (bwt->nBlock > 0)\n    {\n        BzpCalculateCRC(bwt);\n        BzpBlockSortMain(bwt);\n        BzpMtfReSet(mtf);\n        mtf->block = bwt->block;\n        mtf->map = bwt->sortBlock;\n        mtf->inUse = bwt->inUse;\n        mtf->nBlock = bwt->nBlock;\n        BzpMtfMain(mtf);\n        ret = BzpHuffmanGroupsReset(huffman, mtf->nUse + BZP_EXTRA_CHARS_NUM);\n        if (ret != BZP_OK)\n        {\n            return ret;\n        }\n        huffman->block = mtf->mtfV;\n        huffman->mtfFreq = mtf->mtfFreq;\n        huffman->nBlock = mtf->nMtf;\n        BzpHuffmanMain(huffman);\n        BzpWriteBlockHead(outData, bwt);\n        BzpWriteValidASCII(outData, bwt);\n        BzpWriteToArray(huffman->nGroups, BZP_BITS3, outData);\n        BzpWriteSelect(outData, huffman);\n        BzpWriteLen(outData, huffman);\n        BzpWriteInputEncode(outData, mtf, huffman);\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpCompressOneBlock() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpBuffToStream(BzpFile *bzpf, BzpOutComdata *outData)\n{\n    bzpf->output->pos = 0;\n    int32_t pos = 0;\n    while (pos < outData->num)\n    {\n        bzpf->output->nBuf = 0;\n        while (pos < outData->num && bzpf->output->nBuf < BZP_BUF_SIZE)\n        {\n            bzpf->output->buf[bzpf->output->nBuf++] = outData->out[pos];\n            pos++;\n        }\n        int32_t n2 = fwrite((void *)(bzpf->output->buf), sizeof(uint8_t), bzpf->output->nBuf, bzpf->output->filePtr);\n        if (n2 != bzpf->output->nBuf)\n        {\n            return BZP_ERROR_IO;\n        }\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpBuffToStream() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpAddCharToBlock(uint8_t lasch, int32_t num, BzpBwtInfo *bwt)\n{\n    if (num < BZP_RLC_NUM_LOWER_LIMIT || num > BZP_RLC_NUM_UPPER_LIMIT)\n    {\n        return;\n    }\n    for (int32_t i = 0; i < num; i++)\n    {\n        BZP_UPDATE_CRC(bwt->blockCRC, lasch);\n    }\n    int32_t val = BZP_MIN_FUN(num, (int32_t)BZP_RLC_NUM_4);\n    switch (val)\n    {\n    case BZP_RLC_NUM_4:\n        bwt->block[bwt->nBlock++] = lasch;\n    case BZP_RLC_NUM_3:\n        bwt->block[bwt->nBlock++] = lasch;\n    case BZP_RLC_NUM_2:\n        bwt->block[bwt->nBlock++] = lasch;\n    case BZP_RLC_NUM_1:\n        bwt->block[bwt->nBlock++] = lasch;\n    default:\n        break;\n    }\n    if (num >= BZP_RLC_NUM_4)\n    {\n        bwt->block[bwt->nBlock++] = ((char)(num - BZP_RLC_NUM_4));\n        bwt->inUse[num - BZP_RLC_NUM_4] = true;\n    }\n    bwt->inUse[lasch] = true;\n}",
+                        "rust_code": "pub fn BzpAddCharToBlock() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpBuffToBlockRLC(BzpFile *bzpf, BzpBwtInfo *bwt, bool IsLastdata)\n{\n    while (!BZP_BLOCK_FULL(bwt) && !BZP_BUFF_READ_EMPTY(bzpf))\n    {\n        int32_t pos = bzpf->input->pos;\n        uint8_t ch = (uint8_t)bzpf->input->buf[pos];\n        uint8_t lasch = (uint8_t)bzpf->lasChar;\n        if (ch != lasch || bzpf->num == BZP_RLC_NUM_UPPER_LIMIT)\n        {\n            BzpAddCharToBlock(lasch, bzpf->num, bwt);\n            bzpf->lasChar = ch;\n            bzpf->num = 1;\n        }\n        else\n        {\n            bzpf->num++;\n        }\n        bzpf->input->pos++;\n    }\n    if (IsLastdata && BZP_BUFF_READ_EMPTY(bzpf))\n    {\n        BzpAddCharToBlock(bzpf->lasChar, bzpf->num, bwt);\n        bzpf->lasChar = BZP_ASCII_SIZE;\n        bzpf->num = 0;\n    }\n}",
+                        "rust_code": "pub fn BzpBuffToBlockRLC() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpResetCompress(BzpBwtInfo *bwt, BzpOutComdata *outData)\n{\n    outData->num = 0;\n    bwt->nBlock = 0;\n    bwt->blockCRC = BZP_INIT_BLOCK_CRC;\n    (void)memset_s(bwt->inUse, sizeof(bwt->inUse), 0, sizeof(bwt->inUse));\n    int32_t n = outData->blockSize * BZP_BASE_BLOCK_SIZE * sizeof(int32_t);\n    (void)memset_s(bwt->isStartPos, n, 0, n);\n    bwt->blockId++;\n}",
+                        "rust_code": "pub fn BzpResetCompress() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpProcessData(BzpAlgorithmInfo *bzpInfo, bool IsLastdata)\n{\n    BzpFile *bzpf = bzpInfo->compressFile;\n    BzpOutComdata *outData = bzpInfo->outData;\n    BzpBwtInfo *bwt = bzpInfo->bwt;\n    bzpf->state = BZP_INPUT_COMPRESS;\n    int32_t ret = BZP_OK;\n    while (bzpf->state != BZP_RETUEN_COMPRESS)\n    {\n        if (bzpf->state == BZP_OUTPUT_COMPRESS)\n        {\n            ret = BzpBuffToStream(bzpf, outData);\n            BzpResetCompress(bwt, outData);\n            bzpf->state = BZP_INPUT_COMPRESS;\n            if (IsLastdata && BZP_BUFF_READ_EMPTY(bzpf))\n            {\n                bzpf->state = BZP_RETUEN_COMPRESS;\n            }\n        }\n        if (bzpf->state == BZP_INPUT_COMPRESS)\n        {\n            BzpBuffToBlockRLC(bzpf, bwt, IsLastdata);\n            if (IsLastdata && BZP_BUFF_READ_EMPTY(bzpf))\n            {\n                ret = BzpCompressOneBlock(bzpInfo, outData);\n                BzpWriteFileEnd(outData, bwt->combinedCRC);\n                BzpFlushbuf(outData);\n                bzpf->state = BZP_OUTPUT_COMPRESS;\n            }\n            else if (BZP_BLOCK_FULL(bwt))\n            {\n                ret = BzpCompressOneBlock(bzpInfo, outData);\n                bzpf->state = BZP_OUTPUT_COMPRESS;\n            }\n            else\n            {\n                bzpf->state = BZP_RETUEN_COMPRESS;\n            }\n        }\n        if (ret != BZP_OK)\n        {\n            return ret;\n        }\n    }\n    return ret;\n}",
+                        "rust_code": "pub fn BzpProcessData() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpCompressEnd(BzpAlgorithmInfo *bzpInfo)\n{\n    if (bzpInfo->compressFile->input->filePtr != NULL)\n    {\n        fclose(bzpInfo->compressFile->input->filePtr);\n    }\n    if (bzpInfo->compressFile->output->filePtr != NULL)\n    {\n        fclose(bzpInfo->compressFile->output->filePtr);\n    }\n    BzpAlgorithmInfoFinish(bzpInfo);\n}",
+                        "rust_code": "pub fn BzpCompressEnd() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpCompressStream(char *inName, char *outName, int32_t blockSize)\n{\n    int32_t ret = BZP_OK;\n    bool IsLastdata = false;\n    if (inName == NULL || outName == NULL || BZP_INVALID_BLOCK_SIZE(blockSize))\n    {\n        return BZP_ERROR_PARAM;\n    }\n    BzpAlgorithmInfo *bzpInfo = BzpAlgorithmInfoInit(blockSize);\n    if (bzpInfo == NULL)\n    {\n        return BZP_ERROR_MEMORY_OPER_FAILURE;\n    }\n    ret = BzpOpenFile(bzpInfo, inName, outName);\n    if (ret != BZP_OK)\n    {\n        return ret;\n    }\n    BzpStream *inStream = bzpInfo->compressFile->input;\n    while (!IsLastdata)\n    {\n        inStream->nBuf = fread(inStream->buf, sizeof(char), sizeof(inStream->buf), inStream->filePtr);\n        inStream->pos = 0;\n        IsLastdata = BzpFileEOF(inStream->filePtr);\n        ret = BzpProcessData(bzpInfo, IsLastdata);\n        if (ret != BZP_OK)\n        {\n            break;\n        }\n    }\n    BzpCompressEnd(bzpInfo);\n    if (ret != BZP_OK)\n    {\n        remove(outName);\n    }\n    return ret;\n}",
+                        "rust_code": "pub fn BzpCompressStream() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "BzpBwtInfo *BzpBlockSortInit(int32_t blockSize)\n{\n    if (BZP_INVALID_BLOCK_SIZE(blockSize))\n    {\n        return NULL;\n    }\n    BzpBwtInfo *bwt = (BzpBwtInfo *)malloc(sizeof(BzpBwtInfo));\n    if (bwt == NULL)\n    {\n        return NULL;\n    }\n    (void)memset_s(bwt, sizeof(BzpBwtInfo), 0, sizeof(BzpBwtInfo));\n    int32_t spaceSize = blockSize * BZP_BASE_BLOCK_SIZE;\n    bwt->nBlockMax = spaceSize - BZP_BLOCK_RESERVED_SPACE_SIZE;\n    bwt->block = (uint8_t *)malloc(spaceSize * sizeof(uint8_t));\n    bwt->sortBlock = (int32_t *)malloc(spaceSize * sizeof(int32_t));\n    bwt->idx = (int32_t *)malloc(spaceSize * sizeof(int32_t));\n    bwt->isStartPos = (int32_t *)malloc(spaceSize * sizeof(int32_t));\n    if (bwt->block == NULL || bwt->sortBlock == NULL || bwt->idx == NULL || bwt->isStartPos == NULL)\n    {\n        BzpBwtFinish(bwt);\n        return NULL;\n    }\n    (void)memset_s(bwt->isStartPos, spaceSize * sizeof(int32_t), 0, spaceSize * sizeof(int32_t));\n    bwt->blockCRC = BZP_INIT_BLOCK_CRC;\n    return bwt;\n}",
+                        "rust_code": "pub fn BzpBlockSortInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpShellSort(int32_t *sortBlock, int32_t *idx, int32_t l, int32_t r)\n{\n    int32_t increments[] = {BZP_SHELL_SORT_INCREMENT1, BZP_SHELL_SORT_INCREMENT0};\n    int32_t i, j;\n    if (l >= r)\n    {\n        return;\n    }\n    for (int32_t id = 0; id < BZP_SHELL_SORT_INCREMENT_NUMS; id++)\n    {\n        int32_t H = increments[id];\n        if (r - l + 1 <= H)\n        {\n            continue;\n        }\n        for (i = l + H; i <= r; i++)\n        {\n            int32_t tmpIdx = sortBlock[i];\n            int32_t tmpVal = idx[tmpIdx];\n            for (j = i - H; j >= l && idx[sortBlock[j]] > tmpVal; j -= H)\n            {\n                sortBlock[j + H] = sortBlock[j];\n            }\n            sortBlock[j + H] = tmpIdx;\n        }\n    }\n}",
+                        "rust_code": "pub fn BzpShellSort() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpSwap2Elem(int32_t *sortBlock, int32_t lPos, int32_t rPos)\n{\n    int32_t value = sortBlock[lPos];\n    sortBlock[lPos] = sortBlock[rPos];\n    sortBlock[rPos] = value;\n}",
+                        "rust_code": "pub fn BzpSwap2Elem() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpSwap3Elem(int32_t *sortBlock, int32_t lPos, int32_t ePos, int32_t rPos)\n{\n    int32_t value = sortBlock[lPos];\n    sortBlock[lPos] = sortBlock[rPos];\n    sortBlock[rPos] = sortBlock[ePos];\n    sortBlock[ePos] = value;\n}",
+                        "rust_code": "pub fn BzpSwap3Elem() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpSelectMidVal(int32_t *sortBlock, int32_t *idx, int32_t l, int32_t r)\n{\n    int32_t mid = (l + r) >> 1;\n    int32_t vl = idx[sortBlock[l]];\n    int32_t vmid = idx[sortBlock[mid]];\n    int32_t vr = idx[sortBlock[r]];\n    if (vl > vr)\n    {\n        int32_t tmp = l;\n        l = r;\n        r = tmp;\n        vl = idx[sortBlock[l]];\n        vr = idx[sortBlock[r]];\n    }\n    if (vmid <= vl)\n    {\n        return vl;\n    }\n    else if (vmid <= vr)\n    {\n        return vmid;\n    }\n    else\n    {\n        return vr;\n    }\n}",
+                        "rust_code": "pub fn BzpSelectMidVal() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpQSortSingle(int32_t *sortBlock, int32_t *idx, BzpQSortInfo *stack)\n{\n    int32_t tl = stack->tl, tr = stack->tr;\n    int32_t value = BzpSelectMidVal(sortBlock, idx, tl, tr);\n    int32_t lPos = tl, rPos = tr, ePos = tl;\n    while (ePos <= rPos)\n    {\n        if (idx[sortBlock[ePos]] < value)\n        {\n            BzpSwap2Elem(sortBlock, ePos, lPos);\n            ePos++;\n            lPos++;\n        }\n        else if (idx[sortBlock[ePos]] == value)\n        {\n            ePos++;\n        }\n        else\n        {\n            while (rPos >= ePos && idx[sortBlock[rPos]] > value)\n            {\n                rPos--;\n            }\n            if (rPos < ePos)\n            {\n                break;\n            }\n            if (idx[sortBlock[rPos]] == value)\n            {\n                BzpSwap2Elem(sortBlock, ePos, rPos);\n            }\n            else if (lPos == ePos)\n            {\n                BzpSwap2Elem(sortBlock, ePos, rPos);\n                lPos++;\n            }\n            else\n            {\n                BzpSwap3Elem(sortBlock, lPos, ePos, rPos);\n                lPos++;\n            }\n            ePos++;\n            rPos--;\n        }\n    }\n    if (lPos - tl > tr - rPos)\n    {\n        stack->stackL[stack->cnt] = tl;\n        stack->stackR[stack->cnt] = lPos - 1;\n        stack->cnt++;\n        stack->stackL[stack->cnt] = rPos + 1;\n        stack->stackR[stack->cnt] = tr;\n        stack->cnt++;\n    }\n    else\n    {\n        stack->stackL[stack->cnt] = rPos + 1;\n        stack->stackR[stack->cnt] = tr;\n        stack->cnt++;\n        stack->stackL[stack->cnt] = tl;\n        stack->stackR[stack->cnt] = lPos - 1;\n        stack->cnt++;\n    }\n}",
+                        "rust_code": "pub fn BzpQSortSingle() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpQuickSort(int32_t *sortBlock, int32_t *idx, int32_t l, int32_t r)\n{\n    BzpQSortInfo stack;\n    stack.cnt = 0;\n    stack.stackL[stack.cnt] = l;\n    stack.stackR[stack.cnt] = r;\n    stack.cnt++;\n    while (stack.cnt > 0)\n    {\n        stack.cnt--;\n        int32_t tl = stack.stackL[stack.cnt];\n        int32_t tr = stack.stackR[stack.cnt];\n        if (tl >= tr)\n        {\n            continue;\n        }\n        if (tr - tl < BZP_THRESHOLD_SHELL_SORT)\n        {\n            BzpShellSort(sortBlock, idx, tl, tr);\n            continue;\n        }\n        stack.tl = tl;\n        stack.tr = tr;\n        BzpQSortSingle(sortBlock, idx, &stack);\n    }\n}",
+                        "rust_code": "pub fn BzpQuickSort() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpUpdateflag(BzpBwtInfo *bwt, int32_t l, int32_t r)\n{\n    int32_t tmpst = -1;\n    for (int32_t i = l; i <= r; i++)\n    {\n        int32_t tmpnow = bwt->idx[bwt->sortBlock[i]];\n        if (tmpst != tmpnow)\n        {\n            bwt->isStartPos[i] = 1;\n            tmpst = tmpnow;\n        }\n    }\n}",
+                        "rust_code": "pub fn BzpUpdateflag() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpBinaryLiftingSort(BzpBwtInfo *bwt)\n{\n    int32_t ftab[BZP_ASCII_SIZE];\n    (void)memset_s(ftab, sizeof(ftab), 0, sizeof(ftab));\n    for (int32_t i = 0; i < bwt->nBlock; i++)\n    {\n        ftab[bwt->block[i]]++;\n    }\n    for (int32_t i = 1; i < BZP_ASCII_SIZE; i++)\n    {\n        ftab[i] += ftab[i - 1];\n    }\n    for (int32_t i = 0; i < bwt->nBlock; i++)\n    {\n        int32_t ch = bwt->block[i];\n        ftab[ch]--;\n        bwt->sortBlock[ftab[ch]] = i;\n    }\n    for (int32_t i = 0; i < BZP_ASCII_SIZE; i++)\n    {\n        bwt->isStartPos[ftab[i]] = 1;\n    }\n    int32_t M = 1, sortflag = true;\n    while (M < bwt->nBlock && sortflag == true)\n    {\n        int32_t st = 0;\n        sortflag = false;\n        for (int32_t i = 0; i < bwt->nBlock; i++)\n        {\n            if (bwt->isStartPos[i])\n            {\n                st = i;\n            }\n            int32_t pos = bwt->sortBlock[i] - M;\n            if (pos < 0)\n            {\n                pos += bwt->nBlock;\n            }\n            bwt->idx[pos] = st;\n        }\n        int32_t l = 0, r = 1;\n        while (l < bwt->nBlock)\n        {\n            while (r < bwt->nBlock && bwt->isStartPos[r] != 1)\n            {\n                r++;\n            }\n            r--;\n            if (l < r)\n            {\n                sortflag = true;\n                BzpQuickSort(bwt->sortBlock, bwt->idx, l, r);\n                BzpUpdateflag(bwt, l, r);\n            }\n            l = r + 1;\n            r = l + 1;\n        }\n        M <<= 1;\n    }\n}",
+                        "rust_code": "pub fn BzpBinaryLiftingSort() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpBlockSortMain(BzpBwtInfo *bwt)\n{\n    BzpBinaryLiftingSort(bwt);\n    for (int32_t i = 0; i < bwt->nBlock; i++)\n    {\n        if (bwt->sortBlock[i] == 0)\n        {\n            bwt->oriPtr = i;\n            break;\n        }\n    }\n}",
+                        "rust_code": "pub fn BzpBlockSortMain() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpBwtFinish(BzpBwtInfo *bwt)\n{\n    if (bwt != NULL)\n    {\n        if (bwt->block != NULL)\n        {\n            free(bwt->block);\n            bwt->block = NULL;\n        }\n        if (bwt->sortBlock != NULL)\n        {\n            free(bwt->sortBlock);\n            bwt->sortBlock = NULL;\n        }\n        if (bwt->idx != NULL)\n        {\n            free(bwt->idx);\n            bwt->idx = NULL;\n        }\n        if (bwt->isStartPos != NULL)\n        {\n            free(bwt->isStartPos);\n            bwt->isStartPos = NULL;\n        }\n        free(bwt);\n        bwt = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpBwtFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "BzpMtfInfo *BzpMtfInit(int32_t blockSize)\n{\n    if (BZP_INVALID_BLOCK_SIZE(blockSize))\n    {\n        return NULL;\n    }\n    BzpMtfInfo *mtf = (BzpMtfInfo *)malloc(sizeof(BzpMtfInfo));\n    if (mtf == NULL)\n    {\n        return NULL;\n    }\n    mtf->mtfV = NULL;\n    mtf->mtfV = (int32_t *)malloc(blockSize * BZP_BASE_BLOCK_SIZE * sizeof(int32_t));\n    if (mtf->mtfV == NULL)\n    {\n        free(mtf);\n        mtf = NULL;\n        return NULL;\n    }\n    mtf->nUse = 0;\n    mtf->nMtf = 0;\n    mtf->block = NULL;\n    mtf->map = NULL;\n    mtf->inUse = NULL;\n    return mtf;\n}",
+                        "rust_code": "pub fn BzpMtfInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpMtfReSet(BzpMtfInfo *mtf)\n{\n    mtf->nUse = 0;\n    mtf->nMtf = 0;\n    mtf->block = NULL;\n    mtf->map = NULL;\n    mtf->inUse = NULL;\n}",
+                        "rust_code": "pub fn BzpMtfReSet() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpMapInputChar(BzpMtfInfo *mtf, uint8_t *list, int32_t lenList)\n{\n    if (BZP_ASCII_SIZE > lenList)\n    {\n        return;\n    }\n    for (int32_t i = 0; i < BZP_ASCII_SIZE; i++)\n    {\n        if (mtf->inUse[i])\n        {\n            list[mtf->nUse] = (uint8_t)i;\n            mtf->nUse++;\n        }\n    }\n}",
+                        "rust_code": "pub fn BzpMapInputChar() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpNumEncode(BzpMtfInfo *mtf, int32_t num)\n{\n    num <<= 1;\n    do\n    {\n        num >>= 1;\n        num--;\n        if (num & 1)\n        {\n            mtf->mtfV[mtf->nMtf++] = BZP_MTF_ENCODE1;\n            mtf->mtfFreq[BZP_MTF_ENCODE1]++;\n        }\n        else\n        {\n            mtf->mtfV[mtf->nMtf++] = BZP_MTF_ENCODE0;\n            mtf->mtfFreq[BZP_MTF_ENCODE0]++;\n        }\n    } while (num >= BZP_MTF_ENCODE_BASE);\n}",
+                        "rust_code": "pub fn BzpNumEncode() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpMtfMain(BzpMtfInfo *mtf)\n{\n    uint8_t list[BZP_MAX_ALPHA_SIZE];\n    int32_t EOB;\n    int32_t num = 0;\n    BzpMapInputChar(mtf, list, BZP_MAX_ALPHA_SIZE);\n    EOB = mtf->nUse + 1;\n    for (int32_t i = 0; i <= EOB; i++)\n    {\n        mtf->mtfFreq[i] = 0;\n    }\n    for (int32_t i = 0; i < mtf->nBlock; i++)\n    {\n        int32_t pos = mtf->map[i] - 1;\n        if (pos < 0)\n        {\n            pos += mtf->nBlock;\n        }\n        uint8_t ch = mtf->block[pos];\n        if (ch == list[0])\n        {\n            num++;\n        }\n        else\n        {\n            if (num > 0)\n            {\n                BzpNumEncode(mtf, num);\n                num = 0;\n            }\n            int32 _t pos_ = 1;\n            while (ch != list[pos_] && pos_ < mtf->nUse)\n            {\n                pos_++;\n            }\n            for (int32_t j = pos_; j > 0; j--)\n            {\n                list[j] = list[j - 1];\n            }\n            list[0] = ch;\n            mtf->mtfV[mtf->nMtf] = pos_ + 1;\n            mtf->mtfFreq[pos_ + 1]++;\n            mtf->nMtf++;\n        }\n    }\n    if (num > 0)\n    {\n        BzpNumEncode(mtf, num);\n    }\n    mtf->mtfV[mtf->nMtf] = EOB;\n    mtf->mtfFreq[EOB]++;\n    mtf->nMtf++;\n}",
+                        "rust_code": "pub fn BzpMtfMain() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpMtfFinish(BzpMtfInfo *mtf)\n{\n    if (mtf != NULL)\n    {\n        if (mtf->mtfV != NULL)\n        {\n            free(mtf->mtfV);\n            mtf->mtfV = NULL;\n        }\n        free(mtf);\n        mtf = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpMtfFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHuffmanInit(int32_t alphaSize, BzpHuffmanInfo *huffman)\n{\n    (void)memset_s(huffman->len, sizeof(huffman->len), 0, sizeof(huffman->len));\n    huffman->nHeap = 0;\n    huffman->nWeight = 0;\n    huffman->alphaSize = alphaSize;\n}",
+                        "rust_code": "pub fn BzpHuffmanInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHuffmanInitArray(BzpHuffmanInfo *huffman)\n{\n    int32_t i;\n    huffman->nHeap = 0;\n    huffman->nWeight = huffman->alphaSize;\n    for (i = 0; i < huffman->alphaSize; i++)\n    {\n        huffman->parent[i] = -1;\n    }\n}",
+                        "rust_code": "pub fn BzpHuffmanInitArray() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHeapAdjustUp(int32_t *heap, int32_t *weight, int32_t pos)\n{\n    int32_t tmpw = weight[heap[pos]];\n    int32_t tmpv = heap[pos];\n    while (pos > 1)\n    {\n        if (tmpw < weight[heap[pos >> 1]])\n        {\n            heap[pos] = heap[pos >> 1];\n            pos >>= 1;\n        }\n        else\n        {\n            break;\n        }\n    }\n    heap[pos] = tmpv;\n}",
+                        "rust_code": "pub fn BzpHeapAdjustUp() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHeapAdjustDown(int32_t *heap, int32_t *weight, int32_t nHeap)\n{\n    int32_t pos = 1;\n    int32_t chpos = pos << 1;\n    int32_t tmpid = heap[pos];\n    int32_t tmpv = weight[tmpid];\n    while (chpos <= nHeap)\n    {\n        if ((chpos | 1) <= nHeap && weight[heap[chpos]] > weight[heap[chpos | 1]])\n        {\n            chpos |= 1;\n        }\n        if (tmpv < weight[heap[chpos]])\n        {\n            break;\n        }\n        heap[pos] = heap[chpos];\n        pos = chpos;\n        chpos = pos << 1;\n    }\n    heap[pos] = tmpid;\n}",
+                        "rust_code": "pub fn BzpHeapAdjustDown() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHeapInit(BzpHuffmanInfo *huffman)\n{\n    int32_t i = 0;\n    for (i = 0; i < huffman->alphaSize; i++)\n    {\n        huffman->nHeap++;\n        huffman->heap[huffman->nHeap] = i;\n        BzpHeapAdjustUp(huffman->heap, huffman->weight, huffman->nHeap);\n    }\n}",
+                        "rust_code": "pub fn BzpHeapInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpHuffmanWeightAdd(int32_t w1, int32_t w2)\n{\n    return ((w1 & 0xffffff00) + (w2 & 0xffffff00)) | (BZP_MAX_FUN((w1 & 0x000000ff), (w2 & 0x000000ff)) + 1);\n}",
+                        "rust_code": "pub fn BzpHuffmanWeightAdd() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpBuildHuffmanTree(BzpHuffmanInfo *huffman)\n{\n    BzpHuffmanInitArray(huffman);\n    BzpHeapInit(huffman);\n    int32_t idx1, idx2;\n    while (huffman->nHeap > 1)\n    {\n        idx1 = huffman->heap[1];\n        huffman->heap[1] = huffman->heap[huffman->nHeap--];\n        BzpHeapAdjustDown(huffman->heap, huffman->weight, huffman->nHeap);\n        idx2 = huffman->heap[1];\n        huffman->heap[1] = huffman->heap[huffman->nHeap--];\n        BzpHeapAdjustDown(huffman->heap, huffman->weight, huffman->nHeap);\n        huffman->weight[huffman->nWeight] = BzpHuffmanWeightAdd(huffman->weight[idx1], huffman->weight[idx2]);\n        huffman->parent[idx1] = huffman->nWeight;\n        huffman->parent[idx2] = huffman->nWeight;\n        huffman->parent[huffman->nWeight] = -1;\n        huffman->nHeap++;\n        huffman->heap[huffman->nHeap] = huffman->nWeight;\n        huffman->nWeight++;\n        BzpHeapAdjustUp(huffman->heap, huffman->weight, huffman->nHeap);\n    }\n}",
+                        "rust_code": "pub fn BzpBuildHuffmanTree() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpGetCodeLen(BzpHuffmanInfo *huffman)\n{\n    int32_t maxlen = 0;\n    BzpBuildHuffmanTree(huffman);\n    int32_t i;\n    maxlen = 0;\n    for (i = 0; i < huffman->alphaSize; i++)\n    {\n        int32_t x = i;\n        int32_t tlen = 0;\n        while (huffman->parent[x] >= 0)\n        {\n            x = huffman->parent[x];\n            tlen++;\n        }\n        huffman->len[i] = tlen;\n        maxlen = BZP_MAX_FUN(maxlen, tlen);\n    }\n    return maxlen;\n}",
+                        "rust_code": "pub fn BzpGetCodeLen() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpBuildTreeBalanceHeight(BzpHuffmanInfo *huffman)\n{\n    int32_t maxlen = 0;\n    for (int32_t i = 0; i < huffman->alphaSize; i++)\n    {\n        if (huffman->weight[i] == 0)\n        {\n            huffman->weight[i] = 1 << BZP_HUFFMAN_HEIGHT_WEIGHT_BITS;\n        }\n        else\n        {\n            huffman->weight[i] <<= BZP_HUFFMAN_HEIGHT_WEIGHT_BITS;\n        }\n    }\n    do\n    {\n        maxlen = BzpGetCodeLen(huffman);\n        if (maxlen > BZP_MAX_TREE_HEIGHT_ENCODE)\n        {\n            for (int32_t i = 0; i < huffman->alphaSize; i++)\n            {\n                int32_t w = (huffman->weight[i] >> BZP_HUFFMAN_HEIGHT_WEIGHT_BITS);\n                w = ((w >> 1) + 1);\n                huffman->weight[i] = w << BZP_HUFFMAN_HEIGHT_WEIGHT_BITS;\n            }\n        }\n    } while (maxlen > BZP_MAX_TREE_HEIGHT_ENCODE);\n}",
+                        "rust_code": "pub fn BzpBuildTreeBalanceHeight() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpGetHuffmanTable(BzpHuffmanInfo *huffman)\n{\n    int32_t vec = 0;\n    int32_t mi = huffman->len[0], mx = huffman->len[0];\n    for (int32_t i = 0; i < huffman->alphaSize; i++)\n    {\n        mi = BZP_MIN_FUN(mi, huffman->len[i]);\n        mx = BZP_MAX_FUN(mx, huffman->len[i]);\n    }\n    for (int32_t i = mi; i <= mx; i++)\n    {\n        for (int32_t j = 0; j < huffman->alphaSize; j++)\n        {\n            if (huffman->len[j] == i)\n            {\n                huffman->table[j] = vec;\n                vec++;\n            }\n        }\n        vec <<= 1;\n    }\n}",
+                        "rust_code": "pub fn BzpGetHuffmanTable() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpHuffmanGroupsReset(BzpHuffmanGroups *huffman, int32_t alphaSize)\n{\n    if (BZP_INVALID_ALPHA_SIZE(alphaSize))\n    {\n        return BZP_ERROR_PARAM;\n    }\n    huffman->alphaSize = alphaSize;\n    huffman->block = NULL;\n    huffman->mtfFreq = NULL;\n    huffman->nSelect = 0;\n    huffman->nGroups = 0;\n    for (int32_t i = 0; i < BZP_MAX_GROUPS_NUM; i++)\n    {\n        BzpHuffmanInit(alphaSize, &huffman->huffmanGroups[i]);\n    }\n    return BZP_OK;\n}",
+                        "rust_code": "pub fn BzpHuffmanGroupsReset() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "BzpHuffmanGroups *BzpHuffmanGroupsInit(int32_t blockSize)\n{\n    if (BZP_INVALID_BLOCK_SIZE(blockSize))\n    {\n        return NULL;\n    }\n    BzpHuffmanGroups *huffmanGroups = (BzpHuffmanGroups *)malloc(sizeof(BzpHuffmanGroups));\n    if (huffmanGroups == NULL)\n    {\n        return NULL;\n    }\n    huffmanGroups->select = NULL;\n    huffmanGroups->selectMTF = NULL;\n    int32_t spaceSize = blockSize * BZP_BASE_BLOCK_SIZE / BZP_ELEMS_NUM_IN_ONE_GROUP;\n    huffmanGroups->select = (int32_t *)malloc(spaceSize * sizeof(int32_t));\n    huffmanGroups->selectMTF = (int32_t *)malloc(spaceSize * sizeof(int32_t));\n    if (huffmanGroups->select == NULL || huffmanGroups->selectMTF == NULL)\n    {\n        BzpHuffmanGroupsFinish(huffmanGroups);\n        return NULL;\n    }\n    huffmanGroups->alphaSize = 0;\n    huffmanGroups->block = NULL;\n    huffmanGroups->mtfFreq = NULL;\n    huffmanGroups->nSelect = 0;\n    huffmanGroups->nGroups = 0;\n    for (int32_t i = 0; i < BZP_MAX_GROUPS_NUM; i++)\n    {\n        BzpHuffmanInit(0, &huffmanGroups->huffmanGroups[i]);\n    }\n    return huffmanGroups;\n}",
+                        "rust_code": "pub fn BzpHuffmanGroupsInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHuffmanGroupsFinish(BzpHuffmanGroups *huffman)\n{\n    if (huffman != NULL)\n    {\n        if (huffman->select != NULL)\n        {\n            free(huffman->select);\n            huffman->select = NULL;\n        }\n        if (huffman->selectMTF != NULL)\n        {\n            free(huffman->selectMTF);\n            huffman->selectMTF = NULL;\n        }\n        free(huffman);\n        huffman = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpHuffmanGroupsFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpGetHuffmanGroups(int32_t nBlock)\n{\n    int32_t nGroups = 1;\n    if (nBlock < BZP_NGROUPS_BLOCK_NUM_LIMIT0)\n    {\n        nGroups = BZP_NGROUPS_NUM_0;\n    }\n    else if (nBlock < BZP_NGROUPS_BLOCK_NUM_LIMIT1)\n    {\n        nGroups = BZP_NGROUPS_NUM_1;\n    }\n    else if (nBlock < BZP_NGROUPS_BLOCK_NUM_LIMIT2)\n    {\n        nGroups = BZP_NGROUPS_NUM_2;\n    }\n    else if (nBlock < BZP_NGROUPS_BLOCK_NUM_LIMIT3)\n    {\n        nGroups = BZP_NGROUPS_NUM_3;\n    }\n    else\n    {\n        nGroups = BZP_NGROUPS_NUM_4;\n    }\n    return nGroups;\n}",
+                        "rust_code": "pub fn BzpGetHuffmanGroups() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpGenerateSelectMTF(BzpHuffmanGroups *huffman)\n{\n    int32_t nGroups = huffman->nGroups;\n    int32_t list[nGroups];\n    for (int32_t i = 0; i < nGroups; i++)\n    {\n        list[i] = i;\n    }\n    for (int32_t i = 0; i < huffman->nSelect; i++)\n    {\n        int32_t pos = 0;\n        for (int32_t j = 0; j < nGroups; j++)\n        {\n            if (huffman->select[i] == list[j])\n            {\n                pos = j;\n                break;\n            }\n        }\n        for (int32_t j = pos; j > 0; j--)\n        {\n            list[j] = list[j - 1];\n        }\n        list[0] = huffman->select[i];\n        huffman->selectMTF[i] = pos;\n    }\n}",
+                        "rust_code": "pub fn BzpGenerateSelectMTF() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpInitLenArray(BzpHuffmanGroups *huffman)\n{\n    int32_t nGroups = huffman->nGroups;\n    int32_t npart = nGroups;\n    int32_t AllFreqNum = huffman->nBlock;\n    int32_t st = 0, ed;\n    while (npart > 0)\n    {\n        int32_t NowFreqNum = 0;\n        int32_t FreqNumLimit = AllFreqNum / npart;\n        ed = st - 1;\n        while (ed < huffman->alphaSize - 1 && NowFreqNum < FreqNumLimit)\n        {\n            ed++;\n            NowFreqNum += huffman->mtfFreq[ed];\n        }\n        if (ed > st && npart != nGroups && npart != 1 && ((nGroups - npart) & 1))\n        {\n            NowFreqNum -= huffman->mtfFreq[ed];\n            ed--;\n        }\n        for (int32_t i = 0; i < huffman->alphaSize; i++)\n        {\n            if (i >= st && i <= ed)\n            {\n                huffman->huffmanGroups[npart - 1].len[i] = 0;\n            }\n            else\n            {\n                huffman->huffmanGroups[npart - 1].len[i] = BZP_HUFFMAN_LEN_MAX_COST;\n            }\n        }\n        npart--;\n        st = ed + 1;\n        AllFreqNum -= NowFreqNum;\n    }\n}",
+                        "rust_code": "pub fn BzpInitLenArray() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpCalculateCost(BzpHuffmanGroups *huffman, int32_t st, int32_t ed)\n{\n    (void)memset_s(huffman->cost, sizeof(huffman->cost), 0, sizeof(huffman->cost));\n    int32_t nGroups = huffman->nGroups;\n    for (int32_t k = st; k <= ed; k++)\n    {\n        for (int32_t t = 0; t < nGroups; t++)\n        {\n            huffman->cost[t] += huffman->huffmanGroups[t].len[huffman->block[k]];\n        }\n    }\n}",
+                        "rust_code": "pub fn BzpCalculateCost() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int32_t BzpSelectTree(BzpHuffmanGroups *huffman)\n{\n    int32_t id = 0;\n    int32_t nGroups = huffman->nGroups;\n    for (int32_t k = 0; k < nGroups; k++)\n    {\n        if (huffman->cost[k] < huffman->cost[id])\n        {\n            id = k;\n        }\n    }\n    huffman->select[huffman->nSelect++] = id;\n    return id;\n}",
+                        "rust_code": "pub fn BzpSelectTree() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHuffmanMain(BzpHuffmanGroups *huffman)\n{\n    int32_t nGroups = BzpGetHuffmanGroups(huffman->nBlock);\n    huffman->nGroups = nGroups;\n    BzpInitLenArray(huffman);\n    int32_t st = 0, ed;\n    for (int32_t i = 0; i < BZP_MAX_ITER_NUM; i++)\n    {\n        for (int32_t j = 0; j < nGroups; j++)\n        {\n            (void)memset_s(huffman->huffmanGroups[j].weight, sizeof(huffman->huffmanGroups[j].weight), 0,\n                           sizeof(huffman->huffmanGroups[j].weight));\n        }\n        st = 0;\n        huffman->nSelect = 0;\n        while (st < huffman->nBlock)\n        {\n            ed = BZP_MIN_FUN(huffman->nBlock, st + (int32_t)BZP_ELEMS_NUM_IN_ONE_GROUP) - 1;\n            BzpCalculateCost(huffman, st, ed);\n            int32_t id = BzpSelectTree(huffman);\n            for (int32_t k = st; k <= ed; k++)\n            {\n                huffman->huffmanGroups[id].weight[huffman->block[k]]++;\n            }\n            st = ed + 1;\n        }\n        for (int32_t j = 0; j < nGroups; j++)\n        {\n            BzpBuildTreeBalanceHeight(&huffman->huffmanGroups[j]);\n        }\n    }\n    BzpGenerateSelectMTF(huffman);\n    for (int32_t i = 0; i < nGroups; i++)\n    {\n        BzpGetHuffmanTable(&huffman->huffmanGroups[i]);\n    }\n}",
+                        "rust_code": "pub fn BzpHuffmanMain() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "BzpBwtDecodeInfo *BzpBwtDecodeInit(int32_t blockSize)\n{\n    if (BZP_INVALID_BLOCK_SIZE(blockSize))\n    {\n        return NULL;\n    }\n    BzpBwtDecodeInfo *bwt = (BzpBwtDecodeInfo *)malloc(sizeof(BzpBwtDecodeInfo));\n    if (bwt == NULL)\n    {\n        return NULL;\n    }\n    int32_t spaceSize = BZP_BASE_BLOCK_SIZE * blockSize;\n    bwt->block = (uint8_t *)malloc(spaceSize * sizeof(uint8_t));\n    bwt->deCode = (uint8_t *)malloc(spaceSize * sizeof(uint8_t));\n    bwt->sorted = (int32_t *)malloc(spaceSize * sizeof(int32_t));\n    if (bwt->block == NULL || bwt->sorted == NULL || bwt->deCode == NULL)\n    {\n        BzpBwtDecodeFinish(bwt);\n        return NULL;\n    }\n    bwt->nBlock = 0;\n    bwt->oriPtr = 0;\n    return bwt;\n}",
+                        "rust_code": "pub fn BzpBwtDecodeInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpBwtDecode(BzpBwtDecodeInfo *bwt)\n{\n    int32_t ftab[257];\n    (void)memset_s(ftab, sizeof(ftab), 0, sizeof(ftab));\n    for (int32_t i = 0; i < bwt->nBlock; i++)\n    {\n        ftab[bwt->block[i] + 1]++;\n    }\n    for (int32_t i = 1; i <= BZP_ASCII_SIZE; i++)\n    {\n        ftab[i] += ftab[i - 1];\n    }\n    for (int32_t i = 0; i < bwt->nBlock; i++)\n    {\n        uint8_t ch = bwt->block[i];\n        bwt->sorted[ftab[ch]] = i;\n        ftab[ch]++;\n    }\n    int32_t cnt = 0;\n    int32_t pos = bwt->oriPtr;\n    while (cnt < bwt->nBlock)\n    {\n        pos = bwt->sorted[pos];\n        uint8_t ch = bwt->block[pos];\n        bwt->deCode[cnt] = ch;\n        cnt++;\n    }\n}",
+                        "rust_code": "pub fn BzpBwtDecode() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpBwtDecodeFinish(BzpBwtDecodeInfo *bwt)\n{\n    if (bwt != NULL)\n    {\n        if (bwt->block != NULL)\n        {\n            free(bwt->block);\n            bwt->block = NULL;\n        }\n        if (bwt->deCode != NULL)\n        {\n            free(bwt->deCode);\n            bwt->deCode = NULL;\n        }\n        if (bwt->sorted != NULL)\n        {\n            free(bwt->sorted);\n            bwt->sorted = NULL;\n        }\n        free(bwt);\n        bwt = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpBwtDecodeFinish() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "BzpHuffmanDecode *BzpHuffmanDecodeInit(int32_t blockSize)\n{\n    if (BZP_INVALID_BLOCK_SIZE(blockSize))\n    {\n        return NULL;\n    }\n    BzpHuffmanDecode *huffman = (BzpHuffmanDecode *)malloc(sizeof(BzpHuffmanDecode));\n    if (huffman == NULL)\n    {\n        return NULL;\n    }\n    int32_t spaceSize = BZP_BASE_BLOCK_SIZE * blockSize / BZP_ELEMS_NUM_IN_ONE_GROUP;\n    huffman->select = (int32_t *)malloc(spaceSize * sizeof(int32_t));\n    if (huffman->select == NULL)\n    {\n        BzpHuffmanDecodeFinish(huffman);\n    }\n    (void)memset_s(huffman->base, sizeof(huffman->base), 0, sizeof(huffman->base));\n    (void)memset_s(huffman->perm, sizeof(huffman->perm), 0, sizeof(huffman->perm));\n    (void)memset_s(huffman->limit, sizeof(huffman->limit), 0, sizeof(huffman->limit));\n    huffman->selectCnt = 0;\n    huffman->deCodeNum = 0;\n    return huffman;\n}",
+                        "rust_code": "pub fn BzpHuffmanDecodeInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHuffmanDecodeReset(BzpHuffmanDecode *huffman)\n{\n    (void)memset_s(huffman->base, sizeof(huffman->base), 0, sizeof(huffman->base));\n    (void)memset_s(huffman->perm, sizeof(huffman->perm), 0, sizeof(huffman->perm));\n    (void)memset_s(huffman->limit, sizeof(huffman->limit), 0, sizeof(huffman->limit));\n    huffman->selectCnt = 0;\n    huffman->deCodeNum = 0;\n}",
+                        "rust_code": "pub fn BzpHuffmanDecodeReset() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpGetOneTable(BzpHuffmanDecode *huffman, int32_t t)\n{\n    int32_t vec = 0, cnt = 0;\n    int32_t mi = huffman->len[t][0], mx = huffman->len[t][0];\n    for (int32_t i = 0; i < huffman->alphaSize; i++)\n    {\n        mi = BZP_MIN_FUN(mi, huffman->len[t][i]);\n        mx = BZP_MAX_FUN(mx, huffman->len[t][i]);\n    }\n    huffman->minLens[t] = mi;\n    for (int32_t i = mi; i <= mx; i++)\n    {\n        for (int32_t j = 0; j < huffman->alphaSize; j++)\n        {\n            if (huffman->len[t][j] == i)\n            {\n                huffman->perm[t][cnt++] = j;\n            }\n        }\n    }\n    for (int32_t i = 0; i < huffman->alphaSize; i++)\n    {\n        huffman->base[t][huffman->len[t][i] + 1]++;\n    }\n    for (int32_t i = 1; i <= mx + 1; i++)\n    {\n        huffman->base[t][i] += huffman->base[t][i - 1];\n    }\n    for (int32_t i = mi; i <= mx; i++)\n    {\n        vec += (huffman->base[t][i + 1] - huffman->base[t][i]);\n        huffman->limit[t][i] = vec - 1;\n        vec <<= 1;\n    }\n    for (int32_t i = mi + 1; i <= mx; i++)\n    {\n        huffman->base[t][i] = ((huffman->limit[t][i - 1] + 1) << 1) - huffman->base[t][i];\n    }\n}",
+                        "rust_code": "pub fn BzpGetOneTable() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpGenerateDecodeTable(BzpHuffmanDecode *huffman)\n{\n    for (int32_t t = 0; t < huffman->nGroups; t++)\n    {\n        BzpGetOneTable(huffman, t);\n    }\n}",
+                        "rust_code": "pub fn BzpGenerateDecodeTable() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void BzpHuffmanDecodeFinish(BzpHuffmanDecode *huffman)\n{\n    if (huffman != NULL)\n    {\n        if (huffman->select != NULL)\n        {\n            free(huffman->select);\n            huffman->select = NULL;\n        }\n        free(huffman);\n        huffman = NULL;\n    }\n}",
+                        "rust_code": "pub fn BzpHuffmanDecodeFinish() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "mod.rs": {
+                "name": "mod.rs",
+                "type": "file",
+                "declarations": [
+                    "pub mod bzp_c;"
+                ],
+                "definitions": [],
+                "macros": [],
+                "macro_functions": [],
+                "functions": []
+            }
+        }
+    },
+    "lib.rs": {
+        "name": "lib.rs",
+        "type": "file",
+        "declarations": [
+            "pub(crate) mod translation_utils;",
+            "pub(crate) mod src;"
+        ],
+        "definitions": [],
+        "macros": [],
+        "macro_functions": [],
+        "functions": []
+    }
+}

@@ -17,9 +17,8 @@ if __name__ == "__main__":
     
     config = GlobalConfig()
     config.project_name = args.project_name
-    extract_c_metadata_from_project(config)
     rust_metadata = c_metadata_to_rust_metadata(config)
-    cache = ProjectCache(config,cache_dir="cache_0")
+    cache = ProjectCache(config,cache_dir="cache_gold")
     client = GenerationClient(config)
     report = code_verification(config, rust_metadata, cache, client)
     with open("report_0.json", "w") as f:

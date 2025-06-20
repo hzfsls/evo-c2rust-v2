@@ -1,0 +1,13 @@
+{
+    "lib.rs": {
+        "name": "lib.rs",
+        "type": "file",
+        "declarations": [
+            "pub(crate) mod translation_utils;"
+        ],
+        "definitions": [],
+        "macros": [],
+        "macro_functions": [],
+        "functions": []
+    }
+}
