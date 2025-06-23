@@ -177,7 +177,7 @@
             "EnCmptErrNo": "typedef enum\n{\n    CMPTLZ_ERROR_DATA = 1,\n    CMPTLZ_ERROR_MEM,\n    CMPTLZ_ERROR_UNSUPPORTED,\n    CMPTLZ_ENC_ERROR_FILESIZE,\n    CMPTLZ_ENC_CTX_INIT_FAIL,\n    CMPTLZ_ENC_RC_INIT_FAIL,\n    CMPTLZ_ENC_MF_INIT_FAIL,\n    CMPTLZ_ENC_ERROR_WRITE,\n    CMPTLZ_ENC_ERROR_HEAD,\n    CMPTLZ_ENC_ERROR_PARAM,\n    CMPTLZ_ERROR_BUTT\n} EnCmptErrNo;",
             "CmptLzDecProb": "typedef uint16_t CmptLzDecProb;",
             "EnCmptLzMemType": "typedef enum\n{\n    CMPTLZ_DICT_MEM = 1,\n    CMPTLZ_PROB_MEM,\n    CMPTLZ_ENC_CCTX,\n    CMPTLZ_MF_CCTX,\n    CMPTLZ_MF_HASH,\n    CMPTLZ_MF_SON,\n    CMPTLZ_RC_CCTX,\n    CMPTLZ_RC_BUF,\n    CMPTLZ_MEM_TYPE_BUT\n} EnCmptLzMemType;",
-            "enMemType": "typedef struct\n{\n    void *(*CmptLzAlloc)(int32_t enMemType, size_t size);\n    void (*CmptLzFree)(int32_t enMemType, void *address);\n} CmptLzMemHook;",
+            "CmptLzMemHook": "typedef struct\n{\n    void *(*CmptLzAlloc)(int32_t enMemType, size_t size);\n    void (*CmptLzFree)(int32_t enMemType, void *address);\n} CmptLzMemHook;",
             "CmptlzLogFunc": "typedef void (*CmptlzLogFunc)(const char *message, size_t size);",
             "EnCmptLzFinMode": "typedef enum\n{\n    CMPTLZ_FINISH_ANY,\n    CMPTLZ_FINISH_END\n} EnCmptLzFinMode;",
             "EnCmptLzStatus": "typedef enum\n{\n    CMPTLZ_STATUS_NOT_SPECIFIED,\n    CMPTLZ_STATUS_FINISHED_WITH_MARK,\n    CMPTLZ_STATUS_NOT_FINISHED,\n    CMPTLZ_STATUS_NEEDS_MORE_INPUT,\n    CMPTLZ_STATUS_MAYBE_FINISHED_WITHOUT_MARK,\n    CMPTLZ_STATUS_BUT\n} EnCmptLzStatus;",

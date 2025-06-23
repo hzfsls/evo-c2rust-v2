@@ -123,9 +123,9 @@ def expand_node_tree_to_seq(node: Node):
 
 def resolve_typedef(node: Node):
     chind_cnt = node.child_count
-    assert node.child(0).type == "typedef" and node.child(1).type in ["type_identifier", "primitive_type", "sized_type_specifier", "struct_specifier", "union_specifier", "enum_specifier", "primitive_type"], node.text.decode("utf-8").strip()
-    flag, func_name = has_function_declarator(node)
-    if flag:
+    assert node.child(0).type == "typedef" and node.child(1).type in ["type_identifier", "primitive_type", "sized_type_specifier", "struct_specifier", "union_specifier", "enum_specifier"], node.text.decode("utf-8").strip()
+    # flag, func_name = has_function_declarator(node)
+    if node.child(1).type in ["type_identifier", "sized_type_specifier", "primitive_type"] and node.child(2).type == "function_declarator":
         res, name = has_identifier(node)
         assert res, node.text.decode("utf-8").strip()
         return "", name

@@ -2,6 +2,7 @@ from config.global_config import GlobalConfig
 from metadata_extraction.c_metadata import extract_c_metadata_from_project
 from metadata_extraction.rust_metadata import c_metadata_to_rust_metadata
 # 将llm.client改为llm.client_hw
+# 在其他脚本中使用内部大模型时，也需要做如此更改
 from llm.client_hw import GenerationClient
 from cache.cache import ProjectCache
 from code_optim.code_gen import code_generation

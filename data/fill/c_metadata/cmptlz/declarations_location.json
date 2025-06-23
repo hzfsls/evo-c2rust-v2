@@ -126,7 +126,7 @@
     "EnCmptErrNo": "src/cmptlz.c",
     "CmptLzDecProb": "src/cmptlz.c",
     "EnCmptLzMemType": "src/cmptlz.c",
-    "enMemType": "src/cmptlz.c",
+    "CmptLzMemHook": "src/cmptlz.c",
     "CmptlzLogFunc": "src/cmptlz.c",
     "EnCmptLzFinMode": "src/cmptlz.c",
     "EnCmptLzStatus": "src/cmptlz.c",
