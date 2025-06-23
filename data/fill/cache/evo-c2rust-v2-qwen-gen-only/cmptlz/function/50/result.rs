@@ -1,0 +1,3 @@
+pub fn CmptlzEndMarker() {
+    return;
+}

@@ -1,0 +1,17 @@
+pub fn CmptLzDecAllocateProbs(mut decCtx: Ptr<CmptLzDecCtx>, mut decProt: Ptr<CmptLzDecProt>, mut memHook: Ptr<CmptLzMemHook>) -> i32 {
+    let mut numProbs: u32 = CmptLzGetNumProbs(decProt.cast()).cast();
+    if (decCtx.probs == NULL!()).as_bool() {
+        decCtx.probs = CmptLzDecMemAlloc(memHook.cast(), CMPTLZ_PROB_HANDLE!(), numProbs * c_sizeof!(CmptLzDecProb)).cast();
+    } else {
+        if (numProbs != decCtx.numProbs).as_bool() {
+            CmptLzDecFreeProbs(decCtx.cast(), memHook.cast());
+            decCtx.probs = CmptLzDecMemAlloc(memHook.cast(), CMPTLZ_PROB_HANDLE!(), numProbs * c_sizeof!(CmptLzDecProb)).cast();
+        }
+    }
+    if (decCtx.probs == NULL!()).as_bool() {
+        return CMPT_ERROR_MEM!();
+    }
+    decCtx.probsPlus1664 = decCtx.probs + 1664;
+    decCtx.numProbs = numProbs;
+    return CMPT_OK!();
+}

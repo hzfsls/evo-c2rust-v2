@@ -1,0 +1,1 @@
+// No translation needed for header guards in Rust

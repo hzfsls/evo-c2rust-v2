@@ -1,0 +1,1 @@
+// No translation needed for include guards in Rust

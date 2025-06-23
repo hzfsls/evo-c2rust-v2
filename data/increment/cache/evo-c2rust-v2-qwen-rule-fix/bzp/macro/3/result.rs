@@ -1,0 +1,1 @@
+// No translation needed for include guards or empty macros in Rust

@@ -1,0 +1,1 @@
+pub type CmptlzLogFunc = FuncPtr<fn(VoidPtr, usize)>;

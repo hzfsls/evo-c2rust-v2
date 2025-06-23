@@ -1,0 +1,1 @@
+pub type RapidlzLogFunc = FuncPtr<fn(VoidPtr, usize)>;

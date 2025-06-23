@@ -1,0 +1,1 @@
+{"#define V_MD5_H": "0", "#define MD5_DIGEST_LEN 16": "1", "#define MD5_INPUT_LEN_MAX 0xffffffffffffffffLL": "2", "#define MD5_BUFFER_SIZE 64": "3", "#define MD5_TEXT_IN_BUFFER_MAX 56": "4"}
