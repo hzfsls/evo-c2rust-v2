@@ -46,13 +46,9 @@ class GlobalConfig:
         self.delim_repair_prompt = delim_repair_prompt
         self.repair_prompt = repair_prompt
 
-        self.api_key = "sk-76da526dbd8b48c3954df9336a8a6592"
-        self.base_url = "https://api.deepseek.com/beta"
-        self.model_name = "deepseek-coder"
-
-        # self.api_key = "sk-1234"
-        # self.base_url = "http://api.openai.rnd.huawei.com/v1"
-        # self.model_name = "qwen3-32b"
+        self.api_key = ""
+        self.base_url = ""
+        self.model_name = ""
 
         self.cache_dir = "./data/default/cache"
         self.final_project_dir = "./final_project"

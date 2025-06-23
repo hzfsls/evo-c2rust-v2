@@ -26,8 +26,7 @@ def code_generation(
 def code_verification(
     config: GlobalConfig,
     metadata: RustProjectMetadata,
-    cache: ProjectCache,
-    client: GenerationClient,
+    cache: ProjectCache
 ):  
     report = {}
     for typ in ["macro", "macro_function", "definition", "dummy_function", "function"]:
@@ -39,7 +38,6 @@ def code_verification(
         }
         print(f"Project {config.project_name}: Start {typ} compilation verification.")
         codes = metadata.get_all(typ) if typ != "dummy_function" else metadata.get_all("function")
-        # update_codes(client, typ, codes, cache, multi_process=True, threads_num=10)
         all_cnt = len(codes)
         failed_cnt = 0
         for c in tqdm(codes):            
@@ -73,7 +71,6 @@ def blankfill_compilation_verification(
     metadata: RustProjectMetadata,
     gold_cache: ProjectCache,
     cache: ProjectCache,
-    client: GenerationClient,
 ):  
     report = {}
     for typ in ["macro", "macro_function", "definition", "function"]:
@@ -129,7 +126,6 @@ def blankfill_test(
     metadata: RustProjectMetadata,
     gold_cache: ProjectCache,
     cache: ProjectCache,
-    client: GenerationClient,
 ):  
     report = {}
     for typ in ["macro", "macro_function", "definition", "function"]:
