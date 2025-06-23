@@ -18,7 +18,7 @@ if __name__ == "__main__":
     config.project_name = args.project_name
     rust_metadata = c_metadata_to_rust_metadata(config)
     gold_cache = ProjectCache(config, cache_dir="cache_gold")
-    cache = ProjectCache(config, cache_dir="cache_generated_final")
+    cache = ProjectCache(config, cache_dir="cache_2")
     client = GenerationClient(config)
     report = blankfill_compilation_verification(config, rust_metadata, gold_cache, cache, client)
     with open("report.json", "w") as f:

@@ -175,11 +175,5 @@ cython_debug/
 
 .tmp/
 .direnv/
-reports/
-cache/
-cache_0/
-cache_1/
-cache_2/
-cache_3/
 final_project/
 cache_generated_final/

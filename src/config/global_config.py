@@ -12,9 +12,9 @@ class GlobalConfig:
     def __init__(self):
         # config = read_config()
         self.project_name = None
-        self.project_dir = "./data"
+        self.project_dir = "./data/default/project"
         self.created_project_dir = "./.tmp/created_project"
-        self.c_metadata_dir = "./c_metadata"
+        self.c_metadata_dir = "./data/default/c_metadata"
         self.src_folders = ["include", "src"]
         self.macros = {
             "ALWAYS_INLINE": "inline",
@@ -35,8 +35,8 @@ class GlobalConfig:
             "#if __cplusplus\n}\n#endif": "}\n",
             "#if __cplusplus\n}\n\n#endif": "}\n"
         }
-        self.rust_metadata_dir = "./rust_metadata"
-        self.template_project_dir = "./project_template/safelevel-0"
+        self.rust_metadata_dir = "./data/default/rust_metadata"
+        self.template_project_dir = "./data/project_template/safelevel-0"
 
         self.definition_prompt = definition_prompt
         self.macro_prompt = macro_prompt
@@ -54,5 +54,5 @@ class GlobalConfig:
         # self.base_url = "http://api.openai.rnd.huawei.com/v1"
         # self.model_name = "qwen3-32b"
 
-        self.cache_dir = "./cache"
+        self.cache_dir = "./data/default/cache"
         self.final_project_dir = "./final_project"

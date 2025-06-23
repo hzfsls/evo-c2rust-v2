@@ -82,9 +82,12 @@ class RustProject:
             return False, error_msg
     
     def test_project(self):
-        result = subprocess.run(["RUSTFLAGS=-Awarnings cargo test -- --test-threads=1"], shell=True, cwd=self.dir_path, timeout=300, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.returncode == 0:
-            return True, ""
-        else:
-            error_msg = result.stderr.decode("utf-8")
-            return False, error_msg
+        try:
+            result = subprocess.run(["RUSTFLAGS=-Awarnings cargo test -- --test-threads=1"], shell=True, cwd=self.dir_path, timeout=300, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if result.returncode == 0:
+                return True, ""
+            else:
+                error_msg = result.stderr.decode("utf-8")
+                return False, error_msg
+        except subprocess.TimeoutExpired:
+            return False, "Timeout"

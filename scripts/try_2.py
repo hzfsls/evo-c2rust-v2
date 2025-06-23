@@ -19,7 +19,7 @@ if __name__ == "__main__":
     config.template_project_dir = "./project_template/safelevel-0-test"
     rust_metadata = c_metadata_to_rust_metadata(config)
     gold_cache = ProjectCache(config, cache_dir="cache_gold")
-    cache = ProjectCache(config, cache_dir="cache_generated_final")
+    cache = ProjectCache(config, cache_dir="cache_2")
     client = GenerationClient(config)
     with open(os.path.join("./testcases", args.project_name, "mod.rs"), "r") as f:
         mod_rs_content = f.read()

@@ -1,0 +1,56 @@
+#[repr(C)]
+struct TagCmptLzEncCtx {
+    level: i32,
+    litCtx: i32,
+    litPos: i32,
+    posBits: i32,
+    dicSize: u32,
+    endMarker: i32,
+    numFastBytes: u32,
+
+    encNeedFinish: bool,
+    nowpos64: u64,
+    cmptlzResponse: u32,
+
+    state: CmptlzState,
+    litMarcov: LitMarcov,
+    reps: [u32; CMPTLZ_NUM_REPS],
+
+    isRep: [CmptlzProb; CMPTLZ_NUM_STATES],
+    isRepG0: [CmptlzProb; CMPTLZ_NUM_STATES],
+    isRepG1: [CmptlzProb; CMPTLZ_NUM_STATES],
+    isRepG2: [CmptlzProb; CMPTLZ_NUM_STATES],
+    isMatch: [[CmptlzProb; CMPTLZ_NUM_PB_STATES_MAX]; CMPTLZ_NUM_STATES],
+    isRep0Long: [[CmptlzProb; CMPTLZ_NUM_PB_STATES_MAX]; CMPTLZ_NUM_STATES],
+    probDistSlot: [[CmptlzProb; 1 << CMPTLZ_DIST_SLOT_BITS]; CMPTLZ_DIST_STATE_TOTAL],
+    probDistSpecial: [CmptlzProb; CMPT_DIST_LIMIT_2],
+    probAlign: [CmptlzProb; 1 << CMPTLZ_ALIGN_BITS],
+
+    posMask: u32,
+    pbMask: u64,
+    lpMask: u64,
+
+    rcCtx: *mut CmptRcCtx,
+
+    mfCtx: *mut CmptMfCtx,
+    matches: [CmptlzMatchPair; CMPT_MF_LONGEST_MATCH + 1],
+    matchesCount: u32,
+    longestMatchLen: u32,
+
+    backRes: u32,
+    lenRes: u32,
+    optEndIndex: u32,
+    optsCurIndex: u32,
+    opts: [CmptlzOpt; CMPT_DP_OPTMAX],
+
+    matchLenEncoder: CmptLenEncoder,
+    repLenEncoder: CmptLenEncoder,
+    repLenPriceCount: i32,
+
+    matchPriceCount: i32,
+    priceRootTable: [u32; CMPT_PRIICE_TABLE_SIZE],
+    priceDistSlotTable: [[u32; 1 << CMPTLZ_DIST_SLOT_BITS]; CMPTLZ_DIST_STATE_TOTAL],
+    priceDistTable: [[u32; 1 << 7]; CMPTLZ_DIST_STATE_TOTAL],
+    priceAlignTable: [u32; 1 << CMPTLZ_ALIGN_BITS],
+    distTableSize: u32,
+}

@@ -1,0 +1,1 @@
+pub type AVLL_COMPARE = AVL3_COMPARE;

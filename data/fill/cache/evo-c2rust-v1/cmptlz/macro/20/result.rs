@@ -1,0 +1,1 @@
+macro_rules! CMPTLZ_RC_BUF_HANDLE { () => { CMPTLZ_HANDLE_CONVERT!(CMPTLZ_RC_BUF!()) } }

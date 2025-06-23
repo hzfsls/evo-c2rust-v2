@@ -1,0 +1,1 @@
+{"#define SHA256_H": "0", "#define VOS_SHA256_CTX_HASH_LEN 8": "1", "#define VOS_SHA256_CTX_BUF_LEN 16": "2", "#define SHA256_BLOCK_SIZE 64": "3", "#define SHA256_DIGEST_SIZE 32": "4", "#define SHA256_OK 0": "5", "#define SHA256_ERROR ((uint32_t)(~0))": "6", "#define BITS_PRE_BYTE 8": "7", "#define SHIFTS_PER_BYTE 3": "8"}

@@ -1,0 +1,723 @@
+{
+    "include": {
+        "name": "include",
+        "type": "folder",
+        "children": {
+            "rapidlz_h.rs": {
+                "name": "rapidlz_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::src::rapidlz_log_c::RapidlzLogRegister;",
+                    "pub use crate::src::rapidlz_decompress_c::RapidlzDecompress;",
+                    "pub use crate::src::rapidlz_compress_c::RapidlzCompressBound;",
+                    "pub use crate::src::rapidlz_dictionary_c::RapidlzDecompressSafeUsingDict;",
+                    "pub use crate::src::rapidlz_compress_c::RapidlzCompress;",
+                    "pub use crate::src::rapidlz_dictionary_c::RapidlzCompressStream;",
+                    "pub use crate::src::rapidlz_dictionary_c::RapidlzLoadDict;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "typedef void (*RapidlzLogFunc)(const char *message, size_t size);",
+                        "rust_code": "pub type RapidlzLogFunc = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct TagRapidlzStreamCtx RapidlzStreamCtx;",
+                        "rust_code": "pub type RapidlzStreamCtx = i32;"
+                    },
+                    {
+                        "c_code": "struct TagRapidlzStreamCtx\n    {\n        uint32_t hashTable[RAPIDLZ_STREAM_HASH_SIZE];\n        const uint8_t *dict;\n        uint32_t dictSize;\n        uint32_t currentOffset;\n        int acceleration;\n        RapidlzStreamCtx *strmCtxSpecific;\n    };",
+                        "rust_code": "pub type TagRapidlzStreamCtx = i32;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define RAPIDLZ_H",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_STREAM_HASH_SIZE (1 << 12)",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [],
+                "functions": []
+            },
+            "mod.rs": {
+                "name": "mod.rs",
+                "type": "file",
+                "declarations": [
+                    "pub mod rapidlz_h;"
+                ],
+                "definitions": [],
+                "macros": [],
+                "macro_functions": [],
+                "functions": []
+            }
+        }
+    },
+    "src": {
+        "name": "src",
+        "type": "folder",
+        "children": {
+            "rapidlz_dictionary_c.rs": {
+                "name": "rapidlz_dictionary_c.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::rapidlz_h::*;",
+                    "pub use crate::src::rapidlz_inner_h::*;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "typedef int (*RapidlzCompressFunc)(RapidlzStreamCtx *strmCtx, const char *src, char *dest, int srcSize,\n                                       int destSize);",
+                        "rust_code": "pub type RapidlzCompressFunc = i32;"
+                    },
+                    {
+                        "c_code": "typedef int (*RapidlzDecompressFunc)(const char *const src, char *const dest, int srcSize, int outBufferSize,\n                                         const char *dictStart, int dictSize);",
+                        "rust_code": "pub type RapidlzDecompressFunc = i32;"
+                    },
+                    {
+                        "c_code": "static int g_enc32table[8] = {0, 1, 2, 1, 0, 4, 4, 4};",
+                        "rust_code": "pub static g_enc32table: i32 = 0;"
+                    },
+                    {
+                        "c_code": "static int g_dec64table[8] = {0, 0, 0, -1, -4, 1, 2, 3};",
+                        "rust_code": "pub static g_dec64table: i32 = 0;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define RAPIDLZ_MAX_DICT_SIZE (64 * 1024)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_LAST_LITERALS 5",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_DEC_NOT_OK 0",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_ERROR_PARAM_UNSUPPORTED (-1)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_ERROR_OUTPUT (int)(-((void *)curSrc - (void *)src) - 1)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_DICT_HASH_MOVE_BYTES 3",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_STREAM_HASH_BYTES 4",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_STREAM_ACCELERAT_MIN 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_STREAM_ACCELERAT_MAX 10",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_PTR_DIFF_MAX_32 0x80000000",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MAX_INPUT_SIZE 0x7E000000",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_LAST_LITERAL_LENGTH 13",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_ENC_NOT_OK 0",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_FAST_DIST_MIN 64",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MIN_COMPRESSED_SIZE 12",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_CURRENT_OFFSET (64 * 1024)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_GOLDEN_SECTION_PRIME 2654435761U",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_STREAM_HASH_BITS 20",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define RAPIDLZ_RETURN_IF_NOT_TRUE(condition, errCode)                                                                 \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        if (!condition)                                                                                                \\\n        {                                                                                                              \\\n            RAPIDLZ_LOG(errCode, \" \");                                                                                 \\\n            return errCode;                                                                                            \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_RETURN_IF_NOT_EOK(condition, errCode)                                                                  \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        if (condition != EOK)                                                                                          \\\n        {                                                                                                              \\\n            RAPIDLZ_LOG(errCode, \" \");                                                                                 \\\n            return errCode;                                                                                            \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_POSITION_UPDATE(curSrc, curDest, len)                                                                  \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        curDest += len;                                                                                                \\\n        curSrc += len;                                                                                                 \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_SAFE_LIT_COPY(curSrc, leftSrcSize, curDest, destEnd, litLen)                                           \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        if (RAPIDLZ_UNLIKELY(litLen > leftSrcSize || memmove_s(curDest, destEnd - curDest, curSrc, litLen) != EOK))    \\\n        {                                                                                                              \\\n            RAPIDLZ_LOG(RAPIDLZ_DST_SIZE_SMALL, \"litLen:%u dstEnd - dst:%zu\\n\", litLen, leftSrcSize);                  \\\n            return RAPIDLZ_ERROR_OUTPUT;                                                                               \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_SAFE_COPY_TILL_END(curSrc, leftSrcSize, curDest, destEnd, len)                                         \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        RAPIDLZ_SAFE_LIT_COPY(curSrc, leftSrcSize, curDest, destEnd, len);                                             \\\n        RAPIDLZ_POSITION_UPDATE(curSrc, curDest, len);                                                                 \\\n        if (leftSrcSize == len)                                                                                        \\\n        {                                                                                                              \\\n            return curDest - (uint8_t *)(dest);                                                                        \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_FAST_SAFE_COPY_BY_BYTES(curDest, matchSrc, len)                                                        \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        while ((len) > 2)                                                                                              \\\n        {                                                                                                              \\\n            *(curDest)++ = *(matchSrc)++;                                                                              \\\n            *(curDest)++ = *(matchSrc)++;                                                                              \\\n            *(curDest)++ = *(matchSrc)++;                                                                              \\\n            (len) -= 3;                                                                                                \\\n        }                                                                                                              \\\n        if ((len) > 0)                                                                                                 \\\n        {                                                                                                              \\\n            *(curDest)++ = *(matchSrc)++;                                                                              \\\n            if ((len) > 1)                                                                                             \\\n            {                                                                                                          \\\n                *(curDest)++ = *(matchSrc)++;                                                                          \\\n            }                                                                                                          \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_LITERAL_LEN_COPY_END(curDest, len)                                                                     \\\n    ((curDest) + (len) + 1 + (((len) + RAPIDLZ_MAX_BYTE_VALUE - RAPIDLZ_MAX_4BIT_VALUE) / RAPIDLZ_MAX_BYTE_VALUE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_LIT_AND_MATCH_COPY_END(curDest, matchLen)                                                              \\\n    (curDest) + (1 + RAPIDLZ_LAST_LITERALS) + ((matchLen + 240) / RAPIDLZ_MAX_BYTE_VALUE)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_CONTINUE_IF_NOT_A_MATCH(matchOffset, prefixDictLimit, current)                                         \\\n    if (((matchOffset) < (prefixDictLimit)) || ((matchOffset) + RAPIDLZ_MAX_OFFSET < (current)))                       \\\n    {                                                                                                                  \\\n        continue;                                                                                                      \\\n    }",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_DICT_FAST_COPY_AVAIL(curSrc, len, srcEndFast, curDest, destEndFast)                                    \\\n    (((curSrc) + (len) <= (srcEndFast)) && ((curDest) + (len) <= (destEndFast)))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_GET_MATCH_LEN(len, curSrc, srcEnd, temp)                                                               \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        if ((len) < RAPIDLZ_MAX_4BIT_VALUE)                                                                            \\\n        {                                                                                                              \\\n            (len) += 4;                                                                                                \\\n        }                                                                                                              \\\n        else                                                                                                           \\\n        {                                                                                                              \\\n            RAPIDLZ_READ_OPTIONAL_LENGTH((len), (curSrc), (srcEnd), (temp));                                           \\\n            (len) += 4;                                                                                                \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": [
+                    {
+                        "c_code": "static inline int RapidlzZeroBytesDecode(const char *const src, int srcSize)\n    {\n        if ((*src == 0) && (srcSize == 1))\n        {\n            return RAPIDLZ_DEC_NOT_OK;\n        }\n        return RAPIDLZ_ERROR_PARAM_UNSUPPORTED;\n    }",
+                        "rust_code": "pub fn RapidlzZeroBytesDecode() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzDictSizeNorm(RapidlzStreamCtx *strmCtx, char *src, char *dictEnd)\n    {\n        if (strmCtx->dictSize < RAPIDLZ_STREAM_HASH_BYTES)\n        {\n            strmCtx->dictSize = 0;\n            strmCtx->dict = (uint8_t *)src;\n            dictEnd = src;\n        }\n        if (strmCtx->dictSize > RAPIDLZ_MAX_DICT_SIZE)\n        {\n            strmCtx->dict = (uint8_t *)(dictEnd - RAPIDLZ_MAX_DICT_SIZE);\n            strmCtx->dictSize = RAPIDLZ_MAX_DICT_SIZE;\n        }\n    }",
+                        "rust_code": "pub fn RapidlzDictSizeNorm() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint32_t RapidlzHash4GetPos(uint32_t hashValue, uint32_t *hashTable)\n    {\n        return hashTable[hashValue];\n    }",
+                        "rust_code": "pub fn RapidlzHash4GetPos() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzHash4PutPos(uint32_t pos, uint32_t hashValue, uint32_t *hashTable)\n    {\n        hashTable[hashValue] = pos;\n    }",
+                        "rust_code": "pub fn RapidlzHash4PutPos() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint32_t RapidlzHash4CalcValue(const uint8_t *curSrc)\n    {\n        return (RAPIDLZ_READ32BIT(curSrc) * RAPIDLZ_GOLDEN_SECTION_PRIME) >> RAPIDLZ_STREAM_HASH_BITS;\n    }",
+                        "rust_code": "pub fn RapidlzHash4CalcValue() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline size_t RapidlzStoreLiteralLen(uint32_t litLen, uint8_t *curDest)\n    {\n        uint8_t *curDestAnchor = curDest;\n        if (litLen >= RAPIDLZ_MAX_4BIT_VALUE)\n        {\n            uint32_t tmp = litLen - RAPIDLZ_MAX_4BIT_VALUE;\n            *(curDest)++ = (RAPIDLZ_MAX_4BIT_VALUE << 4);\n            for (; tmp >= RAPIDLZ_MAX_BYTE_VALUE; tmp -= RAPIDLZ_MAX_BYTE_VALUE)\n            {\n                *(curDest)++ = RAPIDLZ_MAX_BYTE_VALUE;\n            }\n            *(curDest)++ = (uint8_t)tmp;\n        }\n        else\n        {\n            *(curDest)++ = (uint8_t)(litLen << 4);\n        }\n        return curDest - curDestAnchor;\n    }",
+                        "rust_code": "pub fn RapidlzStoreLiteralLen() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline size_t RapidlzStoreMatchLen(uint32_t matchLen, uint8_t *token, uint8_t *curDest)\n    {\n        uint8_t *curDestAnchor = curDest;\n        if (matchLen >= RAPIDLZ_MAX_4BIT_VALUE)\n        {\n            *token += RAPIDLZ_MAX_4BIT_VALUE;\n            matchLen -= RAPIDLZ_MAX_4BIT_VALUE;\n            *curDest = RAPIDLZ_MAX_BYTE_VALUE;\n            while (matchLen >= RAPIDLZ_MAX_BYTE_VALUE)\n            {\n                *(++curDest) = RAPIDLZ_MAX_BYTE_VALUE;\n                matchLen -= RAPIDLZ_MAX_BYTE_VALUE;\n            }\n            curDest += matchLen / RAPIDLZ_MAX_BYTE_VALUE;\n            *curDest++ = (uint8_t)(matchLen % RAPIDLZ_MAX_BYTE_VALUE);\n        }\n        else\n        {\n            *token += (uint8_t)(matchLen);\n        }\n        return curDest - curDestAnchor;\n    }",
+                        "rust_code": "pub fn RapidlzStoreMatchLen() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline int RapidlzZeroBytesEncode(char *dest, int destSize)\n    {\n        RAPIDLZ_RETURN_IF_NOT_TRUE(!(destSize <= 0), RAPIDLZ_ENC_NOT_OK);\n        dest[0] = 0;\n        return 1;\n    }",
+                        "rust_code": "pub fn RapidlzZeroBytesEncode() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static int RapidlzEncLastLiterals(uint8_t *curSrcAnchor, uint8_t *srcEnd, uint8_t *curDest, uint8_t *destEnd,\n                                      char *destStart)\n    {\n        size_t lastLiteralsLen = (size_t)(srcEnd - curSrcAnchor);\n        RAPIDLZ_RETURN_IF_NOT_TRUE(!(RAPIDLZ_LITERAL_LEN_COPY_END(curDest, lastLiteralsLen) > destEnd),\n                                   RAPIDLZ_ENC_NOT_OK);\n        curDest += RapidlzStoreLiteralLen(lastLiteralsLen, curDest);\n        RAPIDLZ_RETURN_IF_NOT_EOK(memcpy_s(curDest, destEnd - curDest, curSrcAnchor, lastLiteralsLen),\n                                  RAPIDLZ_ENC_NOT_OK);\n        curDest += lastLiteralsLen;\n        return (int)((void *)curDest - (void *)destStart);\n    }",
+                        "rust_code": "pub fn RapidlzEncLastLiterals() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline bool RapidlzStreamEncLiterals(uint8_t *curSrc, uint8_t *curSrcAnchor, uint8_t **curDest,\n                                                uint8_t *destEnd)\n    {\n        uint32_t litLen = curSrc - curSrcAnchor;\n        RAPIDLZ_RETURN_IF_NOT_TRUE(!(RAPIDLZ_UNLIKELY(RAPIDLZ_LITERAL_LEN_COPY_END(*curDest, litLen) > destEnd)),\n                                   false);\n        *curDest += RapidlzStoreLiteralLen(litLen, *curDest);\n        RapidlzWildCopy8(curSrcAnchor, *curDest, *curDest + litLen);\n        *curDest += litLen;\n        return true;\n    }",
+                        "rust_code": "pub fn RapidlzStreamEncLiterals() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int RapidlzLoadDict(RapidlzStreamCtx *strmCtx, const char *dictionary, int dictSize)\n    {\n        const uint8_t *dictStart = (const uint8_t *)dictionary;\n        const uint8_t *dictEnd = (const uint8_t *)dictionary + dictSize;\n        RAPIDLZ_RETURN_IF_NOT_EOK(memset_s(strmCtx, sizeof(RapidlzStreamCtx), 0, sizeof(RapidlzStreamCtx)),\n                                  RAPIDLZ_ENC_NOT_OK);\n        RAPIDLZ_RETURN_IF_NOT_TRUE(!(dictSize < RAPIDLZ_STREAM_HASH_BYTES), RAPIDLZ_ENC_NOT_OK);\n\n        if (dictSize > RAPIDLZ_MAX_DICT_SIZE)\n        {\n            dictStart = dictEnd - RAPIDLZ_MAX_DICT_SIZE;\n        }\n\n        strmCtx->dict = (uint8_t *)dictStart;\n        strmCtx->dictSize = dictEnd - dictStart;\n        strmCtx->currentOffset = RAPIDLZ_MAX_DICT_SIZE;\n\n        uint32_t index32 = strmCtx->currentOffset - strmCtx->dictSize;\n\n        const uint8_t *curDict = dictStart;\n        while (curDict <= dictEnd - RAPIDLZ_STREAM_HASH_BYTES)\n        {\n            uint32_t hashValue = RapidlzHash4CalcValue(curDict);\n            RapidlzHash4PutPos(index32, hashValue, strmCtx->hashTable);\n            curDict += RAPIDLZ_DICT_HASH_MOVE_BYTES;\n            index32 += RAPIDLZ_DICT_HASH_MOVE_BYTES;\n        }\n\n        return (int)strmCtx->dictSize;\n    }",
+                        "rust_code": "pub fn RapidlzLoadDict() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int RapidlzCompWithExternalDict(RapidlzStreamCtx *strmCtx, const char *src, char *dest, int srcSize, int destSize)\n    {\n\n        uint8_t *curSrc = (uint8_t *)src;\n        uint8_t *curSrcAnchor = (uint8_t *)curSrc;\n        uint8_t *srcEnd = curSrc + srcSize;\n        uint8_t *curDest = (uint8_t *)dest;\n        uint8_t *destEnd = curDest + destSize;\n        if (srcSize < RAPIDLZ_LAST_LITERAL_LENGTH)\n        {\n            return RapidlzEncLastLiterals(curSrcAnchor, srcEnd, curDest, destEnd, dest);\n        }\n\n        uint8_t *matchStartLimit = srcEnd - RAPIDLZ_MIN_COMPRESSED_SIZE + 1;\n        uint8_t *matchEndLimit = srcEnd - RAPIDLZ_LAST_LITERALS;\n        uint32_t startIndex = strmCtx->currentOffset;\n        uint8_t *base = (uint8_t *)src - startIndex;\n\n        const uint8_t *dict, *dictBase, *dictEnd, *prefixDictStart;\n        uint32_t dictSize;\n        uint32_t offset = 0;\n\n        dict = strmCtx->dict;\n        dictSize = strmCtx->dictSize;\n        dictBase = dict + dictSize - strmCtx->currentOffset;\n        prefixDictStart = 0;\n        dictBase = dict + dictSize - strmCtx->currentOffset;\n        dictEnd = dict + dictSize;\n        strmCtx->dictSize += srcSize;\n\n        uint32_t prefixDictLimit = startIndex - dictSize;\n        strmCtx->currentOffset += (uint32_t)srcSize;\n\n        uint32_t hashValue = RapidlzHash4CalcValue(curSrc);\n        RapidlzHash4PutPos(startIndex, hashValue, strmCtx->hashTable);\n        curSrc++;\n        uint32_t forwardHashValue = RapidlzHash4CalcValue(curSrc);\n\n        const uint8_t *match;\n        uint8_t *token;\n        int acceleration = strmCtx->acceleration;\n        while (true)\n        {\n            uint8_t *forwardPos = curSrc;\n            int jumpStep = 1;\n            int searchMatchNb = acceleration << RAPIDLZ_STEP_FORWARD_BASE;\n            do\n            {\n                hashValue = forwardHashValue;\n                uint32_t current = (forwardPos - base);\n                uint32_t matchOffset = RapidlzHash4GetPos(hashValue, strmCtx->hashTable);\n                curSrc = forwardPos;\n                forwardPos += jumpStep;\n                jumpStep = (searchMatchNb++ >> RAPIDLZ_STEP_FORWARD_BASE);\n\n                if (RAPIDLZ_UNLIKELY(forwardPos > matchStartLimit))\n                {\n                    return RapidlzEncLastLiterals(curSrcAnchor, srcEnd, curDest, destEnd, dest);\n                }\n\n                if (matchOffset < startIndex)\n                {\n\n                    match = dictBase + matchOffset;\n                    prefixDictStart = dict;\n                }\n                else\n                {\n                    match = base + matchOffset;\n                    prefixDictStart = (uint8_t *)src;\n                }\n\n                forwardHashValue = RapidlzHash4CalcValue(forwardPos);\n                RapidlzHash4PutPos(current, hashValue, strmCtx->hashTable);\n                RAPIDLZ_CONTINUE_IF_NOT_A_MATCH(matchOffset, prefixDictLimit, current);\n                if (RAPIDLZ_READ32BIT(curSrc) == RAPIDLZ_READ32BIT(match))\n                {\n                    offset = current - matchOffset;\n                    break;\n                }\n            } while (1);\n\n            RAPIDLZ_EXPAND_FORWARD(prefixDictStart, match, curSrc, curSrcAnchor);\n\n            token = curDest;\n            RAPIDLZ_RETURN_IF_NOT_TRUE(RapidlzStreamEncLiterals(curSrc, curSrcAnchor, &curDest, destEnd),\n                                       RAPIDLZ_ENC_NOT_OK);\n\n        _OFFSET_AND_MATCH:\n\n            RapidlzWriteLE16(curDest, offset);\n            curDest += 2;\n\n            uint32_t matchLen;\n            uint8_t *curSrcMatchEnd;\n\n            if (prefixDictStart == dict)\n            {\n                uint8_t *srcLimitOnlyWithDict = curSrc + (dictEnd - match);\n                if (srcLimitOnlyWithDict > matchEndLimit)\n                {\n                    srcLimitOnlyWithDict = matchEndLimit;\n                }\n                curSrcMatchEnd = (uint8_t *)RapidlzCompressExpandBackward(\n                    srcLimitOnlyWithDict, match + RAPIDLZ_MIN_MATCH, curSrc + RAPIDLZ_MIN_MATCH);\n                matchLen = curSrcMatchEnd - curSrc - RAPIDLZ_MIN_MATCH;\n                curSrc = curSrcMatchEnd;\n\n                if (curSrc == srcLimitOnlyWithDict)\n                {\n                    curSrcMatchEnd =\n                        (uint8_t *)RapidlzCompressExpandBackward(matchEndLimit, (uint8_t *)src, srcLimitOnlyWithDict);\n                    matchLen += (curSrcMatchEnd - curSrc);\n                    curSrc = curSrcMatchEnd;\n                }\n            }\n            else\n            {\n                curSrcMatchEnd = (uint8_t *)RapidlzCompressExpandBackward(matchEndLimit, match + RAPIDLZ_MIN_MATCH,\n                                                                          curSrc + RAPIDLZ_MIN_MATCH);\n                matchLen = curSrcMatchEnd - curSrc - RAPIDLZ_MIN_MATCH;\n                curSrc = curSrcMatchEnd;\n            }\n#ifdef RAPIDLZ_DEBUG\n            if (RAPIDLZ_UNLIKELY(RAPIDLZ_LIT_AND_MATCH_COPY_END(curDest, matchLen) > destEnd))\n            {\n                return RAPIDLZ_ENC_NOT_OK;\n            }\n#endif\n            curDest += RapidlzStoreMatchLen(matchLen, token, curDest);\n            curSrcAnchor = curSrc;\n            if (curSrc >= matchStartLimit)\n            {\n                break;\n            }\n            uint32_t hv2 = RapidlzHash4CalcValue(curSrc - 2);\n            uint32_t index = curSrc - 2 - base;\n            RapidlzHash4PutPos(index, hv2, strmCtx->hashTable);\n\n            hashValue = RapidlzHash4CalcValue(curSrc);\n            uint32_t current = (curSrc - base);\n            uint32_t matchOffset = RapidlzHash4GetPos(hashValue, strmCtx->hashTable);\n            if (matchOffset < startIndex)\n            {\n\n                match = dictBase + matchOffset;\n                prefixDictStart = dict;\n            }\n            else\n            {\n                match = base + matchOffset;\n                prefixDictStart = (uint8_t *)src;\n            }\n\n            RapidlzHash4PutPos(current, hashValue, strmCtx->hashTable);\n\n            if ((matchOffset >= prefixDictLimit) && (matchOffset + RAPIDLZ_MAX_OFFSET >= current))\n            {\n                if (RAPIDLZ_READ32BIT(curSrc) == RAPIDLZ_READ32BIT(match))\n                {\n                    token = curDest++;\n                    *token = 0;\n                    offset = current - matchOffset;\n                    goto _OFFSET_AND_MATCH;\n                }\n            }\n            forwardHashValue = RapidlzHash4CalcValue(++curSrc);\n        }\n\n        return RapidlzEncLastLiterals(curSrcAnchor, srcEnd, curDest, destEnd, dest);\n    }",
+                        "rust_code": "pub fn RapidlzCompWithExternalDict() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int RapidlzCompWithPrefixDict(RapidlzStreamCtx *strmCtx, const char *src, char *dest, int srcSize, int destSize)\n    {\n        uint8_t *curSrc = (uint8_t *)src;\n        uint8_t *curSrcAnchor = (uint8_t *)curSrc;\n        uint8_t *srcEnd = curSrc + srcSize;\n        uint8_t *curDest = (uint8_t *)dest;\n        uint8_t *destEnd = curDest + destSize;\n        if (srcSize < RAPIDLZ_LAST_LITERAL_LENGTH)\n        {\n            return RapidlzEncLastLiterals(curSrcAnchor, srcEnd, curDest, destEnd, dest);\n        }\n        uint8_t *matchStartLimit = srcEnd - RAPIDLZ_MIN_COMPRESSED_SIZE + 1;\n        uint8_t *matchEndLimit = srcEnd - RAPIDLZ_LAST_LITERALS;\n        uint32_t startIndex = strmCtx->currentOffset;\n        uint8_t *base = (uint8_t *)src - startIndex;\n\n        uint8_t *prefixDictStart;\n        uint32_t dictSize;\n        dictSize = strmCtx->dictSize;\n        prefixDictStart = (uint8_t *)src - dictSize;\n        strmCtx->dictSize += srcSize;\n        uint32_t prefixDictLimit = startIndex - dictSize;\n        strmCtx->currentOffset += (uint32_t)srcSize;\n\n        uint32_t hashValue = RapidlzHash4CalcValue(curSrc);\n        RapidlzHash4PutPos(startIndex, hashValue, strmCtx->hashTable);\n        curSrc++;\n        uint32_t forwardHashValue = RapidlzHash4CalcValue(curSrc);\n\n        uint8_t *match, *token;\n        int acceleration = strmCtx->acceleration;\n        while (true)\n        {\n            uint8_t *forwardPos = curSrc;\n            int step = 1;\n            int searchMatchNb = acceleration << RAPIDLZ_STEP_FORWARD_BASE;\n            do\n            {\n                hashValue = forwardHashValue;\n                uint32_t current = (forwardPos - base);\n                uint32_t matchOffset = RapidlzHash4GetPos(hashValue, strmCtx->hashTable);\n                curSrc = forwardPos;\n                forwardPos += step;\n                step = (searchMatchNb++ >> RAPIDLZ_STEP_FORWARD_BASE);\n\n                if (RAPIDLZ_UNLIKELY(forwardPos > matchStartLimit))\n                {\n                    return RapidlzEncLastLiterals(curSrcAnchor, srcEnd, curDest, destEnd, dest);\n                }\n\n                match = base + matchOffset;\n                forwardHashValue = RapidlzHash4CalcValue(forwardPos);\n                RapidlzHash4PutPos(current, hashValue, strmCtx->hashTable);\n\n                if (matchOffset < prefixDictLimit)\n                {\n                    continue;\n                }\n                if ((matchOffset + RAPIDLZ_MAX_OFFSET) < current)\n                {\n                    continue;\n                }\n                if (RAPIDLZ_READ32BIT(curSrc) == RAPIDLZ_READ32BIT(match))\n                {\n                    break;\n                }\n            } while (1);\n\n            RAPIDLZ_EXPAND_FORWARD(prefixDictStart, match, curSrc, curSrcAnchor);\n\n            token = curDest;\n            RAPIDLZ_RETURN_IF_NOT_TRUE(RapidlzStreamEncLiterals(curSrc, curSrcAnchor, &curDest, destEnd),\n                                       RAPIDLZ_ENC_NOT_OK);\n\n        _OFFSET_AND_MATCH:\n\n            RapidlzWriteLE16(curDest, curSrc - match);\n            curDest += 2;\n\n            uint32_t matchLen;\n            uint8_t *curSrcMatchEnd;\n\n            curSrcMatchEnd = (uint8_t *)RapidlzCompressExpandBackward(matchEndLimit, match + RAPIDLZ_MIN_MATCH,\n                                                                      curSrc + RAPIDLZ_MIN_MATCH);\n            matchLen = curSrcMatchEnd - curSrc - RAPIDLZ_MIN_MATCH;\n            curSrc = curSrcMatchEnd;\n#ifdef RAPIDLZ_DEBUG\n            if (RAPIDLZ_UNLIKELY(RAPIDLZ_LIT_AND_MATCH_COPY_END(curDest, matchLen) > destEnd))\n            {\n                return RAPIDLZ_ENC_NOT_OK;\n            }\n#endif\n            curDest += RapidlzStoreMatchLen(matchLen, token, curDest);\n\n            curSrcAnchor = curSrc;\n            if (curSrc >= matchStartLimit)\n            {\n                break;\n            }\n            uint32_t hv = RapidlzHash4CalcValue(curSrc - 2);\n            uint32_t index = curSrc - 2 - base;\n            RapidlzHash4PutPos(index, hv, strmCtx->hashTable);\n\n            hashValue = RapidlzHash4CalcValue(curSrc);\n            uint32_t current = (curSrc - base);\n            uint32_t matchOffset = RapidlzHash4GetPos(hashValue, strmCtx->hashTable);\n\n            match = base + matchOffset;\n\n            RapidlzHash4PutPos(current, hashValue, strmCtx->hashTable);\n            if ((matchOffset >= prefixDictLimit) && ((matchOffset + RAPIDLZ_MAX_OFFSET) >= current))\n            {\n                if (RAPIDLZ_READ32BIT(curSrc) == RAPIDLZ_READ32BIT(match))\n                {\n                    token = curDest++;\n                    *token = 0;\n                    goto _OFFSET_AND_MATCH;\n                }\n            }\n            forwardHashValue = RapidlzHash4CalcValue(++curSrc);\n        }\n\n        return RapidlzEncLastLiterals(curSrcAnchor, srcEnd, curDest, destEnd, dest);\n    }",
+                        "rust_code": "pub fn RapidlzCompWithPrefixDict() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void RapidlzStrmCtxNorm(RapidlzStreamCtx *strmCtx, char *src, int srcSize, char *dictEnd)\n    {\n        RapidlzDictSizeNorm(strmCtx, src, dictEnd);\n        strmCtx->acceleration =\n            ((strmCtx->acceleration < RAPIDLZ_STREAM_ACCELERAT_MIN)\n                 ? RAPIDLZ_STREAM_ACCELERAT_MIN\n                 : ((strmCtx->acceleration > RAPIDLZ_STREAM_ACCELERAT_MAX) ? RAPIDLZ_STREAM_ACCELERAT_MAX\n                                                                           : strmCtx->acceleration));\n        if (strmCtx->currentOffset + (uint32_t)srcSize > RAPIDLZ_PTR_DIFF_MAX_32)\n        {\n            uint32_t delta = strmCtx->currentOffset - RAPIDLZ_MAX_DICT_SIZE;\n            int i = 0;\n            for (; i < RAPIDLZ_STREAM_HASH_SIZE; i++)\n            {\n                if (strmCtx->hashTable[i] < delta)\n                {\n                    strmCtx->hashTable[i] = 0;\n                }\n                else\n                {\n                    strmCtx->hashTable[i] -= delta;\n                }\n            }\n            strmCtx->currentOffset = RAPIDLZ_MAX_DICT_SIZE;\n        }\n\n        char *srcEnd = src + srcSize;\n        if ((srcEnd > (char *)strmCtx->dict) && (srcEnd < dictEnd))\n        {\n            strmCtx->dictSize = (uint32_t)(dictEnd - srcEnd);\n            strmCtx->dictSize = ((strmCtx->dictSize > RAPIDLZ_MAX_DICT_SIZE)\n                                     ? RAPIDLZ_MAX_DICT_SIZE\n                                     : ((strmCtx->dictSize < RAPIDLZ_STREAM_HASH_BYTES) ? 0 : strmCtx->dictSize));\n            strmCtx->dict = (uint8_t *)(dictEnd - strmCtx->dictSize);\n        }\n    }",
+                        "rust_code": "pub fn RapidlzStrmCtxNorm() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzSafeCopyMatchFast(uint8_t *curDest, uint8_t *matchSrc, uint8_t *destEnd, uint16_t offset,\n                                                uint32_t len)\n    {\n        errno_t err;\n        uint8_t *curDestCopyEnd = curDest + len;\n        if (offset < RAPIDLZ_EIGHT_BYTE)\n        {\n            curDest[0] = matchSrc[0];\n            curDest[1] = matchSrc[1];\n            curDest[2] = matchSrc[2];\n            curDest[3] = matchSrc[3];\n            matchSrc += g_enc32table[offset];\n            err = memcpy_s(curDest + RAPIDLZ_FOUR_BYTE, RAPIDLZ_FOUR_BYTE, matchSrc, RAPIDLZ_FOUR_BYTE);\n            matchSrc -= g_dec64table[offset];\n        }\n        else\n        {\n            err = memcpy_s(curDest, RAPIDLZ_EIGHT_BYTE, matchSrc, RAPIDLZ_EIGHT_BYTE);\n            matchSrc += RAPIDLZ_EIGHT_BYTE;\n        }\n#ifdef RAPIDLZ_DEBUG\n        RAPIDLZ_RETURN_IF_NOT_EOK(err, RAPIDLZ_DEC_NOT_OK);\n#else\n    (void)err;\n#endif\n        curDest += RAPIDLZ_EIGHT_BYTE;\n        uint8_t *curDestLimit = destEnd - (RAPIDLZ_EIGHT_BYTE - 1);\n        if (curDest < curDestLimit)\n        {\n            RapidlzWildCopy8(matchSrc, curDest, curDestLimit);\n            matchSrc += (curDestLimit - curDest);\n            curDest = curDestLimit;\n        }\n        while (curDest < curDestCopyEnd)\n        {\n            *curDest++ = *matchSrc++;\n        }\n    }",
+                        "rust_code": "pub fn RapidlzSafeCopyMatchFast() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static int RapidlzDecWithPrefixDict(const char *const src, char *const dest, int srcSize, int outBufferSize,\n                                        const char *dictStart, int dictSize)\n    {\n        (void)dictStart;\n        (void)dictSize;\n#ifdef RAPIDLZ_DEBUG\n        dictSize = (dictSize > RAPIDLZ_MAX_DICT_SIZE) ? RAPIDLZ_MAX_DICT_SIZE : dictSize;\n        uint8_t *prefixDictStart = (uint8_t *)dest - dictSize;\n#endif\n        const uint8_t *curSrc = (const uint8_t *)src;\n        const uint8_t *srcEnd = curSrc + srcSize;\n        uint8_t *curDest = (uint8_t *)dest;\n        uint8_t *destEnd = curDest + outBufferSize;\n\n        const uint8_t *srcEndFast = srcEnd - RAPIDLZ_COPY_PROTECT_SIZE;\n        const uint8_t *destEndFast = destEnd - RAPIDLZ_COPY_PROTECT_SIZE;\n\n        uint32_t token, len;\n        uint16_t offset;\n        uint8_t *matchSrc;\n        uint32_t tmp = 0;\n        size_t leftSrcSize;\n        while (1)\n        {\n            token = *curSrc++;\n\n            len = token >> 4;\n            if (RAPIDLZ_LIKELY(len < RAPIDLZ_MAX_4BIT_VALUE))\n            {\n                if (RAPIDLZ_LIKELY((curSrc + len <= srcEndFast) && (curDest + len <= destEndFast)))\n                {\n                    RapidlzCopy16Byte(curDest, curSrc);\n                    RAPIDLZ_POSITION_UPDATE(curSrc, curDest, len);\n                }\n                else\n                {\n                    leftSrcSize = srcEnd - curSrc;\n                    RAPIDLZ_SAFE_COPY_TILL_END(curSrc, leftSrcSize, curDest, destEnd, len);\n                }\n            }\n            else\n            {\n                RAPIDLZ_READ_OPTIONAL_LENGTH(len, curSrc, srcEnd, tmp);\n                if (RAPIDLZ_LIKELY((curSrc + len <= srcEndFast) && (curDest + len <= destEndFast)))\n                {\n                    RapidlzWildCopy16(curSrc, curDest, curDest + len);\n                    RAPIDLZ_POSITION_UPDATE(curSrc, curDest, len);\n                }\n                else\n                {\n                    leftSrcSize = srcEnd - curSrc;\n                    RAPIDLZ_SAFE_COPY_TILL_END(curSrc, leftSrcSize, curDest, destEnd, len);\n                }\n            }\n\n            offset = RapidlzReadLE16Bit(curSrc);\n            curSrc += 2;\n            matchSrc = curDest - offset;\n#ifdef RAPIDLZ_DEBUG\n            RAPIDLZ_RETURN_IF_NOT_TRUE(!(RAPIDLZ_UNLIKELY(matchSrc < prefixDictStart)), RAPIDLZ_DEC_NOT_OK);\n#endif\n\n            len = token & RAPIDLZ_MAX_4BIT_VALUE;\n\n            if (len < RAPIDLZ_MAX_4BIT_VALUE)\n            {\n                len += 4;\n            }\n            else\n            {\n                RAPIDLZ_READ_OPTIONAL_LENGTH(len, curSrc, srcEnd, tmp);\n                len += 4;\n            }\n#ifdef RAPIDLZ_DEBUG\n            RAPIDLZ_RETURN_IF_NOT_TRUE(!(curDest + len > destEnd - RAPIDLZ_LAST_LITERALS), RAPIDLZ_DEC_NOT_OK);\n#endif\n\n            if (RAPIDLZ_LIKELY((curDest + len) <= (destEndFast - RAPIDLZ_COPY_PROTECT_SIZE + RAPIDLZ_LAST_LITERALS)))\n            {\n                RapidlzCopyMatchFast(curDest, matchSrc, offset, len);\n                curDest += len;\n            }\n            else\n            {\n                if (RAPIDLZ_LIKELY(len < 1024))\n                {\n                    RAPIDLZ_FAST_SAFE_COPY_BY_BYTES(curDest, matchSrc, len);\n                }\n                else\n                {\n                    RapidlzSafeCopyMatchFast(curDest, matchSrc, destEnd, offset, len);\n                    curDest += len;\n                }\n            }\n        }\n\n        return (int)((void *)curDest - (void *)(dest));\n    }",
+                        "rust_code": "pub fn RapidlzDecWithPrefixDict() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static int RapidlzDecWithExternalDict(const char *const src, char *const dest, int srcSize, int outBufferSize,\n                                          const char *dictStart, int dictSize)\n    {\n        const uint8_t *curSrc = (const uint8_t *)src;\n        const uint8_t *srcEnd = curSrc + srcSize;\n        uint8_t *curDest = (uint8_t *)dest;\n        uint8_t *destEnd = curDest + outBufferSize;\n        const uint8_t *srcEndFast = srcEnd - RAPIDLZ_COPY_PROTECT_SIZE;\n        const uint8_t *destEndFast = destEnd - RAPIDLZ_COPY_PROTECT_SIZE;\n        const uint8_t *dictEnd = (uint8_t *)dictStart + dictSize;\n\n        uint32_t token, len;\n        uint16_t offset;\n        uint8_t *matchSrc;\n        uint32_t temp = 0;\n        size_t leftSrcSize;\n        while (1)\n        {\n            token = *curSrc++;\n\n            len = token >> 4;\n            if (RAPIDLZ_LIKELY(len < RAPIDLZ_MAX_4BIT_VALUE))\n            {\n                if (RAPIDLZ_LIKELY(RAPIDLZ_DICT_FAST_COPY_AVAIL(curSrc, len, srcEndFast, curDest, destEndFast)))\n                {\n                    RapidlzCopy16Byte(curDest, curSrc);\n                    RAPIDLZ_POSITION_UPDATE(curSrc, curDest, len);\n                }\n                else\n                {\n                    leftSrcSize = srcEnd - curSrc;\n                    RAPIDLZ_SAFE_COPY_TILL_END(curSrc, leftSrcSize, curDest, destEnd, len);\n                }\n            }\n            else\n            {\n                RAPIDLZ_READ_OPTIONAL_LENGTH(len, curSrc, srcEnd, temp);\n                if (RAPIDLZ_LIKELY(RAPIDLZ_DICT_FAST_COPY_AVAIL(curSrc, len, srcEndFast, curDest, destEndFast)))\n                {\n                    RapidlzWildCopy16(curSrc, curDest, curDest + len);\n                    RAPIDLZ_POSITION_UPDATE(curSrc, curDest, len);\n                }\n                else\n                {\n                    leftSrcSize = srcEnd - curSrc;\n                    RAPIDLZ_SAFE_COPY_TILL_END(curSrc, leftSrcSize, curDest, destEnd, len);\n                }\n            }\n\n            offset = RapidlzReadLE16Bit(curSrc);\n            curSrc += 2;\n            matchSrc = curDest - offset;\n\n            len = token & RAPIDLZ_MAX_4BIT_VALUE;\n\n            RAPIDLZ_GET_MATCH_LEN(len, curSrc, srcEnd, temp);\n\n#ifdef RAPIDLZ_DEBUG\n            RAPIDLZ_RETURN_IF_NOT_TRUE(!(curDest + len > destEnd - RAPIDLZ_LAST_LITERALS), RAPIDLZ_DEC_NOT_OK);\n#endif\n            if (matchSrc >= (uint8_t *)dest)\n            {\n                if (RAPIDLZ_LIKELY((curDest + len) <=\n                                   (destEndFast - RAPIDLZ_COPY_PROTECT_SIZE + RAPIDLZ_LAST_LITERALS)))\n                {\n                    RapidlzCopyMatchFast(curDest, matchSrc, offset, len);\n                    curDest += len;\n                }\n                else\n                {\n                    if (RAPIDLZ_LIKELY(len < 1024))\n                    {\n                        RAPIDLZ_FAST_SAFE_COPY_BY_BYTES(curDest, matchSrc, len);\n                    }\n                    else\n                    {\n                        RapidlzSafeCopyMatchFast(curDest, matchSrc, destEnd, offset, len);\n                        curDest += len;\n                    }\n                }\n            }\n            else\n            {\n                errno_t err;\n                if ((int)len <= ((uint8_t *)dest - matchSrc))\n                {\n                    err = memmove_s(curDest, destEnd - curDest, dictEnd - ((uint8_t *)dest - matchSrc), len);\n                    curDest += len;\n                }\n                else\n                {\n                    size_t externCopySize = (size_t)((uint8_t *)dest - matchSrc);\n                    size_t innerCopySize = len - externCopySize;\n                    err = memcpy_s(curDest, destEnd - curDest, dictEnd - externCopySize, externCopySize);\n                    curDest += externCopySize;\n                    if (innerCopySize > (size_t)(curDest - (uint8_t *)dest))\n                    {\n                        const uint8_t *copySrc = (uint8_t *)dest;\n                        while ((innerCopySize--) != 0)\n                        {\n                            *curDest++ = *copySrc++;\n                        }\n                    }\n                    else\n                    {\n                        err = memcpy_s(curDest, destEnd - curDest, (uint8_t *)dest, innerCopySize);\n                        curDest += innerCopySize;\n                    }\n                }\n#ifdef RAPIDLZ_DEBUG\n                RAPIDLZ_RETURN_IF_NOT_EOK(err, RAPIDLZ_DEC_NOT_OK);\n#else\n            (void)err;\n#endif\n            }\n        }\n\n        return (int)((void *)curDest - (void *)(dest));\n    }",
+                        "rust_code": "pub fn RapidlzDecWithExternalDict() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int RapidlzCompressStream(RapidlzStreamCtx *strmCtx, const char *src, char *dst, int srcSize, int dstSize)\n    {\n        RapidlzCompressFunc rapidlzEncFunc = NULL;\n        RAPIDLZ_RETURN_IF_NOT_TRUE(!(srcSize > RAPIDLZ_MAX_INPUT_SIZE), RAPIDLZ_ENC_NOT_OK);\n        RAPIDLZ_RETURN_IF_NOT_TRUE(!((src == NULL && srcSize != 0) || (dstSize <= 0) || (dst == NULL)),\n                                   RAPIDLZ_ENC_NOT_OK);\n        if (srcSize == 0)\n        {\n            return RapidlzZeroBytesEncode(dst, dstSize);\n        }\n        char *dictEnd = (strmCtx->dictSize != 0) ? (char *)strmCtx->dict + strmCtx->dictSize : NULL;\n        int cSize;\n        if (dictEnd == src)\n        {\n            rapidlzEncFunc = RapidlzCompWithPrefixDict;\n        }\n        else\n        {\n            if (strmCtx->strmCtxSpecific != NULL)\n            {\n                RAPIDLZ_RETURN_IF_NOT_EOK(\n                    memcpy_s(strmCtx, sizeof(RapidlzStreamCtx), strmCtx->strmCtxSpecific, sizeof(RapidlzStreamCtx)),\n                    RAPIDLZ_ENC_NOT_OK);\n            }\n            rapidlzEncFunc = RapidlzCompWithExternalDict;\n        }\n        RapidlzStrmCtxNorm(strmCtx, (char *)src, srcSize, dictEnd);\n        cSize = rapidlzEncFunc(strmCtx, src, dst, srcSize, dstSize);\n        strmCtx->dictSize = srcSize;\n        strmCtx->dict = (uint8_t *)src;\n        return cSize;\n    }",
+                        "rust_code": "pub fn RapidlzCompressStream() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "int RapidlzDecompressSafeUsingDict(const char *src, char *dst, int compressedSize, int dstSize,\n                                       const char *dictStart, int dictSize)\n    {\n        if ((src == NULL) || (compressedSize == 0) || (dst == NULL) || (dstSize < 0))\n        {\n            return RAPIDLZ_ERROR_PARAM_UNSUPPORTED;\n        }\n        if (RAPIDLZ_UNLIKELY(dstSize == 0))\n        {\n            return RapidlzZeroBytesDecode(src, compressedSize);\n        }\n        RapidlzDecompressFunc rapidlzDecFunc;\n        if ((dictSize == 0) || (dictStart + dictSize == dst))\n        {\n            rapidlzDecFunc = RapidlzDecWithPrefixDict;\n        }\n        else\n        {\n            rapidlzDecFunc = RapidlzDecWithExternalDict;\n        }\n        return rapidlzDecFunc(src, dst, compressedSize, dstSize, dictStart, dictSize);\n    }",
+                        "rust_code": "pub fn RapidlzDecompressSafeUsingDict() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "rapidlz_decompress_c.rs": {
+                "name": "rapidlz_decompress_c.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::rapidlz_h::*;",
+                    "pub use crate::src::rapidlz_inner_h::*;"
+                ],
+                "definitions": [],
+                "macros": [
+                    {
+                        "c_code": "#define RAPIDLZ_MAX_4BIT_MATCH 19",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [],
+                "functions": [
+                    {
+                        "c_code": "size_t RapidlzDecompress(const void *src, void *dst, size_t srcSize, size_t dstSize)\n    {\n        if (src == NULL || dst == NULL || srcSize == 0 || dstSize == 0)\n        {\n            RAPIDLZ_LOG(RAPIDLZ_INPUT_INVALID, \"input invalid\\n\");\n            return 0;\n        }\n\n        uint8_t token, temp = 0;\n        register uint16_t offset;\n        register uint32_t litLen, matchLen;\n        uint8_t *matchSrc;\n        const uint8_t *srcEnd = (const uint8_t *)src + srcSize;\n        const uint8_t *srcCurr = (const uint8_t *)src;\n        const uint8_t *srcEndFast = srcEnd - RAPIDLZ_COPY_PROTECT_SIZE;\n        uint8_t *dstEnd = (uint8_t *)dst + dstSize;\n        uint8_t *dstCurr = (uint8_t *)dst;\n        uint8_t *dstEndFast = dstEnd - RAPIDLZ_COPY_PROTECT_SIZE;\n\n        while (srcCurr < srcEnd)\n        {\n            token = *srcCurr++;\n            litLen = (token >> 4);\n\n            if (RAPIDLZ_LIKELY(litLen < RAPIDLZ_MAX_4BIT_VALUE))\n            {\n                if (RAPIDLZ_LIKELY(srcCurr + litLen <= srcEndFast && dstCurr + litLen <= dstEndFast))\n                {\n                    RapidlzCopy16Byte(dstCurr, srcCurr);\n                    dstCurr += litLen;\n                    srcCurr += litLen;\n                    goto READ_MATCH;\n                }\n            }\n            else\n            {\n                RAPIDLZ_READ_OPTIONAL_LENGTH(litLen, srcCurr, srcEnd, temp);\n                if (RAPIDLZ_LIKELY(srcCurr + litLen <= srcEndFast && dstCurr + litLen <= dstEndFast))\n                {\n                    RapidlzWildCopy16(srcCurr, dstCurr, dstCurr + litLen);\n                    dstCurr += litLen;\n                    srcCurr += litLen;\n                    goto READ_MATCH;\n                }\n            }\n\n            size_t leftSrcSize = srcEnd - srcCurr;\n            if (RAPIDLZ_UNLIKELY(litLen > leftSrcSize || memmove_s(dstCurr, dstEnd - dstCurr, srcCurr, litLen) != EOK))\n            {\n                RAPIDLZ_LOG(RAPIDLZ_DST_SIZE_SMALL, \"litLen:%u dstEnd - dst:%zu\\n\", litLen, leftSrcSize);\n                return 0;\n            }\n\n            dstCurr += litLen;\n            srcCurr += litLen;\n\n            if (leftSrcSize == litLen)\n            {\n                return dstCurr - (uint8_t *)(dst);\n            }\n\n        READ_MATCH:\n            if (RAPIDLZ_UNLIKELY(srcCurr > srcEnd - 2))\n            {\n                RAPIDLZ_LOG(RAPIDLZ_FORMAT_INVALID, \"rapidlz format invalid\\n\");\n                return 0;\n            }\n            offset = RapidlzReadLE16Bit(srcCurr);\n            srcCurr += 2;\n            matchSrc = dstCurr - offset;\n            if (RAPIDLZ_UNLIKELY((void *)matchSrc < dst))\n            {\n                RAPIDLZ_LOG(RAPIDLZ_FORMAT_INVALID, \"rapidlz format invalid\\n\");\n                return 0;\n            }\n\n            matchLen = (token & RAPIDLZ_MAX_4BIT_VALUE) + RAPIDLZ_MIN_MATCH;\n            if (matchLen == RAPIDLZ_MAX_4BIT_MATCH)\n            {\n                RAPIDLZ_READ_OPTIONAL_LENGTH(matchLen, srcCurr, srcEnd, temp);\n            }\n\n            if (RAPIDLZ_LIKELY(dstCurr + matchLen <= dstEndFast))\n            {\n                RapidlzCopyMatchFast(dstCurr, matchSrc, offset, matchLen);\n                dstCurr += matchLen;\n            }\n            else\n            {\n                if (dstCurr + matchLen > dstEnd)\n                {\n                    RAPIDLZ_LOG(RAPIDLZ_DST_SIZE_SMALL, \"dstEnd - dstCurr:%zu matchLen:%u\\n\", dstEnd - dstCurr,\n                                matchLen);\n                    return 0;\n                }\n\n                SAFE_COPY_MATCH(dstCurr, matchSrc, matchLen);\n            }\n        }\n\n        return dstCurr - (uint8_t *)dst;\n    }",
+                        "rust_code": "pub fn RapidlzDecompress() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "rapidlz_inner_h.rs": {
+                "name": "rapidlz_inner_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::src::rapidlz_log_h::*;",
+                    "pub use crate::src::rapidlz_compress_c::RapidlzCompressDefault;",
+                    "pub use crate::src::rapidlz_compress_c::RapidlzVersionGet;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "typedef struct\n    {\n        uint16_t v;\n    } __attribute__((packed)) RapidlzUnalignU16;",
+                        "rust_code": "pub type RapidlzUnalignU16 = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n    {\n        uint32_t v;\n    } __attribute__((packed)) RapidlzUnalignU32;",
+                        "rust_code": "pub type RapidlzUnalignU32 = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct\n    {\n        uint64_t v;\n    } __attribute__((packed)) RapidlzUnalignU64;",
+                        "rust_code": "pub type RapidlzUnalignU64 = i32;"
+                    },
+                    {
+                        "c_code": "static uint8_t g_overlapOffAddVal[] = {0, 1, 2, 2, 4, 3, 2, 1};",
+                        "rust_code": "pub static g_overlapOffAddVal: i32 = 0;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define RAPIDLZ_INNER_H",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define X86_SSE2",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define ARM_NEON",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MAX_BYTE_VALUE 255",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MAX_4BIT_VALUE 15",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MIN_MATCH 4",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_HASH_TYPE_4 4",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_HASH_TYPE_5 5",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_STEP_FORWARD_BASE 6",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MAX_OFFSET 65535",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_INPUT_INVALID (size_t)(-100)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MALLOC_FAILED (size_t)(-99)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_DST_SIZE_SMALL (size_t)(-98)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_SECUREC_ERROR (size_t)(-97)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_FORMAT_INVALID (size_t)(-96)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_FOUR_BYTE 4",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_EIGHT_BYTE 8",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_SIXTEEN_BYTE 16",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_COPY_PROTECT_SIZE 16",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_FALLTHROUGH __attribute__((fallthrough))",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define RAPIDLZ_LIKELY(x) (__builtin_expect(!!(x), 1))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_UNLIKELY(x) (__builtin_expect(!!(x), 0))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_READ16BIT(ptr) (((const RapidlzUnalignU16 *)(ptr))->v)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_READ32BIT(ptr) (((const RapidlzUnalignU32 *)(ptr))->v)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_READ64BIT(ptr) (((const RapidlzUnalignU64 *)(ptr))->v)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_WRITE64BIT(ptr, val) (((RapidlzUnalignU64 *)(ptr))->v = (val))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_ASSERT(x) assert(x)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_EXPAND_FORWARD(srcBegin, matchBegin, srcCurr, srcAnchor)                                               \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        while ((srcBegin) < (matchBegin) && (srcCurr) > (srcAnchor) &&                                                 \\\n               RAPIDLZ_UNLIKELY((matchBegin)[-1] == (srcCurr)[-1]))                                                    \\\n        {                                                                                                              \\\n            (matchBegin)--;                                                                                            \\\n            (srcCurr)--;                                                                                               \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_READ_OPTIONAL_LENGTH(len, srcCurr, srcEnd, temp)                                                       \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        if (RAPIDLZ_LIKELY((srcCurr) < (srcEnd)))                                                                      \\\n        {                                                                                                              \\\n            (temp) = *(srcCurr)++;                                                                                     \\\n            (len) += (temp);                                                                                           \\\n        }                                                                                                              \\\n        while (((temp) == RAPIDLZ_MAX_BYTE_VALUE) && (srcCurr) < (srcEnd))                                             \\\n        {                                                                                                              \\\n            (temp) = *(srcCurr)++;                                                                                     \\\n            (len) += (temp);                                                                                           \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define SAFE_COPY_MATCH(dstCurr, matchSrc, matchLength)                                                                \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        while ((matchLength)-- > 0)                                                                                    \\\n        {                                                                                                              \\\n            *(dstCurr)++ = *(matchSrc)++;                                                                              \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": [
+                    {
+                        "c_code": "static inline int RapidlzIsLE(void)\n    {\n#if (defined(__GNUC__) || defined(__clang__))\n        return __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__;\n#endif\n        int n = 1;\n        return *(char *)(&n);\n    }",
+                        "rust_code": "pub fn RapidlzIsLE() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint16_t RapidlzReadLE16Bit(const void *addr)\n    {\n        if (RapidlzIsLE() != 0)\n        {\n            return *(const uint16_t *)addr;\n        }\n\n        uint8_t tmp1 = ((const uint8_t *)addr)[0];\n        uint8_t tmp2 = ((const uint8_t *)addr)[1];\n        return (uint16_t)(tmp1 + (tmp2 << 8));\n    }",
+                        "rust_code": "pub fn RapidlzReadLE16Bit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint8_t RapidlzCountTailZero64(uint64_t x)\n    {\n#if (defined(__GNUC__) && (__GNUC__ >= 3))\n        return (uint8_t)__builtin_ctzll(x);\n#endif\n        if (x == 0)\n        {\n            return 0;\n        }\n        uint64_t val = x;\n        uint8_t num = 0;\n        while ((val & 1) == 0)\n        {\n            val >>= 1;\n            num++;\n        }\n        return num;\n    }",
+                        "rust_code": "pub fn RapidlzCountTailZero64() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint8_t RapidlzCountLeadZero64(uint64_t x)\n    {\n#if (defined(__GNUC__) && (__GNUC__ >= 3))\n        return (uint8_t)__builtin_clzll(x);\n#endif\n        if (x == 0)\n        {\n            return 0;\n        }\n        uint8_t num = 0;\n        uint64_t val = x;\n        while ((val & 0x8000000000000000ULL) == 0)\n        {\n            val <<= 1;\n            num++;\n        }\n        return num;\n    }",
+                        "rust_code": "pub fn RapidlzCountLeadZero64() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint8_t RapidlzHighBit64(uint64_t x)\n    {\n        RAPIDLZ_ASSERT(x != 0);\n\n#if (defined(__GNUC__) && (__GNUC__ >= 3))\n        return ((uint8_t)__builtin_clzll(x) ^ 63);\n#endif\n        uint8_t pos = 64;\n        uint64_t value = x;\n\n        if (value == 0)\n        {\n            return 0;\n        }\n        if ((value & 0xFFFFFFFF00000000) == 0)\n        {\n            value <<= 32;\n            pos -= 32;\n        }\n        if ((value & 0xFFFF000000000000) == 0)\n        {\n            value <<= 16;\n            pos -= 16;\n        }\n        if ((value & 0xFF00000000000000) == 0)\n        {\n            value <<= 8;\n            pos -= 8;\n        }\n        if ((value & 0xF000000000000000) == 0)\n        {\n            value <<= 4;\n            pos -= 4;\n        }\n        if ((value & 0xC000000000000000) == 0)\n        {\n            value <<= 2;\n            pos -= 2;\n        }\n        if ((value & 0x8000000000000000) == 0)\n        {\n            value <<= 1;\n            pos -= 1;\n        }\n\n        return pos - 1;\n    }",
+                        "rust_code": "pub fn RapidlzHighBit64() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzWriteLE16(void *addr, uint16_t val)\n    {\n        if (RapidlzIsLE() != 0)\n        {\n            *(uint16_t *)addr = val;\n        }\n        else\n        {\n            uint8_t *tmp = (uint8_t *)addr;\n            tmp[0] = (uint8_t)val;\n            tmp[1] = (uint8_t)(val >> 8);\n        }\n    }",
+                        "rust_code": "pub fn RapidlzWriteLE16() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzCopy32Byte(void *dst, const void *src)\n    {\n#if defined(ARM_NEON)\n\n        vst1q_u8((uint8_t *)dst, vld1q_u8((const uint8_t *)src));\n        vst1q_u8((uint8_t *)dst + 16, vld1q_u8((const uint8_t *)src + 16));\n#elif defined(X86_SSE2)\n    _mm_storeu_si128((__m128i *)dst, _mm_loadu_si128((const __m128i *)src));\n    _mm_storeu_si128((__m128i *)dst + 1, _mm_loadu_si128((const __m128i *)src + 1));\n#else\n    RAPIDLZ_WRITE64BIT(dst, RAPIDLZ_READ64BIT(src));\n    RAPIDLZ_WRITE64BIT((uint8_t *)dst + 8, RAPIDLZ_READ64BIT((uint8_t *)src + 8));\n    RAPIDLZ_WRITE64BIT((uint8_t *)dst + 16, RAPIDLZ_READ64BIT((uint8_t *)src + 16));\n    RAPIDLZ_WRITE64BIT((uint8_t *)dst + 24, RAPIDLZ_READ64BIT((uint8_t *)src + 24));\n#endif\n    }",
+                        "rust_code": "pub fn RapidlzCopy32Byte() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzCopy16Byte(void *dst, const void *src)\n    {\n#if defined(ARM_NEON)\n        vst1q_u8((uint8_t *)dst, vld1q_u8((const uint8_t *)src));\n#elif defined(X86_SSE2)\n    _mm_storeu_si128((__m128i *)dst, _mm_loadu_si128((const __m128i *)src));\n#else\n    RAPIDLZ_WRITE64BIT(dst, RAPIDLZ_READ64BIT(src));\n    RAPIDLZ_WRITE64BIT((uint8_t *)dst + 8, RAPIDLZ_READ64BIT((uint8_t *)src + 8));\n#endif\n    }",
+                        "rust_code": "pub fn RapidlzCopy16Byte() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzCopy8Byte(void *dst, const void *src)\n    {\n#if defined(ARM_NEON)\n        vst1_u8((uint8_t *)dst, vld1_u8((const uint8_t *)src));\n#else\n    RAPIDLZ_WRITE64BIT(dst, RAPIDLZ_READ64BIT(src));\n#endif\n    }",
+                        "rust_code": "pub fn RapidlzCopy8Byte() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzWildCopy8(const uint8_t *srcPtr, uint8_t *dstPtr, uint8_t *dstEnd)\n    {\n        uint8_t *tmpDstPtr = dstPtr;\n        const uint8_t *tmpSrcPtr = srcPtr;\n        do\n        {\n            RapidlzCopy8Byte(tmpDstPtr, tmpSrcPtr);\n            tmpDstPtr += 8;\n            tmpSrcPtr += 8;\n        } while (tmpDstPtr < dstEnd);\n    }",
+                        "rust_code": "pub fn RapidlzWildCopy8() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzWildCopy16(const uint8_t *srcPtr, uint8_t *dstPtr, uint8_t *dstEnd)\n    {\n        uint8_t *tmpDstPtr = dstPtr;\n        const uint8_t *tmpSrcPtr = srcPtr;\n        do\n        {\n            RapidlzCopy16Byte(tmpDstPtr, tmpSrcPtr);\n            tmpDstPtr += 16;\n            tmpSrcPtr += 16;\n        } while (tmpDstPtr < dstEnd);\n    }",
+                        "rust_code": "pub fn RapidlzWildCopy16() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzWildCopy32(const uint8_t *srcPtr, uint8_t *dstPtr, uint8_t *dstEnd)\n    {\n        uint8_t *tmpDstPtr = dstPtr;\n        const uint8_t *tmpSrcPtr = srcPtr;\n        do\n        {\n            RapidlzCopy32Byte(tmpDstPtr, tmpSrcPtr);\n            tmpDstPtr += 32;\n            tmpSrcPtr += 32;\n        } while (tmpDstPtr < dstEnd);\n    }",
+                        "rust_code": "pub fn RapidlzWildCopy32() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzCopyLiteralsFast(const uint8_t *src, uint8_t *dst, uint32_t length)\n    {\n        if (RAPIDLZ_LIKELY(length <= RAPIDLZ_SIXTEEN_BYTE))\n        {\n            RapidlzCopy16Byte(dst, src);\n            return;\n        }\n\n        RapidlzWildCopy16(src, dst, dst + length);\n    }",
+                        "rust_code": "pub fn RapidlzCopyLiteralsFast() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline const uint8_t *RapidlzCompressExpandBackward(const uint8_t *matchLimit, const uint8_t *matchPtr,\n                                                               const uint8_t *srcCurr)\n    {\n        uint64_t xorVal;\n        const uint8_t *loopEnd = matchLimit - 7;\n        const uint8_t *srcCurrMatchEnd = srcCurr;\n        const uint8_t *matchBegin = matchPtr;\n\n        while (srcCurrMatchEnd < loopEnd)\n        {\n            xorVal = RAPIDLZ_READ64BIT(matchBegin) ^ RAPIDLZ_READ64BIT(srcCurrMatchEnd);\n            if (RAPIDLZ_UNLIKELY(xorVal == 0))\n            {\n                srcCurrMatchEnd += sizeof(uint64_t);\n                matchBegin += sizeof(uint64_t);\n                continue;\n            }\n            srcCurrMatchEnd +=\n                RapidlzIsLE() ? (RapidlzCountTailZero64(xorVal) >> 3) : (RapidlzCountLeadZero64(xorVal) >> 3);\n            return srcCurrMatchEnd;\n        }\n\n        if (((srcCurrMatchEnd + 3) < matchLimit) &&\n            (RAPIDLZ_READ32BIT(srcCurrMatchEnd) == RAPIDLZ_READ32BIT(matchBegin)))\n        {\n            srcCurrMatchEnd += sizeof(uint32_t);\n            matchBegin += sizeof(uint32_t);\n        }\n\n        if (((srcCurrMatchEnd + 1) < matchLimit) &&\n            (RAPIDLZ_READ16BIT(srcCurrMatchEnd) == RAPIDLZ_READ16BIT(matchBegin)))\n        {\n            srcCurrMatchEnd += sizeof(uint16_t);\n            matchBegin += sizeof(uint16_t);\n        }\n\n        if ((srcCurrMatchEnd < matchLimit) && (srcCurrMatchEnd[0] == matchBegin[0]))\n        {\n            srcCurrMatchEnd++;\n        }\n        return srcCurrMatchEnd;\n    }",
+                        "rust_code": "pub fn RapidlzCompressExpandBackward() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzCopyMatchFast(uint8_t *dst, uint8_t *match, uint16_t offset, uint32_t length)\n    {\n        uint8_t *dstCurr = dst;\n        uint8_t *matchPtr = match;\n\n        if (offset >= RAPIDLZ_SIXTEEN_BYTE)\n        {\n            RapidlzCopyLiteralsFast(matchPtr, dstCurr, length);\n            return;\n        }\n\n        for (int i = 0; i < RAPIDLZ_EIGHT_BYTE; ++i)\n        {\n            dstCurr[i] = matchPtr[i];\n        }\n\n        if (length <= RAPIDLZ_EIGHT_BYTE)\n        {\n            return;\n        }\n\n        uint8_t *dstEnd = dstCurr + length;\n        if (offset < RAPIDLZ_EIGHT_BYTE)\n        {\n            matchPtr += g_overlapOffAddVal[offset];\n            dstCurr += RAPIDLZ_EIGHT_BYTE;\n        }\n\n        do\n        {\n            RapidlzCopy8Byte(dstCurr, matchPtr);\n            dstCurr += RAPIDLZ_EIGHT_BYTE;\n            matchPtr += RAPIDLZ_EIGHT_BYTE;\n        } while (dstCurr < dstEnd);\n    }",
+                        "rust_code": "pub fn RapidlzCopyMatchFast() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "rapidlz_log_c.rs": {
+                "name": "rapidlz_log_c.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::src::rapidlz_log_h::*;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "static RapidlzLogFunc g_rapidlzLogFunc = NULL;",
+                        "rust_code": "pub static g_rapidlzLogFunc: i32 = 0;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define LOG_BUF_SIZE 1024",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [],
+                "functions": [
+                    {
+                        "c_code": "void RapidlzLogWrite(size_t error_code, const char *file_name, unsigned short line, const char *fmt, ...)\n    {\n        va_list alist;\n        char output[LOG_BUF_SIZE];\n        int retVal, len;\n        RapidlzLogFunc func = g_rapidlzLogFunc;\n        char *filename;\n\n        if (func == NULL)\n        {\n            return;\n        }\n\n        filename = strdup(file_name);\n        if (filename == NULL)\n        {\n            return;\n        }\n\n        retVal = snprintf_s(output, LOG_BUF_SIZE, LOG_BUF_SIZE - 1, \"\\n[Rapidlz-Log] File=%s, Line=%u, Error=%zu\\n\",\n                            basename(filename), line, error_code);\n        if (retVal < 0)\n        {\n            free(filename);\n            return;\n        }\n        len = retVal;\n\n        free(filename);\n\n        va_start(alist, fmt);\n        retVal = vsnprintf_s(output + len, LOG_BUF_SIZE - len, LOG_BUF_SIZE - len - 1, fmt, alist);\n        va_end(alist);\n        if (retVal < 0)\n        {\n            return;\n        }\n\n        func(output, strlen(output) + 1);\n    }",
+                        "rust_code": "pub fn RapidlzLogWrite() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void RapidlzLogRegister(RapidlzLogFunc func)\n    {\n        g_rapidlzLogFunc = func;\n    }",
+                        "rust_code": "pub fn RapidlzLogRegister() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "rapidlz_compress_c.rs": {
+                "name": "rapidlz_compress_c.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::rapidlz_h::*;",
+                    "pub use crate::src::rapidlz_inner_h::*;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "typedef struct\n    {\n        uint8_t *hashTable;\n        uint8_t hashType;\n        uint8_t hashBits;\n        uint8_t step;\n        uint8_t bufferLimit;\n    } RapidlzCCtx;",
+                        "rust_code": "pub type RapidlzCCtx = i32;"
+                    },
+                    {
+                        "c_code": "static const char *g_rapidlzVersion = \"rapidlz 3.24.10.B201\";",
+                        "rust_code": "pub static g_rapidlzVersion: i32 = 0;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define RAPIDLZ_MAX_INPUT_SIZE 0x7E000000U",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_ACCELERATION_MAX 10",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_SRC_SIZE_THRESHOLD 65536",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_LAST_LITERALS 6",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MIN_COMPRESS_SIZE 16",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MIN_HASH_BIT 6",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZ_MAX_HASH_BIT 12",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define RAPIDLZ_COMPRESSBOUND(size) ((uint32_t)(size) > RAPIDLZ_MAX_INPUT_SIZE ? 0 : (size) + ((size) / 255) + 16)",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": [
+                    {
+                        "c_code": "const char *RapidlzVersionGet(void)\n    {\n        return g_rapidlzVersion;\n    }",
+                        "rust_code": "pub fn RapidlzVersionGet() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "size_t RapidlzCompressBound(size_t srcSize)\n    {\n\n        return RAPIDLZ_COMPRESSBOUND(srcSize);\n    }",
+                        "rust_code": "pub fn RapidlzCompressBound() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void RapidlzPutPosOnTable(uint32_t pos, uint32_t hashValue, uint8_t *hashTable, uint8_t hashType)\n    {\n        if (hashType == 4)\n        {\n            *(((uint16_t *)hashTable) + hashValue) = (uint16_t)pos;\n        }\n        else if (hashType == 5)\n        {\n            *(((uint32_t *)hashTable) + hashValue) = (uint32_t)pos;\n        }\n    }",
+                        "rust_code": "pub fn RapidlzPutPosOnTable() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint32_t RapidlzGetPosOnTable(uint32_t hashValue, uint8_t *hashTable, uint8_t hashType)\n    {\n        if (hashType == 4)\n        {\n            return (uint32_t)(*(((uint16_t *)hashTable) + hashValue));\n        }\n        else if (hashType == 5)\n        {\n            return (*(((uint32_t *)hashTable) + hashValue));\n        }\n\n        return 0;\n    }",
+                        "rust_code": "pub fn RapidlzGetPosOnTable() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint32_t RapidlzCalcHashValue(const uint8_t *srcCurr, uint8_t hashType, uint8_t hashBits)\n    {\n        if (hashType == 5)\n        {\n            return (uint32_t)((((RAPIDLZ_READ64BIT(srcCurr)) << 24) * 11400714819323198485ULL) >> (64 - hashBits));\n        }\n        else\n        {\n            return (RAPIDLZ_READ32BIT(srcCurr) * 2654435769U) >> (32 - hashBits);\n        }\n    }",
+                        "rust_code": "pub fn RapidlzCalcHashValue() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint8_t *RapidlzCompressStoreOptionalLength(uint8_t *dst, uint32_t litLength)\n    {\n        uint8_t *dstCurr = dst;\n        uint32_t length = litLength;\n\n        if (length < RAPIDLZ_MAX_BYTE_VALUE)\n        {\n            *dstCurr = (uint8_t)length;\n            dstCurr++;\n            return dstCurr;\n        }\n\n        do\n        {\n            *dstCurr = RAPIDLZ_MAX_BYTE_VALUE;\n            dstCurr++;\n            length -= RAPIDLZ_MAX_BYTE_VALUE;\n        } while (length >= RAPIDLZ_MAX_BYTE_VALUE);\n\n        *dstCurr = (uint8_t)length;\n        dstCurr++;\n        return dstCurr;\n    }",
+                        "rust_code": "pub fn RapidlzCompressStoreOptionalLength() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint8_t *RapidlzStoreLastLiterals(uint8_t *dst, uint8_t *dstEnd, const uint8_t *srcCurr,\n                                                    uint32_t litLength, uint8_t bufferLimit)\n    {\n        uint8_t *dstCurr = dst;\n\n        if (bufferLimit != 0)\n        {\n            const uint32_t litTokSize = 1 + litLength + (litLength / RAPIDLZ_MAX_BYTE_VALUE);\n            if (dstCurr + litTokSize > dstEnd)\n            {\n                RAPIDLZ_LOG(RAPIDLZ_DST_SIZE_SMALL, \"dstEnd - dstCur:%zu litTokSize:%u\\n\", dstEnd - dstCurr,\n                            litTokSize);\n                return NULL;\n            }\n        }\n\n        uint8_t token = (uint8_t)(((litLength < RAPIDLZ_MAX_4BIT_VALUE) ? (litLength) : (RAPIDLZ_MAX_4BIT_VALUE)) << 4);\n        *dstCurr = token;\n        dstCurr++;\n\n        if (litLength >= RAPIDLZ_MAX_4BIT_VALUE)\n        {\n            dstCurr = RapidlzCompressStoreOptionalLength(dstCurr, litLength - RAPIDLZ_MAX_4BIT_VALUE);\n        }\n\n        if (memcpy_s(dstCurr, dstEnd - dstCurr, srcCurr, litLength) != EOK)\n        {\n            RAPIDLZ_LOG(RAPIDLZ_SECUREC_ERROR, \"dstEnd - dstCurr:%zu litLength%u\\n\", dstEnd - dstCurr, litLength);\n            return NULL;\n        }\n\n        return dstCurr + litLength;\n    }",
+                        "rust_code": "pub fn RapidlzStoreLastLiterals() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint8_t *RapidlzStoreOffMatch(uint8_t *dst, uint8_t *token, uint32_t matchLength, uint16_t offset)\n    {\n        uint8_t *dstCurr = dst;\n\n        RapidlzWriteLE16(dstCurr, offset);\n        dstCurr += 2;\n\n        if (matchLength >= RAPIDLZ_MAX_4BIT_VALUE)\n        {\n            uint32_t optionalLen = matchLength - RAPIDLZ_MAX_4BIT_VALUE;\n            *token += RAPIDLZ_MAX_4BIT_VALUE;\n            for (; optionalLen >= RAPIDLZ_MAX_BYTE_VALUE; optionalLen -= RAPIDLZ_MAX_BYTE_VALUE)\n            {\n                *dstCurr++ = RAPIDLZ_MAX_BYTE_VALUE;\n            }\n            *dstCurr++ = (uint8_t)optionalLen;\n        }\n        else\n        {\n            *token += (uint8_t)matchLength;\n        }\n\n        return dstCurr;\n    }",
+                        "rust_code": "pub fn RapidlzStoreOffMatch() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline uint8_t *RapidlzStoreSequence(uint8_t *dst, const uint8_t *srcAnchor, uint32_t literalLength,\n                                                uint32_t matchLength, uint16_t offset)\n    {\n        uint8_t *dstCurr = dst;\n        uint8_t *token = dstCurr++;\n\n        if (literalLength >= RAPIDLZ_MAX_4BIT_VALUE)\n        {\n            *token = (RAPIDLZ_MAX_4BIT_VALUE << 4);\n            uint32_t optionalLen = literalLength - RAPIDLZ_MAX_4BIT_VALUE;\n            for (; optionalLen >= RAPIDLZ_MAX_BYTE_VALUE; optionalLen -= RAPIDLZ_MAX_BYTE_VALUE)\n            {\n                *dstCurr++ = (uint8_t)RAPIDLZ_MAX_BYTE_VALUE;\n            }\n            *dstCurr++ = (uint8_t)optionalLen;\n            RapidlzCopy16Byte(dstCurr, srcAnchor);\n            if (literalLength > 16)\n            {\n                RapidlzWildCopy16(srcAnchor + 16, dstCurr + 16, dstCurr + literalLength);\n            }\n            dstCurr += literalLength;\n        }\n        else if (literalLength > 0)\n        {\n            *token = (uint8_t)(literalLength << 4);\n            RapidlzCopy16Byte(dstCurr, srcAnchor);\n            dstCurr += literalLength;\n        }\n        else\n        {\n            *token = 0;\n        }\n\n        return RapidlzStoreOffMatch(dstCurr, token, matchLength, offset);\n    }",
+                        "rust_code": "pub fn RapidlzStoreSequence() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static size_t RapidlzCompressProcess(void *dst, size_t dstSize, const void *src, size_t srcSize, RapidlzCCtx *cCtx)\n    {\n        uint32_t hashValue, matchLength, literalLength;\n        uint32_t step = 1;\n        uint16_t offset;\n        uint8_t *hashTable = cCtx->hashTable;\n        const uint8_t *srcBegin = (const uint8_t *)src;\n        const uint8_t *srcEnd = (const uint8_t *)src + srcSize;\n        const uint8_t *srcCurr = srcBegin + 1;\n        const uint8_t *srcCurrMatchEnd;\n        const uint8_t *srcAnchor = srcBegin;\n        const uint8_t *matchBegin;\n        const uint8_t *matchLimit = srcEnd - RAPIDLZ_LAST_LITERALS;\n        const uint8_t *srcLimit = srcEnd - RAPIDLZ_MIN_COMPRESS_SIZE;\n        uint8_t *dstBegin = (uint8_t *)dst;\n        uint8_t *dstEnd = (uint8_t *)dst + dstSize;\n        uint8_t *dstCurr = dstBegin;\n        uint8_t hashType = cCtx->hashType;\n        uint8_t hashBits = cCtx->hashBits;\n        uint32_t searchMatchNb = cCtx->step << RAPIDLZ_STEP_FORWARD_BASE;\n        uint32_t searchMatchNbTmp = searchMatchNb;\n        uint8_t bufferLimit = cCtx->bufferLimit;\n\n        while (RAPIDLZ_LIKELY(srcCurr <= srcLimit))\n        {\n            for (;;)\n            {\n                hashValue = RapidlzCalcHashValue(srcCurr, hashType, hashBits);\n                matchBegin = srcBegin + RapidlzGetPosOnTable(hashValue, hashTable, hashType);\n                RapidlzPutPosOnTable(srcCurr - srcBegin, hashValue, hashTable, hashType);\n\n                if ((RAPIDLZ_READ32BIT(srcCurr) == RAPIDLZ_READ32BIT(matchBegin)) &&\n                    RAPIDLZ_LIKELY((srcCurr - matchBegin) <= RAPIDLZ_MAX_OFFSET))\n                {\n                    break;\n                }\n\n                srcCurr += step;\n                step = (searchMatchNbTmp++ >> RAPIDLZ_STEP_FORWARD_BASE);\n\n                if (srcCurr > srcLimit)\n                {\n                    dstCurr = RapidlzStoreLastLiterals(dstCurr, dstEnd, srcAnchor, srcEnd - srcAnchor, bufferLimit);\n                    if (dstCurr == NULL)\n                    {\n                        return 0;\n                    }\n                    return dstCurr - dstBegin;\n                }\n            }\n            step = 1;\n            searchMatchNbTmp = searchMatchNb;\n\n            srcCurrMatchEnd =\n                RapidlzCompressExpandBackward(matchLimit, matchBegin + RAPIDLZ_MIN_MATCH, srcCurr + RAPIDLZ_MIN_MATCH);\n            RAPIDLZ_EXPAND_FORWARD(srcBegin, matchBegin, srcCurr, srcAnchor);\n            matchLength = srcCurrMatchEnd - srcCurr - RAPIDLZ_MIN_MATCH;\n            offset = (uint16_t)(srcCurr - matchBegin);\n            literalLength = srcCurr - srcAnchor;\n            if (bufferLimit != 0)\n            {\n                uint32_t writeSize = literalLength + 8 + (literalLength + matchLength / RAPIDLZ_MAX_BYTE_VALUE);\n                if (RAPIDLZ_UNLIKELY(dstCurr + writeSize > dstEnd))\n                {\n                    RAPIDLZ_LOG(RAPIDLZ_DST_SIZE_SMALL, \"dstEnd - dstCur:%zu writeSize:%u\\n\", dstEnd - dstCurr,\n                                writeSize);\n                    return 0;\n                }\n            }\n            dstCurr = RapidlzStoreSequence(dstCurr, srcAnchor, literalLength, matchLength, offset);\n            srcCurr = srcCurrMatchEnd;\n            srcAnchor = srcCurr;\n            hashValue = RapidlzCalcHashValue(srcCurr - 2, hashType, hashBits);\n            RapidlzPutPosOnTable(srcCurr - 2 - srcBegin, hashValue, hashTable, hashType);\n\n            if (RAPIDLZ_UNLIKELY(srcCurr > srcLimit))\n            {\n                break;\n            }\n\n            hashValue = RapidlzCalcHashValue(srcCurr, hashType, hashBits);\n            matchBegin = srcBegin + RapidlzGetPosOnTable(hashValue, hashTable, hashType);\n            RapidlzPutPosOnTable(srcCurr - srcBegin, hashValue, hashTable, hashType);\n\n            if ((RAPIDLZ_READ32BIT(srcCurr) != RAPIDLZ_READ32BIT(matchBegin)) ||\n                RAPIDLZ_UNLIKELY((srcCurr - matchBegin) > RAPIDLZ_MAX_OFFSET))\n            {\n                srcCurr++;\n                continue;\n            }\n\n            srcCurrMatchEnd =\n                RapidlzCompressExpandBackward(matchLimit, matchBegin + RAPIDLZ_MIN_MATCH, srcCurr + RAPIDLZ_MIN_MATCH);\n            matchLength = srcCurrMatchEnd - srcCurr - RAPIDLZ_MIN_MATCH;\n            offset = (uint16_t)(srcCurr - matchBegin);\n            if (bufferLimit != 0)\n            {\n                const uint32_t writeSize = 8 + matchLength / RAPIDLZ_MAX_BYTE_VALUE;\n                if (RAPIDLZ_UNLIKELY(dstCurr + writeSize > dstEnd))\n                {\n                    RAPIDLZ_LOG(RAPIDLZ_DST_SIZE_SMALL, \"dstEnd - dstCur:%zu writeSize:%u\\n\", dstEnd - dstCurr,\n                                writeSize);\n                    return 0;\n                }\n            }\n            *dstCurr = 0;\n            dstCurr = RapidlzStoreOffMatch(dstCurr + 1, dstCurr, matchLength, offset);\n\n            srcCurr = srcCurrMatchEnd;\n            srcAnchor = srcCurr;\n\n            hashValue = RapidlzCalcHashValue(srcCurr - 2, hashType, hashBits);\n            RapidlzPutPosOnTable(srcCurr - 2 - srcBegin, hashValue, hashTable, hashType);\n        }\n\n        if (srcAnchor < srcEnd)\n        {\n            dstCurr = RapidlzStoreLastLiterals(dstCurr, dstEnd, srcAnchor, srcEnd - srcAnchor, bufferLimit);\n            if (dstCurr == NULL)\n            {\n                return 0;\n            }\n        }\n\n        return dstCurr - dstBegin;\n    }",
+                        "rust_code": "pub fn RapidlzCompressProcess() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static void RapidlzCCtxFree(RapidlzCCtx *cCtx)\n    {\n        if (cCtx != NULL)\n        {\n            if (cCtx->hashTable != NULL)\n            {\n                free(cCtx->hashTable);\n                cCtx->hashTable = NULL;\n            }\n\n            free(cCtx);\n        }\n    }",
+                        "rust_code": "pub fn RapidlzCCtxFree() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "size_t RapidlzCompress(const void *src, void *dst, size_t srcSize, size_t dstSize, int acceleration)\n    {\n        if (src == NULL || dst == NULL || srcSize == 0 || dstSize == 0)\n        {\n            RAPIDLZ_LOG(RAPIDLZ_INPUT_INVALID, \"input invalid\\n\");\n            return 0;\n        }\n\n        if (acceleration < 1 || acceleration > RAPIDLZ_ACCELERATION_MAX)\n        {\n            RAPIDLZ_LOG(RAPIDLZ_INPUT_INVALID, \"acceleration:%d\\n\", acceleration);\n            return 0;\n        }\n\n        RapidlzCCtx *cCtx = (RapidlzCCtx *)malloc(sizeof(RapidlzCCtx));\n        if (cCtx == NULL)\n        {\n            RAPIDLZ_LOG(RAPIDLZ_MALLOC_FAILED, \"cCtx malloc failed\\n\");\n            return 0;\n        }\n\n        cCtx->hashBits = RAPIDLZ_MIN_HASH_BIT;\n        size_t totalHashSize;\n        if (srcSize <= RAPIDLZ_SRC_SIZE_THRESHOLD)\n        {\n            cCtx->hashType = RAPIDLZ_HASH_TYPE_4;\n            if (srcSize >= 64)\n            {\n                cCtx->hashBits = (RapidlzHighBit64(srcSize) > RAPIDLZ_MAX_HASH_BIT) ? (RAPIDLZ_MAX_HASH_BIT + 1)\n                                                                                    : RapidlzHighBit64(srcSize);\n            }\n            totalHashSize = sizeof(uint16_t) * (uint32_t)(1 << cCtx->hashBits);\n        }\n        else\n        {\n            cCtx->hashType = RAPIDLZ_HASH_TYPE_5;\n            cCtx->hashBits = RAPIDLZ_MAX_HASH_BIT;\n            totalHashSize = sizeof(uint32_t) * (uint32_t)(1 << cCtx->hashBits);\n        }\n\n        uint8_t *table = (uint8_t *)malloc(totalHashSize);\n        if (table == NULL)\n        {\n            RAPIDLZ_LOG(RAPIDLZ_MALLOC_FAILED, \"hash table malloc failed\\n\");\n            free(cCtx);\n            return 0;\n        }\n        (void)memset_s(table, totalHashSize, 0, totalHashSize);\n        cCtx->hashTable = table;\n        cCtx->step = (uint8_t)acceleration;\n        cCtx->bufferLimit = dstSize < RapidlzCompressBound(srcSize);\n\n        size_t cSize = RapidlzCompressProcess(dst, dstSize, src, srcSize, cCtx);\n        RapidlzCCtxFree(cCtx);\n        return cSize;\n    }",
+                        "rust_code": "pub fn RapidlzCompress() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "size_t RapidlzCompressDefault(const void *src, void *dst, size_t srcSize, size_t dstSize)\n    {\n        return RapidlzCompress(src, dst, srcSize, dstSize, 1);\n    }",
+                        "rust_code": "pub fn RapidlzCompressDefault() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "rapidlz_log_h.rs": {
+                "name": "rapidlz_log_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::rapidlz_h::*;",
+                    "pub use crate::src::rapidlz_log_c::RapidlzLogWrite;"
+                ],
+                "definitions": [],
+                "macros": [
+                    {
+                        "c_code": "#define RAPIDLZ_LOG_H",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define RAPIDLZFILENAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define RAPIDLZ_LOG(error_code, fmt, ...)                                                                              \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        RapidlzLogWrite((size_t)(error_code), RAPIDLZFILENAME, __LINE__, fmt, __VA_ARGS__);                            \\\n    } while (0)",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": []
+            },
+            "mod.rs": {
+                "name": "mod.rs",
+                "type": "file",
+                "declarations": [
+                    "pub mod rapidlz_dictionary_c;",
+                    "pub mod rapidlz_decompress_c;",
+                    "pub mod rapidlz_inner_h;",
+                    "pub mod rapidlz_log_c;",
+                    "pub mod rapidlz_compress_c;",
+                    "pub mod rapidlz_log_h;"
+                ],
+                "definitions": [],
+                "macros": [],
+                "macro_functions": [],
+                "functions": []
+            }
+        }
+    },
+    "lib.rs": {
+        "name": "lib.rs",
+        "type": "file",
+        "declarations": [
+            "pub(crate) mod translation_utils;",
+            "pub(crate) mod include;",
+            "pub(crate) mod src;"
+        ],
+        "definitions": [],
+        "macros": [],
+        "macro_functions": [],
+        "functions": []
+    }
+}

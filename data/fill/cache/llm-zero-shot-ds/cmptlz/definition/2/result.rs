@@ -1,0 +1,1 @@
+type CmptLzDecProb = u16;
