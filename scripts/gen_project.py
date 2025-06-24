@@ -1,5 +1,4 @@
 from config.global_config import GlobalConfig
-from metadata_extraction.c_metadata import extract_c_metadata_from_project
 from metadata_extraction.rust_metadata import c_metadata_to_rust_metadata
 from llm.client import GenerationClient
 from cache.cache import ProjectCache
@@ -32,4 +31,3 @@ if __name__ == "__main__":
 
     # 在final_project目录下生成Rust项目
     project = RustProject(name=config.project_name, metadata=rust_metadata, parent_dir=config.final_project_dir, template_project_dir=config.template_project_dir, no_timestamp=True)
-    project.build_project()

@@ -28,7 +28,7 @@
                     },
                     {
                         "c_code": "typedef struct\n{\n    void *(*CmptLzAlloc)(int32_t enMemType, size_t size);\n    void (*CmptLzFree)(int32_t enMemType, void *address);\n} CmptLzMemHook;",
-                        "rust_code": "pub type enMemType = i32;"
+                        "rust_code": "pub type CmptLzMemHook = i32;"
                     },
                     {
                         "c_code": "typedef void (*CmptlzLogFunc)(const char *message, size_t size);",
