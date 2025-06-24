@@ -9,9 +9,7 @@ import os
 if __name__ == "__main__":
     final_report = {}
     projects = ["avl", "bzp", "cmptlz", "rapidlz", "md5", "sha256"]
-    # projects = ["md5", "sha256"]
     method_names = ["llm-zero-shot-ds", "evo-c2rust-v1-ds", "evo-c2rust-v2-ds-rule-fix", "evo-c2rust-v2-ds-llm-repair",  "evo-c2rust-v2-qwen-rule-fix"]
-    # method_names = ["evo-c2rust-v1-ds", "evo-c2rust-v2-ds-llm-repair"]
     for method_name in method_names:
         method_report = {}
         all_proj_total_cnt = 0
