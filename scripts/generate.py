@@ -27,6 +27,6 @@ if __name__ == "__main__":
     cache = ProjectCache(config, cache_dir="./data/default/cache/evo-c2rust-v2-ds-gen-only")
     
     # 多线程
-    code_generation(config, rust_metadata, cache, client, multi_process=True, threads_num=10)
+    # code_generation(config, rust_metadata, cache, client, multi_process=True, threads_num=10)
     # # 单线程
-    # code_generation(config, rust_metadata, cache, client, multi_process=False)
+    code_generation(config, rust_metadata, cache, client, multi_process=False)

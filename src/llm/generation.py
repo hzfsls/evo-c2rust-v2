@@ -86,3 +86,14 @@ multi_process=False, threads_num=10):
                     cache.update(typ, c.c_code, c.rust_code)
                 except Exception as e:
                     raise CallLLMTimeoutError(e)
+
+def translate_code(client, typ, code: str):
+    prompts = {
+        "definition": client.config.definition_prompt,
+        "macro": client.config.macro_prompt,
+        "macro_function": client.config.macro_function_prompt,
+        "dummy_function": client.config.dummy_function_prompt,
+        "function": client.config.function_prompt,
+    }
+    prompt = prompts[typ]
+    return get_llm_gen_result(client, code, prompt)
