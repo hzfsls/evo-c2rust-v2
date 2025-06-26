@@ -18,7 +18,7 @@ if __name__ == "__main__":
     config.project_name = args.project_name
 
     rust_metadata = c_metadata_to_rust_metadata(config)
-    cache = ProjectCache(config, cache_dir="./data/default/cache/evo-c2rust-v2-ds-llm-repair")
+    cache = ProjectCache(config, cache_dir="./data/default/cache/evo-c2rust-v2-ds-gen-only")
     
     report = code_verification(config, rust_metadata, cache)
     with open("report.json", "w") as f:

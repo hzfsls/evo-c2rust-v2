@@ -30,4 +30,4 @@ if __name__ == "__main__":
     # code_verification(config, rust_metadata, cache)
 
     # 在final_project目录下生成Rust项目
-    project = RustProject(name=config.project_name, metadata=rust_metadata, parent_dir=config.final_project_dir, template_project_dir=config.template_project_dir, no_timestamp=True)
+    project = RustProject(name=config.project_name, metadata=rust_metadata, parent_dir=config.final_project_dir, template_project_dir=config.template_project_dir, is_final=True)

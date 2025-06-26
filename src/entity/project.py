@@ -44,8 +44,9 @@ def create_under_current_dir_full(dir_path: str, rpath: RustPath):
 
 
 class RustProject:
-    def __init__(self, name: str, metadata: RustProjectMetadata, parent_dir="./created_project", template_project_dir="./template_project", no_timestamp=False):
-        if no_timestamp:
+    def __init__(self, name: str, metadata: RustProjectMetadata, parent_dir="./created_project", template_project_dir="./template_project", is_final=False):
+        self.is_final = is_final
+        if is_final:
             self.dir_path = os.path.join(parent_dir, f"{name}")
         else:
             self.dir_path = os.path.join(parent_dir, f"{name}_{int(time.time() * 1000)}")
@@ -54,24 +55,50 @@ class RustProject:
         self.create_project()    
     
     def create_project(self):
-        if os.path.exists(self.dir_path):
-            shutil.rmtree(self.dir_path)
-        os.makedirs(self.dir_path)
-        for item_name in os.listdir(self.template_project_dir):
-            if item_name == "src":
-                src_target = os.path.join(self.dir_path, "src")
-                os.makedirs(os.path.join(self.dir_path, "src"), exist_ok=True)
-                for item_name_1 in os.listdir(os.path.join(self.template_project_dir, "src")):
-                    link_path = os.path.join(self.dir_path, "src", item_name_1)
-                    absolute_item = os.path.abspath(os.path.join(self.template_project_dir, "src", item_name_1))
+        if not self.is_final:
+            if os.path.exists(self.dir_path):
+                shutil.rmtree(self.dir_path)
+            os.makedirs(self.dir_path)
+            for item_name in os.listdir(self.template_project_dir):
+                if item_name == "src":
+                    src_target = os.path.join(self.dir_path, "src")
+                    os.makedirs(os.path.join(self.dir_path, "src"), exist_ok=True)
+                    for item_name_1 in os.listdir(os.path.join(self.template_project_dir, "src")):
+                        link_path = os.path.join(self.dir_path, "src", item_name_1)
+                        absolute_item = os.path.abspath(os.path.join(self.template_project_dir, "src", item_name_1))
+                        os.symlink(absolute_item, link_path)
+                else:
+                    link_path = os.path.join(self.dir_path, item_name)
+                    absolute_item = os.path.abspath(os.path.join(self.template_project_dir, item_name))
                     os.symlink(absolute_item, link_path)
-            else:
-                link_path = os.path.join(self.dir_path, item_name)
-                absolute_item = os.path.abspath(os.path.join(self.template_project_dir, item_name))
-                os.symlink(absolute_item, link_path)
-        paths = self.metadata.paths
-        for k, v in paths.items():
-            create_under_current_dir(os.path.join(self.dir_path, "src"), v)
+            paths = self.metadata.paths
+            for k, v in paths.items():
+                create_under_current_dir(os.path.join(self.dir_path, "src"), v)
+        else:
+            if os.path.exists(self.dir_path):
+                shutil.rmtree(self.dir_path)
+            os.makedirs(self.dir_path)
+            for item_name in os.listdir(self.template_project_dir):
+                if item_name == "src":
+                    src_target = os.path.join(self.dir_path, "src")
+                    os.makedirs(os.path.join(self.dir_path, "src"), exist_ok=True)
+                    for item_name_1 in os.listdir(os.path.join(self.template_project_dir, "src")):
+                        src_item_path = os.path.join(self.template_project_dir, "src", item_name_1)
+                        target_item_path = os.path.join(self.dir_path, "src", item_name_1)
+                        if os.path.isdir(src_item_path):
+                            shutil.copytree(src_item_path, target_item_path)
+                        else:
+                            shutil.copy2(src_item_path, target_item_path)
+                else:
+                    src_item_path = os.path.join(self.template_project_dir, item_name)
+                    target_item_path = os.path.join(self.dir_path, item_name)
+                    if os.path.isdir(src_item_path):
+                        shutil.copytree(src_item_path, target_item_path)
+                    else:
+                        shutil.copy2(src_item_path, target_item_path)
+            paths = self.metadata.paths
+            for k, v in paths.items():
+                create_under_current_dir_full(os.path.join(self.dir_path, "src"), v)
 
     def build_project(self):
         result = subprocess.run(["RUSTFLAGS=-Awarnings cargo check"], shell=True, cwd=self.dir_path, timeout=10, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
