@@ -21,9 +21,9 @@ if __name__ == "__main__":
     config.project_name = args.project_name
     
     # 更改你的api_key信息
-    self.api_key = "sk-1234"
-    self.base_url = "http://api.openai.rnd.huawei.com/v1"
-    self.model_name = "qwen3-32b"
+    config.api_key = "sk-1234"
+    config.base_url = "http://api.openai.rnd.huawei.com/v1"
+    config.model_name = "qwen3-32b"
     client = GenerationClient(config)
     
     rust_metadata = c_metadata_to_rust_metadata(config)

@@ -1,0 +1,10 @@
+{
+    "evo-c2rust-v2-ds-llm-repair": {
+        "safe_api_rate": 1.0,
+        "safe_code_rate": 0.9740527849740933
+    },
+    "evo-c2rust-v2-qwen-rule-fix": {
+        "safe_api_rate": 1.0,
+        "safe_code_rate": 0.9738056846295694
+    }
+}
