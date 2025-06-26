@@ -10,12 +10,11 @@ import os
 
 if __name__ == "__main__":
     final_report = {}
-    # projects = ["avl", "bzp", "cmptlz", "rapidlz", "md5", "sha256"]
-    projects = ["md5"]
+    projects = ["avl", "bzp", "cmptlz", "rapidlz", "md5", "sha256"]
 
     config = GlobalConfig()
     work_dir = os.path.join(config.final_project_dir, "evo-c2rust-v2-ds-llm-repair")
-    
+
     for project_name in projects:          
         config = GlobalConfig()
         config.project_dir = "./data/increment/project"

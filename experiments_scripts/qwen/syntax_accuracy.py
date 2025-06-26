@@ -19,8 +19,7 @@ from llm.client_hw import GenerationClient
 import argparse
 
 if __name__ == "__main__":
-    # projects = ["avl", "bzp", "cmptlz", "rapidlz", "md5", "sha256"]
-    projects = ["rapidlz", "md5"]
+    projects = ["avl", "bzp", "cmptlz", "rapidlz", "md5", "sha256"]
     method_report = {}
     all_proj_total_cnt = 0
     all_proj_passed_cnt = 0

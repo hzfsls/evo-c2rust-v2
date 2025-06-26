@@ -50,6 +50,6 @@ if __name__ == "__main__":
         "safe_code_rate": 1 - unsafe_code_rate
     }
     print(f"Safe API Rate: {1 - unsafe_api_rate}, safe Code Rate: {1 - unsafe_code_rate}")
-    with open("report-deepseek-safe-ratio.json", "w") as f:
+    with open("report-qwen-safe-ratio.json", "w") as f:
         import json
         json.dump(final_report, f, indent=4)
