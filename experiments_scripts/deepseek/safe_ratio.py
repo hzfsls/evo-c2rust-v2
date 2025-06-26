@@ -15,6 +15,8 @@ if __name__ == "__main__":
     config = GlobalConfig()
     work_dir = os.path.join(config.final_project_dir, "evo-c2rust-v2-ds-llm-repair")
 
+    # 注：运行此脚本需要先运行increment_fill_rate.py脚本产生cache结果
+
     for project_name in projects:          
         config = GlobalConfig()
         config.project_dir = "./data/increment/project"
