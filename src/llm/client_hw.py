@@ -42,8 +42,12 @@ class GenerationClient:
                 if max_trail == 0:
                     raise CallLLMTimeoutError(f"Failed to call LLM after 10 attempts: {e}")
         result = response.choices[0].message.content.strip()
-        if result.startswith("```rust"):
-            result = result[7:].strip()
+        # if result.startswith("```rust"):
+        #     result = result[7:].strip()
+        # if result.endswith("```"):
+        #     result = result[:-3].strip()
+        if "```rust" in result:
+            result = result.split("```rust", 1)[-1].strip()
         if result.endswith("```"):
             result = result[:-3].strip()
         return result

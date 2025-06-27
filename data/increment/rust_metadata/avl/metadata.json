@@ -1,0 +1,620 @@
+{
+    "include": {
+        "name": "include",
+        "type": "folder",
+        "children": {
+            "v_avll_h.rs": {
+                "name": "v_avll_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::v_avl3_h::*;",
+                    "pub use crate::include::v_avl3_h::AVL3_COMPARE;",
+                    "pub use crate::include::v_avl3_h::AVL3_NODE;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "typedef AVL3_COMPARE AVLL_COMPARE;",
+                        "rust_code": "pub type AVLL_COMPARE = i32;"
+                    },
+                    {
+                        "c_code": "typedef AVL3_NODE AVLL_NODE;",
+                        "rust_code": "pub type AVLL_NODE = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct avll_tree\n    {\n        AVL3_TREE stTree;\n        AVL3_TREE_INFO stTreeInfo;\n    } AVLL_TREE;",
+                        "rust_code": "pub type AVLL_TREE = i32;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define V_AVLL_H",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define VOS_AVLL_INIT_TREE(TREE, COMPARE, KEY_OFF, NODE_OFF)                                                           \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        (TREE).stTreeInfo.pfCompare = (COMPARE);                                                                       \\\n        (TREE).stTreeInfo.usKeyOffset = (KEY_OFF);                                                                     \\\n        (TREE).stTreeInfo.usNodeOffset = (NODE_OFF);                                                                   \\\n        VOS_AVL3_INIT_TREE((TREE).stTree, (TREE).stTreeInfo);                                                          \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_INIT_NODE(NODE) VOS_AVL3_INIT_NODE((NODE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_INSERT(TREE, NODE) VOS_AVL3_INSERT((TREE).stTree, (NODE), (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_INSERT_OR_FIND(TREE, NODE) VOS_AVL3_INSERT_OR_FIND((TREE).stTree, (NODE), (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_DELETE(TREE, NODE) VOS_AVL3_DELETE((TREE).stTree, (NODE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_FIND(TREE, KEY) VOS_AVL3_FIND((TREE).stTree, (KEY), (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_NEXT(TREE, NODE) VOS_AVL3_NEXT((NODE), (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_PREV(TREE, NODE) VOS_AVL3_PREV((NODE), (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_FIRST(TREE) VOS_AVL3_FIRST((TREE).stTree, (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_LAST(TREE) VOS_AVL3_LAST((TREE).stTree, (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_IN_TREE(NODE) VOS_AVL3_IN_TREE((NODE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_FIND_NEXT(TREE, KEY) VOS_AVL3_FIND_NEXT((TREE).stTree, (KEY), (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVLL_FIND_OR_FIND_NEXT(TREE, KEY) VOS_AVL3_FIND_OR_FIND_NEXT((TREE).stTree, (KEY), (TREE).stTreeInfo)",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": []
+            },
+            "avl_adapt_h.rs": {
+                "name": "avl_adapt_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;"
+                ],
+                "definitions": [],
+                "macros": [
+                    {
+                        "c_code": "#define AVL_ADAPT_H",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define AVL_NULL_PTR 0L",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define AVL_TRUE 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define AVL_FALSE 0",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define AVL_INT32_TO_LONG 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_PACKEND_ZERO 1",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define AVL_PACKEND_ZERO 1",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [],
+                "functions": []
+            },
+            "v_avl_base_h.rs": {
+                "name": "v_avl_base_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::avl_adapt_h::*;",
+                    "pub use crate::src::v_avlpub_c::VOS_AVL_Find_Or_Find_Next;",
+                    "pub use crate::src::v_avlpub_c::VOS_AVL_Find;",
+                    "pub use crate::src::v_avlpub_c::VOS_AVL_Insert_Or_Find;",
+                    "pub use crate::src::v_avlpub_c::VOS_AVL_Delete;",
+                    "pub use crate::src::v_avlpub_c::VOS_AVL_Prev;",
+                    "pub use crate::src::v_avlpub_c::VOS_AVL_Next;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "typedef long (*AVL_V2_COMPARE_FUNC)(const void *, const void *);",
+                        "rust_code": "pub type AVL_V2_COMPARE_FUNC = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct avl_node\n    {\n        struct avl_node *pstParent;\n        struct avl_node *pstLeft;\n        struct avl_node *pstRight;\n        short int sLHeight;\n        short int sRHeight;\n        void *pSelf;\n        void *pKey;\n    } AVL_NODE;",
+                        "rust_code": "pub type AVL_NODE = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct avl_tree\n    {\n        AVL_V2_COMPARE_FUNC pfnCompare;\n        AVL_NODE *pstRoot;\n        AVL_NODE *pstFirst;\n        AVL_NODE *pstLast;\n    } AVL_TREE;",
+                        "rust_code": "pub type AVL_TREE = i32;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define V_AVL_BASE_H",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define VOS_AVL_INIT_TREE(TREE, COMPARE)                                                                               \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        (TREE).pfnCompare = (COMPARE);                                                                                 \\\n        (TREE).pstFirst = (AVL_NODE *)AVL_NULL_PTR;                                                                    \\\n        (TREE).pstLast = (AVL_NODE *)AVL_NULL_PTR;                                                                     \\\n        (TREE).pstRoot = (AVL_NODE *)AVL_NULL_PTR;                                                                     \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_INIT_NODE(NODE, SELF, KEY)                                                                             \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        (NODE).pstParent = (AVL_NODE *)AVL_NULL_PTR;                                                                   \\\n        (NODE).pstLeft = (AVL_NODE *)AVL_NULL_PTR;                                                                     \\\n        (NODE).pstRight = (AVL_NODE *)AVL_NULL_PTR;                                                                    \\\n        (NODE).pSelf = (SELF);                                                                                         \\\n        (NODE).pKey = (KEY);                                                                                           \\\n        (NODE).sLHeight = -1;                                                                                          \\\n        (NODE).sRHeight = -1;                                                                                          \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_INSERT(TREE, NODE) (VOS_AVL_Insert_Or_Find(&(TREE), &(NODE)) == AVL_NULL_PTR)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_INSERT_OR_FIND(TREE, NODE) VOS_AVL_Insert_Or_Find(&(TREE), &(NODE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_DELETE(TREE, NODE) VOS_AVL_Delete(&(TREE), &(NODE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_FIND(TREE, KEY) VOS_AVL_Find(&(TREE), (KEY))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_NEXT(NODE) VOS_AVL_Next(&(NODE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_PREV(NODE) VOS_AVL_Prev(&(NODE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_FIRST(TREE)                                                                                            \\\n    (((&(TREE))->pstFirst != (AVL_NODE *)AVL_NULL_PTR) ? (&(TREE))->pstFirst->pSelf : AVL_NULL_PTR)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_LAST(TREE) (((&(TREE))->pstLast != (AVL_NODE *)AVL_NULL_PTR) ? (&(TREE))->pstLast->pSelf : AVL_NULL_PTR)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_IN_TREE(NODE) (((NODE).sLHeight != -1) && ((NODE).sRHeight != -1))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_FIND_NEXT(TREE, KEY) VOS_AVL_Find_Or_Find_Next(&(TREE), (KEY), AVL_TRUE)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL_FIND_OR_FIND_NEXT(TREE, KEY) VOS_AVL_Find_Or_Find_Next(&(TREE), (KEY), AVL_FALSE)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_V2_AVL_MAX(X, Y) (((X) > (Y)) ? (X) : (Y))",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": []
+            },
+            "v_avl3_h.rs": {
+                "name": "v_avl3_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::avl_adapt_h::*;",
+                    "pub use crate::src::v_avl3_c::VOS_AVL3_Delete;",
+                    "pub use crate::src::v_avl3_c::VOS_AVL3_Last;",
+                    "pub use crate::src::v_avl3_c::VOS_AVL3_First;",
+                    "pub use crate::src::v_avl3_c::VOS_AVL3_Next;",
+                    "pub use crate::src::v_avl3_c::AVL3_Find_Or_Find_Next;",
+                    "pub use crate::src::v_avl3_c::VOS_AVL3_Prev;",
+                    "pub use crate::src::v_avl3_c::VOS_AVL3_Find;",
+                    "pub use crate::src::v_avl3_c::VOS_AVL3_Insert_Or_Find;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "typedef long (*AVL3_COMPARE)(const void *, const void *);",
+                        "rust_code": "pub type AVL3_COMPARE = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct avl3_node\n    {\n        struct avl3_node *pstParent;\n        struct avl3_node *pstLeft;\n        struct avl3_node *pstRight;\n        short int sLHeight;\n        short int sRHeight;\n    } AVL3_NODE;",
+                        "rust_code": "pub type AVL3_NODE = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct avl3_tree_info\n    {\n        AVL3_COMPARE pfCompare;\n        unsigned short int usKeyOffset;\n        unsigned short int usNodeOffset;\n    } AVL3_TREE_INFO;",
+                        "rust_code": "pub type AVL3_TREE_INFO = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct avl3_tree\n    {\n        AVL3_NODE *pstRoot;\n        AVL3_NODE *pstFirst;\n        AVL3_NODE *pstLast;\n    } AVL3_TREE;",
+                        "rust_code": "pub type AVL3_TREE = i32;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define V_AVL3_H",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define VOS_AVL3_INIT_TREE(TREE, TREE_INFO)                                                                            \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        (TREE).pstFirst = (AVL3_NODE *)AVL_NULL_PTR;                                                                   \\\n        (TREE).pstLast = (AVL3_NODE *)AVL_NULL_PTR;                                                                    \\\n        (TREE).pstRoot = (AVL3_NODE *)AVL_NULL_PTR;                                                                    \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_INIT_NODE(NODE)                                                                                       \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        (NODE).pstParent = (AVL3_NODE *)AVL_NULL_PTR;                                                                  \\\n        (NODE).pstLeft = (AVL3_NODE *)AVL_NULL_PTR;                                                                    \\\n        (NODE).pstRight = (AVL3_NODE *)AVL_NULL_PTR;                                                                   \\\n        (NODE).sLHeight = -1;                                                                                          \\\n        (NODE).sRHeight = -1;                                                                                          \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_INSERT(TREE, NODE, TREE_INFO) (AVL_NULL_PTR == VOS_AVL3_Insert_Or_Find(&(TREE), &(NODE), &(TREE_INFO)))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_INSERT_OR_FIND(TREE, NODE, TREE_INFO) VOS_AVL3_Insert_Or_Find(&(TREE), &(NODE), &(TREE_INFO))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_DELETE(TREE, NODE) VOS_AVL3_Delete(&(TREE), &(NODE))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_FIND(TREE, KEY, TREE_INFO) VOS_AVL3_Find(&(TREE), (KEY), &(TREE_INFO))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_NEXT(NODE, TREE_INFO) VOS_AVL3_Next(&(NODE), &(TREE_INFO))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_PREV(NODE, TREE_INFO) VOS_AVL3_Prev(&(NODE), &(TREE_INFO))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_FIRST(TREE, TREE_INFO) VOS_AVL3_First(&(TREE), &(TREE_INFO))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_LAST(TREE, TREE_INFO) VOS_AVL3_Last(&(TREE), &(TREE_INFO))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_IN_TREE(NODE) (((NODE).sLHeight != -1) && ((NODE).sRHeight != -1))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_FIND_NEXT(TREE, KEY, TREE_INFO) AVL3_Find_Or_Find_Next(&(TREE), (KEY), AVL_TRUE, &(TREE_INFO))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_FIND_OR_FIND_NEXT(TREE, KEY, TREE_INFO) AVL3_Find_Or_Find_Next(&(TREE), (KEY), AVL_FALSE, &(TREE_INFO))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define VOS_AVL3_MAX(X, Y) (((X) > (Y)) ? (X) : (Y))",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": []
+            },
+            "mod.rs": {
+                "name": "mod.rs",
+                "type": "file",
+                "declarations": [
+                    "pub mod v_avll_h;",
+                    "pub mod avl_adapt_h;",
+                    "pub mod v_avl_base_h;",
+                    "pub mod v_avl3_h;"
+                ],
+                "definitions": [],
+                "macros": [],
+                "macro_functions": [],
+                "functions": []
+            }
+        }
+    },
+    "src": {
+        "name": "src",
+        "type": "folder",
+        "children": {
+            "v_avlbase_h.rs": {
+                "name": "v_avlbase_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::src::v_avlbase_c::VosAvlRotateLeft;",
+                    "pub use crate::src::v_avlbase_c::VosAvlSwapRightMost;",
+                    "pub use crate::src::v_avlbase_c::VosAvlRebalance;",
+                    "pub use crate::src::v_avlbase_c::VosAvlRotateRight;",
+                    "pub use crate::src::v_avlbase_c::VosAvlBalanceTree;",
+                    "pub use crate::src::v_avlbase_c::VosAvlSwapLeftMost;",
+                    "pub use crate::src::v_avlbase_c::VosAvlDeleteCheck;",
+                    "pub use crate::src::v_avlbase_c::VosAvlDelete;"
+                ],
+                "definitions": [
+                    {
+                        "c_code": "typedef struct AVLBaseNode\n    {\n        struct AVLBaseNode *pstParent;\n        struct AVLBaseNode *pstLeft;\n        struct AVLBaseNode *pstRight;\n        short int sLHeight;\n        short int sRHeight;\n    } AVLBASE_NODE_S;",
+                        "rust_code": "pub type AVLBASE_NODE_S = i32;"
+                    },
+                    {
+                        "c_code": "typedef struct AVLBaseTree\n    {\n        AVLBASE_NODE_S *pstRoot;\n        AVLBASE_NODE_S *pstFirst;\n        AVLBASE_NODE_S *pstLast;\n    } AVLBASE_TREE_S;",
+                        "rust_code": "pub type AVLBASE_TREE_S = i32;"
+                    }
+                ],
+                "macros": [
+                    {
+                        "c_code": "#define V_AVLBASE_H",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define FIND_LEFTMOST_NODE(pstNode)                                                                                    \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        while ((pstNode)->pstLeft != AVL_NULL_PTR)                                                                     \\\n        {                                                                                                              \\\n            (pstNode) = (pstNode)->pstLeft;                                                                            \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define FIND_RIGHTMOST_NODE(pstNode)                                                                                   \\\n    do                                                                                                                 \\\n    {                                                                                                                  \\\n        while ((pstNode)->pstRight != AVL_NULL_PTR)                                                                    \\\n        {                                                                                                              \\\n            (pstNode) = (pstNode)->pstRight;                                                                           \\\n        }                                                                                                              \\\n    } while (0)",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": [
+                    {
+                        "c_code": "static inline void VosAvlNodeRightInsert(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstParentNode,\n                                             AVLBASE_NODE_S *pstNode)\n    {\n        pstNode->pstParent = pstParentNode;\n        pstParentNode->pstRight = pstNode;\n        pstParentNode->sRHeight = 1;\n        if (pstParentNode == pstTree->pstLast)\n        {\n\n            pstTree->pstLast = pstNode;\n        }\n    }",
+                        "rust_code": "pub fn VosAvlNodeRightInsert() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "static inline void VosAvlNodeLeftInsert(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstParentNode,\n                                            AVLBASE_NODE_S *pstNode)\n    {\n        pstNode->pstParent = pstParentNode;\n        pstParentNode->pstLeft = pstNode;\n        pstParentNode->sLHeight = 1;\n        if (pstParentNode == pstTree->pstFirst)\n        {\n\n            pstTree->pstFirst = pstNode;\n        }\n    }",
+                        "rust_code": "pub fn VosAvlNodeLeftInsert() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "v_avlpub_c.rs": {
+                "name": "v_avlpub_c.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::v_avl_base_h::*;",
+                    "pub use crate::src::v_avlbase_h::*;"
+                ],
+                "definitions": [],
+                "macros": [],
+                "macro_functions": [],
+                "functions": [
+                    {
+                        "c_code": "void *VOS_AVL_Insert_Or_Find(AVL_TREE *pstTree, AVL_NODE *pstNode)\n{\n    AVL_NODE *pstParentNode;\n    int iResult;\n\n    if ((pstTree == AVL_NULL_PTR) || (pstNode == AVL_NULL_PTR) || (VOS_AVL_IN_TREE(*pstNode)))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    pstNode->sRHeight = 0;\n    pstNode->sLHeight = 0;\n\n    if (pstTree->pstRoot == AVL_NULL_PTR)\n    {\n        pstTree->pstRoot = pstNode;\n        pstTree->pstFirst = pstNode;\n        pstTree->pstLast = pstNode;\n        return AVL_NULL_PTR;\n    }\n\n    for (pstParentNode = pstTree->pstRoot; pstParentNode != AVL_NULL_PTR;)\n    {\n\n        iResult = pstTree->pfnCompare(pstNode->pKey, pstParentNode->pKey);\n        if (iResult > 0)\n        {\n\n            if (pstParentNode->pstRight != AVL_NULL_PTR)\n            {\n\n                pstParentNode = pstParentNode->pstRight;\n                continue;\n            }\n\n            VosAvlNodeRightInsert((AVLBASE_TREE_S *)(void *)(&(pstTree->pstRoot)), (AVLBASE_NODE_S *)pstParentNode,\n                                  (AVLBASE_NODE_S *)pstNode);\n\n            break;\n        }\n        else if (iResult < 0)\n        {\n\n            if (pstParentNode->pstLeft != AVL_NULL_PTR)\n            {\n\n                pstParentNode = pstParentNode->pstLeft;\n                continue;\n            }\n\n            VosAvlNodeLeftInsert((AVLBASE_TREE_S *)(void *)(&(pstTree->pstRoot)), (AVLBASE_NODE_S *)pstParentNode,\n                                 (AVLBASE_NODE_S *)pstNode);\n\n            break;\n        }\n\n        pstNode->sRHeight = -1;\n        pstNode->sLHeight = -1;\n        return pstParentNode->pSelf;\n    }\n\n    if (pstParentNode != AVL_NULL_PTR)\n    {\n        VosAvlBalanceTree((AVLBASE_TREE_S *)(void *)(&(pstTree->pstRoot)), (AVLBASE_NODE_S *)pstParentNode);\n    }\n\n    return AVL_NULL_PTR;\n}",
+                        "rust_code": "pub fn VOS_AVL_Insert_Or_Find() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VOS_AVL_Delete(AVL_TREE *pstTree, AVL_NODE *pstNode)\n{\n    AVLBASE_NODE_S *pstBaseNode;\n    AVLBASE_TREE_S *pstBaseTree;\n\n    if ((pstTree == AVL_NULL_PTR) || (pstNode == AVL_NULL_PTR) || (!VOS_AVL_IN_TREE(*pstNode)))\n    {\n        return;\n    }\n\n    pstBaseNode = (AVLBASE_NODE_S *)pstNode;\n    pstBaseTree = (AVLBASE_TREE_S *)(void *)(&(pstTree->pstRoot));\n    VosAvlDelete(pstBaseNode, pstBaseTree);\n    return;\n}",
+                        "rust_code": "pub fn VOS_AVL_Delete() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL_Find(AVL_TREE *pstTree, const void *pKey)\n{\n\n    AVL_NODE *pstNode;\n    int iResult;\n\n    if (pstTree == AVL_NULL_PTR)\n    {\n        return AVL_NULL_PTR;\n    }\n    pstNode = pstTree->pstRoot;\n\n    while (pstNode != AVL_NULL_PTR)\n    {\n\n        iResult = pstTree->pfnCompare(pKey, pstNode->pKey);\n        if (iResult > 0)\n        {\n\n            pstNode = pstNode->pstRight;\n        }\n        else if (iResult < 0)\n        {\n\n            pstNode = pstNode->pstLeft;\n        }\n        else\n        {\n\n            break;\n        }\n    }\n\n    return ((pstNode != AVL_NULL_PTR) ? pstNode->pSelf : AVL_NULL_PTR);\n}",
+                        "rust_code": "pub fn VOS_AVL_Find() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL_Next(AVL_NODE *pstNode)\n{\n    AVL_NODE *pstNodeTmp = pstNode;\n    if ((pstNodeTmp == AVL_NULL_PTR) || (!VOS_AVL_IN_TREE(*pstNodeTmp)))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    if (pstNodeTmp->pstRight != AVL_NULL_PTR)\n    {\n\n        pstNodeTmp = pstNodeTmp->pstRight;\n        FIND_LEFTMOST_NODE(pstNodeTmp);\n    }\n    else\n    {\n\n        while (pstNodeTmp != AVL_NULL_PTR)\n        {\n            if ((pstNodeTmp->pstParent == AVL_NULL_PTR) || (pstNodeTmp->pstParent->pstLeft == pstNodeTmp))\n            {\n                pstNodeTmp = pstNodeTmp->pstParent;\n                break;\n            }\n\n            pstNodeTmp = pstNodeTmp->pstParent;\n        }\n    }\n\n    return ((pstNodeTmp != AVL_NULL_PTR) ? pstNodeTmp->pSelf : AVL_NULL_PTR);\n}",
+                        "rust_code": "pub fn VOS_AVL_Next() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL_Prev(AVL_NODE *pstNode)\n{\n    AVL_NODE *pstNodeTmp = pstNode;\n    if ((pstNodeTmp == AVL_NULL_PTR) || (!VOS_AVL_IN_TREE(*pstNodeTmp)))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    if (pstNodeTmp->pstLeft != AVL_NULL_PTR)\n    {\n\n        pstNodeTmp = pstNodeTmp->pstLeft;\n        FIND_RIGHTMOST_NODE(pstNodeTmp);\n    }\n    else\n    {\n\n        while (pstNodeTmp != AVL_NULL_PTR)\n        {\n            if ((pstNodeTmp->pstParent == AVL_NULL_PTR) || (pstNodeTmp->pstParent->pstRight == pstNodeTmp))\n            {\n                pstNodeTmp = pstNodeTmp->pstParent;\n                break;\n            }\n\n            pstNodeTmp = pstNodeTmp->pstParent;\n        }\n    }\n\n    return ((pstNodeTmp != AVL_NULL_PTR) ? pstNodeTmp->pSelf : AVL_NULL_PTR);\n}",
+                        "rust_code": "pub fn VOS_AVL_Prev() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL_Find_Or_Find_Next(AVL_TREE *pstTree, const void *pKey, unsigned int bValue)\n{\n    AVL_NODE *pstNode;\n    void *pFoundNode = AVL_NULL_PTR;\n    int iResult;\n\n    if (pstTree == AVL_NULL_PTR)\n    {\n        return AVL_NULL_PTR;\n    }\n    pstNode = pstTree->pstRoot;\n\n    if (pstNode == AVL_NULL_PTR)\n    {\n        return (pFoundNode);\n    }\n\n    for (;;)\n    {\n\n        iResult = pstTree->pfnCompare(pKey, pstNode->pKey);\n        if (iResult > 0)\n        {\n\n            if (pstNode->pstRight == AVL_NULL_PTR)\n            {\n\n                pFoundNode = VOS_AVL_Next(pstNode);\n                break;\n            }\n\n            pstNode = pstNode->pstRight;\n        }\n        else if (iResult < 0)\n        {\n\n            if (pstNode->pstLeft == AVL_NULL_PTR)\n            {\n\n                pFoundNode = pstNode->pSelf;\n                break;\n            }\n\n            pstNode = pstNode->pstLeft;\n        }\n        else\n        {\n\n            if (bValue != 0)\n            {\n\n                pFoundNode = VOS_AVL_Next(pstNode);\n            }\n            else\n            {\n                pFoundNode = pstNode->pSelf;\n            }\n            break;\n        }\n    }\n\n    return (pFoundNode);\n}",
+                        "rust_code": "pub fn VOS_AVL_Find_Or_Find_Next() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "v_avl3_inner_h.rs": {
+                "name": "v_avl3_inner_h.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;"
+                ],
+                "definitions": [],
+                "macros": [
+                    {
+                        "c_code": "#define V_AVL3_INNER_H",
+                        "rust_code": ""
+                    }
+                ],
+                "macro_functions": [
+                    {
+                        "c_code": "#define TREE_OR_TREEINFO_IS_NULL(pstTree, pstTreeInfo) (((pstTree) == AVL_NULL_PTR) || ((pstTreeInfo) == AVL_NULL_PTR))",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define GET_NODE_START_ADDRESS(pstNode, usOffset)                                                                      \\\n    (((pstNode) != AVL_NULL_PTR) ? (void *)((unsigned char *)(pstNode) - (usOffset)) : AVL_NULL_PTR)",
+                        "rust_code": ""
+                    },
+                    {
+                        "c_code": "#define GET_KEYOFFSET(pstTreeInfo) ((int)((pstTreeInfo)->usKeyOffset - (pstTreeInfo)->usNodeOffset))",
+                        "rust_code": ""
+                    }
+                ],
+                "functions": []
+            },
+            "v_avlbase_c.rs": {
+                "name": "v_avlbase_c.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::src::v_avlbase_h::*;",
+                    "pub use crate::include::v_avl_base_h::*;"
+                ],
+                "definitions": [],
+                "macros": [],
+                "macro_functions": [],
+                "functions": [
+                    {
+                        "c_code": "unsigned int VOS_V_AVLBaseInit(const char *pscKey)\n{\n    (void)pscKey;\n    return 0;\n}",
+                        "rust_code": "pub fn VOS_V_AVLBaseInit() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "unsigned int VOS_V_AVLBaseFini(void)\n{\n    return 0;\n}",
+                        "rust_code": "pub fn VOS_V_AVLBaseFini() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlRotateRight(AVLBASE_NODE_S **ppstSubTree)\n{\n    AVLBASE_NODE_S *pstLeftSon = (*ppstSubTree)->pstLeft;\n\n    (*ppstSubTree)->pstLeft = pstLeftSon->pstRight;\n    if ((*ppstSubTree)->pstLeft != AVL_NULL_PTR)\n    {\n        (*ppstSubTree)->pstLeft->pstParent = (*ppstSubTree);\n    }\n\n    (*ppstSubTree)->sLHeight = pstLeftSon->sRHeight;\n    pstLeftSon->pstParent = (*ppstSubTree)->pstParent;\n    pstLeftSon->pstRight = *ppstSubTree;\n    pstLeftSon->pstRight->pstParent = pstLeftSon;\n    pstLeftSon->sRHeight = (1 + VOS_V2_AVL_MAX((*ppstSubTree)->sRHeight, (*ppstSubTree)->sLHeight));\n\n    *ppstSubTree = pstLeftSon;\n\n    return;\n}",
+                        "rust_code": "pub fn VosAvlRotateRight() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlRotateLeft(AVLBASE_NODE_S **ppstSubTree)\n{\n    AVLBASE_NODE_S *pstRightSon = (*ppstSubTree)->pstRight;\n\n    (*ppstSubTree)->pstRight = pstRightSon->pstLeft;\n    if ((*ppstSubTree)->pstRight != AVL_NULL_PTR)\n    {\n        (*ppstSubTree)->pstRight->pstParent = (*ppstSubTree);\n    }\n\n    (*ppstSubTree)->sRHeight = pstRightSon->sLHeight;\n    pstRightSon->pstParent = (*ppstSubTree)->pstParent;\n    pstRightSon->pstLeft = *ppstSubTree;\n    pstRightSon->pstLeft->pstParent = pstRightSon;\n    pstRightSon->sLHeight = (1 + VOS_V2_AVL_MAX((*ppstSubTree)->sRHeight, (*ppstSubTree)->sLHeight));\n\n    *ppstSubTree = pstRightSon;\n\n    return;\n}",
+                        "rust_code": "pub fn VosAvlRotateLeft() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlUpdateSwapNode(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstSwapNode, const AVLBASE_NODE_S *pstBaseNode)\n{\n\n    pstSwapNode->pstParent = pstBaseNode->pstParent;\n    pstSwapNode->pstRight = pstBaseNode->pstRight;\n    pstSwapNode->pstLeft = pstBaseNode->pstLeft;\n    pstSwapNode->sRHeight = pstBaseNode->sRHeight;\n    pstSwapNode->sLHeight = pstBaseNode->sLHeight;\n    pstSwapNode->pstRight->pstParent = pstSwapNode;\n    pstSwapNode->pstLeft->pstParent = pstSwapNode;\n\n    if (pstBaseNode->pstParent == AVL_NULL_PTR)\n    {\n\n        pstTree->pstRoot = pstSwapNode;\n    }\n    else if (pstBaseNode->pstParent->pstRight == pstBaseNode)\n    {\n\n        pstSwapNode->pstParent->pstRight = pstSwapNode;\n    }\n    else\n    {\n\n        pstSwapNode->pstParent->pstLeft = pstSwapNode;\n    }\n}",
+                        "rust_code": "pub fn VosAvlUpdateSwapNode() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlMoveNodeToNewPos(AVLBASE_NODE_S *pstNode, AVLBASE_NODE_S *pstNewParent, AVLBASE_NODE_S *pstNewLeftSon,\n                            AVLBASE_NODE_S *pstNewRightSon)\n{\n    pstNode->pstParent = pstNewParent;\n    pstNode->pstLeft = pstNewLeftSon;\n    pstNode->pstRight = pstNewRightSon;\n    pstNode->sLHeight = 0;\n    pstNode->sRHeight = 0;\n\n    if (pstNewLeftSon != AVL_NULL_PTR)\n    {\n        pstNode->pstLeft->pstParent = pstNode;\n        pstNode->sLHeight = 1;\n    }\n\n    if (pstNewRightSon != AVL_NULL_PTR)\n    {\n        pstNode->pstRight->pstParent = pstNode;\n        pstNode->sRHeight = 1;\n    }\n}",
+                        "rust_code": "pub fn VosAvlMoveNodeToNewPos() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlSwapRightMost(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstSubTree, AVLBASE_NODE_S *pstNode)\n{\n    AVLBASE_NODE_S *pstSwapNode = pstSubTree;\n    AVLBASE_NODE_S *pstSwapParent;\n    AVLBASE_NODE_S *pstSwapLeft;\n\n    FIND_RIGHTMOST_NODE(pstSwapNode);\n\n    if ((pstSwapNode->sRHeight != 0) || (pstSwapNode->sLHeight > 1))\n    {\n        return;\n    }\n\n    pstSwapParent = pstSwapNode->pstParent;\n    pstSwapLeft = pstSwapNode->pstLeft;\n\n    VosAvlUpdateSwapNode(pstTree, pstSwapNode, pstNode);\n    VosAvlMoveNodeToNewPos(pstNode, pstSwapParent, pstSwapLeft, AVL_NULL_PTR);\n\n    pstNode->pstParent->pstRight = pstNode;\n\n    return;\n}",
+                        "rust_code": "pub fn VosAvlSwapRightMost() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlSwapLeftMost(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstSubTree, AVLBASE_NODE_S *pstNode)\n{\n    AVLBASE_NODE_S *pstSwapNode = pstSubTree;\n    AVLBASE_NODE_S *pstSwapParent;\n    AVLBASE_NODE_S *pstSwapRight;\n\n    FIND_LEFTMOST_NODE(pstSwapNode);\n\n    if ((pstSwapNode->sLHeight != 0) || (pstSwapNode->sRHeight > 1))\n    {\n        return;\n    }\n\n    pstSwapParent = pstSwapNode->pstParent;\n    pstSwapRight = pstSwapNode->pstRight;\n\n    VosAvlUpdateSwapNode(pstTree, pstSwapNode, pstNode);\n    VosAvlMoveNodeToNewPos(pstNode, pstSwapParent, AVL_NULL_PTR, pstSwapRight);\n\n    pstNode->pstParent->pstLeft = pstNode;\n\n    return;\n}",
+                        "rust_code": "pub fn VosAvlSwapLeftMost() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlRebalance(AVLBASE_NODE_S **ppstSubTree)\n{\n    int iMoment;\n\n    iMoment = (*ppstSubTree)->sRHeight - (*ppstSubTree)->sLHeight;\n\n    if (iMoment > 1)\n    {\n\n        if ((*ppstSubTree)->pstRight->sLHeight > (*ppstSubTree)->pstRight->sRHeight)\n        {\n\n            VosAvlRotateRight(&(*ppstSubTree)->pstRight);\n        }\n\n        VosAvlRotateLeft(ppstSubTree);\n    }\n    else if (iMoment < -1)\n    {\n\n        if ((*ppstSubTree)->pstLeft->sRHeight > (*ppstSubTree)->pstLeft->sLHeight)\n        {\n\n            VosAvlRotateLeft(&(*ppstSubTree)->pstLeft);\n        }\n\n        VosAvlRotateRight(ppstSubTree);\n    }\n\n    return;\n}",
+                        "rust_code": "pub fn VosAvlRebalance() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlBalanceTree(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstNode)\n{\n\n    AVLBASE_NODE_S *pstNodeTmp = pstNode;\n    while (pstNodeTmp->pstParent != AVL_NULL_PTR)\n    {\n\n        if (pstNodeTmp->pstParent->pstRight == pstNodeTmp)\n        {\n\n            pstNodeTmp = pstNodeTmp->pstParent;\n            VosAvlRebalance(&pstNodeTmp->pstRight);\n\n            pstNodeTmp->sRHeight = (1 + VOS_V2_AVL_MAX(pstNodeTmp->pstRight->sRHeight, pstNodeTmp->pstRight->sLHeight));\n        }\n        else\n        {\n\n            pstNodeTmp = pstNodeTmp->pstParent;\n            VosAvlRebalance(&pstNodeTmp->pstLeft);\n\n            pstNodeTmp->sLHeight = (1 + VOS_V2_AVL_MAX(pstNodeTmp->pstLeft->sRHeight, pstNodeTmp->pstLeft->sLHeight));\n        }\n    }\n\n    if (pstNodeTmp->sLHeight != pstNodeTmp->sRHeight)\n    {\n\n        VosAvlRebalance(&pstTree->pstRoot);\n    }\n\n    return;\n}",
+                        "rust_code": "pub fn VosAvlBalanceTree() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "AVLBASE_NODE_S *VosAVLSearchReplaceNodeInRTree(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstNode)\n{\n    AVLBASE_NODE_S *pstReplaceNode;\n\n    if (pstNode->pstRight->pstLeft == AVL_NULL_PTR)\n    {\n\n        pstReplaceNode = pstNode->pstRight;\n        pstReplaceNode->pstLeft = pstNode->pstLeft;\n        pstReplaceNode->pstLeft->pstParent = pstReplaceNode;\n        pstReplaceNode->sLHeight = pstNode->sLHeight;\n    }\n    else\n    {\n\n        VosAvlSwapLeftMost(pstTree, pstNode->pstRight, pstNode);\n        pstReplaceNode = pstNode->pstRight;\n    }\n\n    return pstReplaceNode;\n}",
+                        "rust_code": "pub fn VosAVLSearchReplaceNodeInRTree() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "AVLBASE_NODE_S *VosAvlSearchReplaceNodeInLTree(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstNode)\n{\n    AVLBASE_NODE_S *pstReplaceNode;\n\n    if (pstNode->pstLeft->pstRight == AVL_NULL_PTR)\n    {\n\n        pstReplaceNode = pstNode->pstLeft;\n        pstReplaceNode->pstRight = pstNode->pstRight;\n        pstReplaceNode->pstRight->pstParent = pstReplaceNode;\n        pstReplaceNode->sRHeight = pstNode->sRHeight;\n    }\n    else\n    {\n\n        VosAvlSwapRightMost(pstTree, pstNode->pstLeft, pstNode);\n        pstReplaceNode = pstNode->pstLeft;\n    }\n\n    return pstReplaceNode;\n}",
+                        "rust_code": "pub fn VosAvlSearchReplaceNodeInLTree() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "AVLBASE_NODE_S *VosAvlSearchReplaceNode(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstNode)\n{\n    AVLBASE_NODE_S *pstReplaceNode;\n\n    if (pstNode->sRHeight > pstNode->sLHeight)\n    {\n\n        pstReplaceNode = VosAVLSearchReplaceNodeInRTree(pstTree, pstNode);\n    }\n    else\n    {\n\n        pstReplaceNode = VosAvlSearchReplaceNodeInLTree(pstTree, pstNode);\n    }\n\n    return pstReplaceNode;\n}",
+                        "rust_code": "pub fn VosAvlSearchReplaceNode() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "AVLBASE_NODE_S *VosAvlDeleteCheck(AVLBASE_TREE_S *pstTree, AVLBASE_NODE_S *pstNode)\n{\n    AVLBASE_NODE_S *pstReplaceNode;\n\n    if ((pstNode->pstLeft == AVL_NULL_PTR) && (pstNode->pstRight == AVL_NULL_PTR))\n    {\n\n        pstReplaceNode = AVL_NULL_PTR;\n\n        if (pstTree->pstFirst == pstNode)\n        {\n\n            pstTree->pstFirst = pstNode->pstParent;\n        }\n\n        if (pstTree->pstLast == pstNode)\n        {\n\n            pstTree->pstLast = pstNode->pstParent;\n        }\n    }\n    else if (pstNode->pstLeft == AVL_NULL_PTR)\n    {\n\n        pstReplaceNode = pstNode->pstRight;\n\n        if (pstTree->pstFirst == pstNode)\n        {\n\n            pstTree->pstFirst = pstReplaceNode;\n        }\n    }\n    else if (pstNode->pstRight == AVL_NULL_PTR)\n    {\n\n        pstReplaceNode = pstNode->pstLeft;\n\n        if (pstTree->pstLast == pstNode)\n        {\n\n            pstTree->pstLast = pstReplaceNode;\n        }\n    }\n    else\n    {\n\n        pstReplaceNode = VosAvlSearchReplaceNode(pstTree, pstNode);\n    }\n    return pstReplaceNode;\n}",
+                        "rust_code": "pub fn VosAvlDeleteCheck() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VosAvlDelete(AVLBASE_NODE_S *pstBaseNode, AVLBASE_TREE_S *pstBaseTree)\n{\n    AVLBASE_NODE_S *pstReplaceNode;\n    AVLBASE_NODE_S *pstParentNode;\n    short int sNewHeight = 0;\n\n    pstReplaceNode = VosAvlDeleteCheck(pstBaseTree, pstBaseNode);\n\n    pstParentNode = pstBaseNode->pstParent;\n\n    pstBaseNode->pstParent = AVL_NULL_PTR;\n    pstBaseNode->pstRight = AVL_NULL_PTR;\n    pstBaseNode->pstLeft = AVL_NULL_PTR;\n    pstBaseNode->sRHeight = -1;\n    pstBaseNode->sLHeight = -1;\n\n    if (pstReplaceNode != AVL_NULL_PTR)\n    {\n\n        pstReplaceNode->pstParent = pstParentNode;\n        sNewHeight = (1 + VOS_V2_AVL_MAX(pstReplaceNode->sLHeight, pstReplaceNode->sRHeight));\n    }\n\n    if (pstParentNode != AVL_NULL_PTR)\n    {\n\n        if (pstParentNode->pstRight == pstBaseNode)\n        {\n\n            pstParentNode->pstRight = pstReplaceNode;\n            pstParentNode->sRHeight = sNewHeight;\n        }\n        else\n        {\n\n            pstParentNode->pstLeft = pstReplaceNode;\n            pstParentNode->sLHeight = sNewHeight;\n        }\n\n        VosAvlBalanceTree(pstBaseTree, pstParentNode);\n    }\n    else\n    {\n\n        pstBaseTree->pstRoot = pstReplaceNode;\n    }\n\n    return;\n}",
+                        "rust_code": "pub fn VosAvlDelete() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "v_avl3_c.rs": {
+                "name": "v_avl3_c.rs",
+                "type": "file",
+                "declarations": [
+                    "use crate::translation_utils::*;",
+                    "pub use crate::include::v_avl3_h::*;",
+                    "pub use crate::src::v_avl3_inner_h::*;",
+                    "pub use crate::src::v_avlbase_h::*;"
+                ],
+                "definitions": [],
+                "macros": [],
+                "macro_functions": [],
+                "functions": [
+                    {
+                        "c_code": "unsigned int VOS_V_AVL3Init(const char *pscKey)\n{\n    (void)pscKey;\n    return 0;\n}",
+                        "rust_code": "pub fn VOS_V_AVL3Init() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "unsigned int VOS_V_AVL3Fini(void)\n{\n    return 0;\n}",
+                        "rust_code": "pub fn VOS_V_AVL3Fini() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *AVL3_Find_Or_Find_Next(AVL3_TREE *pstTree, const void *pKey, unsigned int bFlag, AVL3_TREE_INFO *pstTreeInfo)\n{\n    AVL3_NODE *pstNode;\n    void *pFoundNode = AVL_NULL_PTR;\n    int iResult;\n    int iKeyOffset;\n\n    if (TREE_OR_TREEINFO_IS_NULL(pstTree, pstTreeInfo))\n    {\n        return AVL_NULL_PTR;\n    }\n    pstNode = pstTree->pstRoot;\n    if (pstNode == AVL_NULL_PTR)\n    {\n        return AVL_NULL_PTR;\n    }\n\n    iKeyOffset = GET_KEYOFFSET(pstTreeInfo);\n\n    for (;;)\n    {\n\n        iResult = pstTreeInfo->pfCompare(pKey, (void *)((unsigned char *)pstNode + iKeyOffset));\n        if (iResult > 0)\n        {\n\n            if (pstNode->pstRight == AVL_NULL_PTR)\n            {\n\n                pFoundNode = VOS_AVL3_Next(pstNode, pstTreeInfo);\n                break;\n            }\n\n            pstNode = pstNode->pstRight;\n        }\n        else if (iResult < 0)\n        {\n\n            if (pstNode->pstLeft == AVL_NULL_PTR)\n            {\n\n                pFoundNode = (void *)((unsigned char *)pstNode - pstTreeInfo->usNodeOffset);\n                break;\n            }\n\n            pstNode = pstNode->pstLeft;\n        }\n        else\n        {\n\n            if (bFlag != 0)\n            {\n\n                pFoundNode = VOS_AVL3_Next(pstNode, pstTreeInfo);\n            }\n            else\n            {\n                pFoundNode = (void *)((unsigned char *)pstNode - pstTreeInfo->usNodeOffset);\n            }\n            break;\n        }\n    }\n\n    return pFoundNode;\n}",
+                        "rust_code": "pub fn AVL3_Find_Or_Find_Next() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL3_Insert_Or_Find(AVL3_TREE *pstTree, AVL3_NODE *pstNode, AVL3_TREE_INFO *pstTreeInfo)\n{\n    AVL3_NODE *pstParentNode;\n    int iResult;\n    int iKeyOffset;\n\n    if (TREE_OR_TREEINFO_IS_NULL(pstTree, pstTreeInfo) || (pstNode == AVL_NULL_PTR))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    pstNode->sRHeight = 0;\n    pstNode->sLHeight = 0;\n\n    if (pstTree->pstRoot == AVL_NULL_PTR)\n    {\n\n        pstTree->pstRoot = pstNode;\n        pstTree->pstFirst = pstNode;\n        pstTree->pstLast = pstNode;\n        return AVL_NULL_PTR;\n    }\n\n    pstParentNode = pstTree->pstRoot;\n\n    iKeyOffset = GET_KEYOFFSET(pstTreeInfo);\n    while (pstParentNode != AVL_NULL_PTR)\n    {\n\n        iResult = pstTreeInfo->pfCompare((void *)((unsigned char *)pstNode + iKeyOffset),\n                                         (void *)((unsigned char *)pstParentNode + iKeyOffset));\n        if (iResult > 0)\n        {\n\n            if (pstParentNode->pstRight != AVL_NULL_PTR)\n            {\n\n                pstParentNode = pstParentNode->pstRight;\n                continue;\n            }\n\n            VosAvlNodeRightInsert((AVLBASE_TREE_S *)pstTree, (AVLBASE_NODE_S *)pstParentNode,\n                                  (AVLBASE_NODE_S *)pstNode);\n        }\n        else if (iResult < 0)\n        {\n\n            if (pstParentNode->pstLeft != AVL_NULL_PTR)\n            {\n\n                pstParentNode = pstParentNode->pstLeft;\n                continue;\n            }\n\n            VosAvlNodeLeftInsert((AVLBASE_TREE_S *)pstTree, (AVLBASE_NODE_S *)pstParentNode, (AVLBASE_NODE_S *)pstNode);\n        }\n        else\n        {\n\n            pstNode->sRHeight = -1;\n            pstNode->sLHeight = -1;\n            return (void *)((unsigned char *)pstParentNode - pstTreeInfo->usNodeOffset);\n        }\n\n        break;\n    }\n\n    VosAvlBalanceTree((AVLBASE_TREE_S *)pstTree, (AVLBASE_NODE_S *)pstParentNode);\n\n    return AVL_NULL_PTR;\n}",
+                        "rust_code": "pub fn VOS_AVL3_Insert_Or_Find() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void VOS_AVL3_Delete(AVL3_TREE *pstTree, AVL3_NODE *pstNode)\n{\n\n    AVLBASE_NODE_S *pstBaseNode;\n    AVLBASE_TREE_S *pstBaseTree;\n    if ((pstTree == AVL_NULL_PTR) || (pstNode == AVL_NULL_PTR))\n    {\n        return;\n    }\n\n    pstBaseNode = (AVLBASE_NODE_S *)pstNode;\n    pstBaseTree = (AVLBASE_TREE_S *)pstTree;\n    VosAvlDelete(pstBaseNode, pstBaseTree);\n}",
+                        "rust_code": "pub fn VOS_AVL3_Delete() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL3_Find(AVL3_TREE *pstTree, const void *pstKey, AVL3_TREE_INFO *pstTreeInfo)\n{\n    AVL3_NODE *pstNode;\n    int iResult;\n    int iKeyOffset;\n\n    if (TREE_OR_TREEINFO_IS_NULL(pstTree, pstTreeInfo))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    pstNode = pstTree->pstRoot;\n    iKeyOffset = GET_KEYOFFSET(pstTreeInfo);\n\n    while (pstNode != AVL_NULL_PTR)\n    {\n        iResult = pstTreeInfo->pfCompare(pstKey, (void *)((unsigned char *)pstNode + iKeyOffset));\n        if (iResult > 0)\n        {\n\n            pstNode = pstNode->pstRight;\n        }\n        else if (iResult < 0)\n        {\n\n            pstNode = pstNode->pstLeft;\n        }\n        else\n        {\n\n            break;\n        }\n    }\n\n    return GET_NODE_START_ADDRESS(pstNode, pstTreeInfo->usNodeOffset);\n}",
+                        "rust_code": "pub fn VOS_AVL3_Find() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL3_First(AVL3_TREE *pstTree, AVL3_TREE_INFO *pstTreeInfo)\n{\n\n    AVL3_NODE *pstNode;\n\n    if (TREE_OR_TREEINFO_IS_NULL(pstTree, pstTreeInfo))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    pstNode = pstTree->pstFirst;\n\n    return GET_NODE_START_ADDRESS(pstNode, pstTreeInfo->usNodeOffset);\n}",
+                        "rust_code": "pub fn VOS_AVL3_First() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL3_Last(AVL3_TREE *pstTree, AVL3_TREE_INFO *pstTreeInfo)\n{\n    AVL3_NODE *pstNode;\n\n    if (TREE_OR_TREEINFO_IS_NULL(pstTree, pstTreeInfo))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    pstNode = pstTree->pstLast;\n\n    return GET_NODE_START_ADDRESS(pstNode, pstTreeInfo->usNodeOffset);\n}",
+                        "rust_code": "pub fn VOS_AVL3_Last() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL3_Next(AVL3_NODE *pstNode, AVL3_TREE_INFO *pstTreeInfo)\n{\n    AVL3_NODE *pstNodeTmp = pstNode;\n    if ((pstNodeTmp == AVL_NULL_PTR) || (pstTreeInfo == AVL_NULL_PTR))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    if (pstNodeTmp->pstRight != AVL_NULL_PTR)\n    {\n\n        pstNodeTmp = pstNodeTmp->pstRight;\n        FIND_LEFTMOST_NODE(pstNodeTmp);\n    }\n    else\n    {\n\n        while (pstNodeTmp != AVL_NULL_PTR)\n        {\n            if ((pstNodeTmp->pstParent == AVL_NULL_PTR) || (pstNodeTmp->pstParent->pstLeft == pstNodeTmp))\n            {\n                pstNodeTmp = pstNodeTmp->pstParent;\n                break;\n            }\n\n            pstNodeTmp = pstNodeTmp->pstParent;\n        }\n    }\n\n    return GET_NODE_START_ADDRESS(pstNodeTmp, pstTreeInfo->usNodeOffset);\n}",
+                        "rust_code": "pub fn VOS_AVL3_Next() { unimplemented!(); }"
+                    },
+                    {
+                        "c_code": "void *VOS_AVL3_Prev(AVL3_NODE *pstNode, AVL3_TREE_INFO *pstTreeInfo)\n{\n    AVL3_NODE *pstNodeTmp = pstNode;\n    if ((pstNodeTmp == AVL_NULL_PTR) || (pstTreeInfo == AVL_NULL_PTR))\n    {\n        return AVL_NULL_PTR;\n    }\n\n    if (pstNodeTmp->pstLeft != AVL_NULL_PTR)\n    {\n\n        pstNodeTmp = pstNodeTmp->pstLeft;\n        FIND_RIGHTMOST_NODE(pstNodeTmp);\n    }\n    else\n    {\n\n        while (pstNodeTmp != AVL_NULL_PTR)\n        {\n            if ((pstNodeTmp->pstParent == AVL_NULL_PTR) || (pstNodeTmp->pstParent->pstRight == pstNodeTmp))\n            {\n\n                pstNodeTmp = pstNodeTmp->pstParent;\n                break;\n            }\n\n            pstNodeTmp = pstNodeTmp->pstParent;\n        }\n    }\n\n    return GET_NODE_START_ADDRESS(pstNodeTmp, pstTreeInfo->usNodeOffset);\n}",
+                        "rust_code": "pub fn VOS_AVL3_Prev() { unimplemented!(); }"
+                    }
+                ]
+            },
+            "mod.rs": {
+                "name": "mod.rs",
+                "type": "file",
+                "declarations": [
+                    "pub mod v_avlbase_h;",
+                    "pub mod v_avlpub_c;",
+                    "pub mod v_avl3_inner_h;",
+                    "pub mod v_avlbase_c;",
+                    "pub mod v_avl3_c;"
+                ],
+                "definitions": [],
+                "macros": [],
+                "macro_functions": [],
+                "functions": []
+            }
+        }
+    },
+    "lib.rs": {
+        "name": "lib.rs",
+        "type": "file",
+        "declarations": [
+            "pub(crate) mod translation_utils;",
+            "pub(crate) mod include;",
+            "pub(crate) mod src;"
+        ],
+        "definitions": [],
+        "macros": [],
+        "macro_functions": [],
+        "functions": []
+    }
+}
