@@ -1,1 +1,0 @@
-pub type RBTreeKey = VoidPtr;

@@ -1,1 +1,0 @@
-pub type HashTableKey = VoidPtr;
