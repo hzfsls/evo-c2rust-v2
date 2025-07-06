@@ -1,0 +1,13 @@
+{
+    "vosSha256Begin": "src/sha256.c",
+    "vosSha256CtxPrepare": "src/sha256.c",
+    "vosSha256LastPadding": "src/sha256.c",
+    "vosSha256HashByBlcMulti": "src/sha256.c",
+    "vosSha256Hash": "src/sha256.c",
+    "vosSha256End": "src/sha256.c",
+    "vosSha256CompressBlock": "src/sha256.c",
+    "vosSha256CompressMul": "src/sha256.c",
+    "VOS_Sha256Calc": "src/sha256.c",
+    "K256": "src/sha256.c",
+    "VOS_SHA256_CTX": "src/sha256.c"
+}
